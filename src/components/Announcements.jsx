@@ -18,7 +18,7 @@ const Announcements = () => {
 
     return(
         <section className="container my-5">
-            <h2 className="text-center mb-4 fw-bold text-primary">Latest Announcements</h2>
+            <h2 className="text-center mb-4 fw-bold text-primary">Latest Announcements:</h2>
         </section>
     )
 }
