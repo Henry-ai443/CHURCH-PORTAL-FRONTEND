@@ -29,8 +29,8 @@ const Footer = () => {
                     <h6 className="fw-bold text-uppercase text-decoration-underline">Quick Links</h6>
                     <ul className="list-unstyled mt-3">
                         <li><a href="/" className="footer-link">Home</a></li>
-                        <li><a href="/" className="footer-link">Announcements</a></li>
-                        <li><a href="/" className="footer-link">Events</a></li>
+                        <li><a href="/announcements" className="footer-link">Announcements</a></li>
+                        <li><a href="/events" className="footer-link">Events</a></li>
                         <li><a href="" className="footer-link">Sermons</a></li>
                         <li><a href="/" className="footer-link">Donations</a></li>
                         <li><a href="/" className="footer-link">Contact</a></li>

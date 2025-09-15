@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 
 import Home from "./pages/Home"
 import AnnouncementPage from "./pages/AnnouncementPage";
+import EventsPage from "./pages/EventsPage";
 function App() {
 
   useEffect(() => {
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/announcements" element={<AnnouncementPage/>}/>
+        <Route path="/events" element={<EventsPage/>}/>
       </Routes>
     </Router>
     </>

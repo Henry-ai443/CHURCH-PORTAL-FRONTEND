@@ -58,7 +58,7 @@ const Navbar = () =>{
                         <a href="/announcements" className='nav-link text-white fw-bold fs-5'><FaBullhorn size={18} className='me-2'/>Announcements</a>
                     </li>
                     <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><FaCalendarAlt size={18} className='me-2'/>Events</a>
+                        <a href="/events" className='nav-link text-white fw-bold fs-5'><FaCalendarAlt size={18} className='me-2'/>Events</a>
                     </li>
                     <li className='nav-item'>
                         <a href="/" className='nav-link text-white fw-bold fs-5'><GiHolyGrail size={18} className='me-2'/>Sermons</a>
@@ -148,7 +148,7 @@ const Navbar = () =>{
                     }}/>
                 </li>
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><FaCalendarAlt size={18} className='me-2'/>Events</a>
+                    <a href="/events" className='nav-link text-white'><FaCalendarAlt size={18} className='me-2'/>Events</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"
