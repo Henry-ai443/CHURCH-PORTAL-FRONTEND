@@ -55,7 +55,7 @@ const Navbar = () =>{
                         <a href="/" className='nav-link text-white fw-bold fs-5'><AiFillHome size={18} className='me-2 fw-bold'/>Home</a>
                     </li>
                     <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><FaBullhorn size={18} className='me-2'/>Announcements</a>
+                        <a href="/announcements" className='nav-link text-white fw-bold fs-5'><FaBullhorn size={18} className='me-2'/>Announcements</a>
                     </li>
                     <li className='nav-item'>
                         <a href="/" className='nav-link text-white fw-bold fs-5'><FaCalendarAlt size={18} className='me-2'/>Events</a>

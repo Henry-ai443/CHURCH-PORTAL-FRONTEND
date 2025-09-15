@@ -1,1 +1,18 @@
-
+html, body{
+    height: 100%;
+    margin: 0;
+    padding-top: 38px;
+}
+@media(max-width: 768px){
+    body{
+        padding-top: 10px;
+    }
+}
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+main{
+    flex: 0.5;
+}

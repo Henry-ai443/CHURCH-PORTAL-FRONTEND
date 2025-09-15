@@ -1,25 +1,61 @@
 import React, {useEffect, useState} from "react";
-
+import { Link } from "react-router-dom";
 const Announcements = () => {
     const [announcements, setAnnouncements] = useState([]);
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try{
-                const res = await fetch('http://127.0.0.1:8000/api/announcemments/');
+
+                const res = await fetch("http://localhost:8000/api/announcements/latest/");
                 const data = await res.json();
                 setAnnouncements(data);
+
             }catch(error){
-                console.error("Error fetching announcements: ", error)
+                console.error("Error fetching announcements:", error)
             }
-        };
+        }
         fetchAnnouncements();
     }, []);
-
     return(
-        <section className="container my-5">
-            <h2 className="text-center mb-4 fw-bold text-primary">Latest Announcements:</h2>
+        <>
+        <section className="container py-5" data-aos = "fade-up">
+            <h2 className="text-center mb-4 fw-bold">Latest Announcements:</h2>
+            <div className="row">
+                {announcements.map((item) => (
+                    <div className="col-md-4 mb-4" key={item.id}>
+                        <div className="card shadow-lg h-100"
+                        style={{
+                            borderRadius:"15px",
+                            background:"rgba(255, 255, 255, 0.85)",
+                            backdropFilter:"blur(10px)",
+                        }}
+                        >
+                            <div className="card-body">
+                                <h5 className="card-title text-primary">{item.title}</h5>
+                                <p className="card-text">{item.message}</p>
+                                <p className="text-muted" style={{fontSize: "0.9rem"}}>
+                                    {new Date(item.time).toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/**BUTTON TO VIEW ALL ANNOUNCEMENTS */}
+            <div className="text-center mt-4" data-aos="fade-up">
+                <Link 
+                to="/announcements"
+                className="btn btn-outline-primary px-4 py-2 fw-bold"
+                style={{
+                    borderRadius:"30px",
+                    background:"linear-gradient(135deg, #3b82f6 #06b6d4)",
+                }}
+                >View All Announcements</Link>
+            </div>
         </section>
+        </>
     )
 }
-export default Announcements
+export default Announcements;
