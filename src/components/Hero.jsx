@@ -34,7 +34,6 @@ style={{
             WebkitBackgroundClip:"text",
             WebkitTextFillColor:"transparent",
             marginBottom:"20px",
-            textShadow:"0 0 15px rgba(30, 144, 255, 0.9)"
 
         }}>GENERAL CONFERENCE CHURCH OF GOD 7TH DAY</h1>
 

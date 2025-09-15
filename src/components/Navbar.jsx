@@ -141,7 +141,7 @@ const Navbar = () =>{
                     }}/>
                 </li>
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><FaBullhorn size={18} className='me-2'/>Announcements</a>
+                    <a href="/announcements" className='nav-link text-white'><FaBullhorn size={18} className='me-2'/>Announcements</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"

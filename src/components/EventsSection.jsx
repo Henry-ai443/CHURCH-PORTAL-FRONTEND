@@ -10,7 +10,7 @@ const EventsSection = () => {
             try{
                 const res  = await fetch("http://localhost:8000/api/events/");
                 const data = await res.json();
-                setEvents(data.slice(0,3));
+                setEvents(data.slice(0,3));//Return the first three events...
             }catch(error){
                 console.error("Error fetching events: ", error)
             }
