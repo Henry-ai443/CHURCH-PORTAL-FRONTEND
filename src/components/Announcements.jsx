@@ -7,7 +7,7 @@ const Announcements = () => {
         const fetchAnnouncements = async () => {
             try{
 
-                const res = await fetch("http://localhost:8000/api/announcements/latest/");
+                const res = await fetch("http://10.111.1.55:8000/api/announcements/latest/");
                 const data = await res.json();
                 setAnnouncements(data);
 
