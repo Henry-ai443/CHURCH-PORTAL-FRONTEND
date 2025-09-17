@@ -70,7 +70,7 @@ const Navbar = () =>{
                         <a href="/" className='nav-link text-white fw-bold fs-5'><FaSignInAlt size={18} className='me-2'/>Login</a>
                     </li>
                     <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><FaUserPlus size={18} className='me-2'/>Register</a>
+                        <a href="/register" className='nav-link text-white fw-bold fs-5'><FaUserPlus size={18} className='me-2'/>Register</a>
                     </li>
                 </ul>
                 <div className='d-lg-none' onClick={() => setIsOpen(!isOpen)}
@@ -171,14 +171,14 @@ const Navbar = () =>{
                     }}/>
                 </li>
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><FaSignInAlt size={18} className='me-2'/>Login</a>
+                    <a href="/login" className='nav-link text-white'><FaSignInAlt size={18} className='me-2'/>Login</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"
                     }}/>
                 </li>
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><FaUserPlus size={18} className='me-2'/>Register</a>
+                    <a href="/register" className='nav-link text-white'><FaUserPlus size={18} className='me-2'/>Register</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"
