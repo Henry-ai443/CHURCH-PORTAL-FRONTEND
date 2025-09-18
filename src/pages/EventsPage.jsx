@@ -5,13 +5,13 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 const EventsPage = () => {
 
-    const BASE_URL = "http://10.111.3.255:8000";
+    const BASE_URL = "http://10.50.2.249:8000";
     const [events, setEvents] = useState([])
 
     useEffect(() => {
         const fetchEvents = async () => {
             try{
-                const response = await fetch("http://10.111.3.255:8000/api/events/");
+                const response = await fetch("http://10.50.2.249:8000/api/events/");
                 const data = await response.json();
                 setEvents(data)
 
