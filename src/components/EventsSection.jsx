@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const EventsSection = () => {
     const [events, setEvents] = useState([]);
-    const BASE_URL = "http://10.50.2.249:8000";
+    const BASE_URL = "http://10.111.8.15:8000";
     useEffect(() => {
         const fetchEvents = async () => {
             try{
