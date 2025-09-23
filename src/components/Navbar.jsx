@@ -5,7 +5,10 @@ import { GiHolyGrail } from 'react-icons/gi';
 
 const Navbar = () =>{
     const [isOpen, setIsOpen] = useState(false);
-
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    }
 
     return(
         <>
@@ -67,11 +70,14 @@ const Navbar = () =>{
                         <a href="/" className='nav-link text-white fw-bold fs-5'><FaHandHoldingHeart size={18} className='me-2'/>Donations</a>
                     </li>
                     <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><FaSignInAlt size={18} className='me-2'/>Login</a>
-                    </li>
-                    <li className='nav-item'>
-                        <a href="/register" className='nav-link text-white fw-bold fs-5'><FaUserPlus size={18} className='me-2'/>Register</a>
-                    </li>
+                    <a href="/logout" className='nav-link text-white fw-bold fs-5' onClick={(e) => { 
+                         e.preventDefault(); 
+                         handleLogout();    
+                        }}>
+                        <FaSignInAlt size={18} className='me-2'/>Logout
+                     </a>
+</li>
+
                 </ul>
                 <div className='d-lg-none' onClick={() => setIsOpen(!isOpen)}
                     style={{
@@ -170,20 +176,18 @@ const Navbar = () =>{
                         fontWeight:"bold",
                     }}/>
                 </li>
+
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><FaSignInAlt size={18} className='me-2'/>Login</a>
-                    <hr style={{
-                        color:"white",
-                        fontWeight:"bold"
-                    }}/>
-                </li>
-                <li className='nav-item'>
-                    <a href="/register" className='nav-link text-white'><FaUserPlus size={18} className='me-2'/>Register</a>
-                    <hr style={{
-                        color:"white",
-                        fontWeight:"bold"
-                    }}/>
-                </li>
+                <a href="/logout" className='nav-link text-white' onClick={(e) => { 
+                    e.preventDefault(); 
+                    handleLogout();
+                    setIsOpen(false); // Close sidebar
+                    console.log("Logging out...");
+                    }}>
+                    <FaSignInAlt size={18} className='me-2'/>Logout
+                </a>
+                    <hr style={{ color:"white", fontWeight:"bold" }}/>
+            </li>
 
             </ul>
         </div>
@@ -222,7 +226,7 @@ const Navbar = () =>{
                 font-style:italic !important;
                 }
                 .nav-link{
-                font-size:27rem;
+                font-size:1.2rem;
                 }
                 .logo{
                 height: 50px !important;

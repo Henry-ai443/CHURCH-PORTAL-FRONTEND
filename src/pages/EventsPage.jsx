@@ -5,13 +5,20 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 const EventsPage = () => {
 
-    const BASE_URL = "http://localhost:8000";
+    const BASE_URL = "http://10.111.8.15:8000";
     const [events, setEvents] = useState([])
+
 
     useEffect(() => {
         const fetchEvents = async () => {
             try{
-                const response = await fetch("http://localhost:8000/api/events/");
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://10.111.8.15:8000/api/events/", {
+                    headers:{
+                        "Content-Type":"application/json",
+                        "Authorization": `Token ${token}`,
+                    }
+                });
                 const data = await response.json();
                 setEvents(data)
 

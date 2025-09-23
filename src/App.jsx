@@ -1,35 +1,73 @@
-import React, {useEffect} from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
-import Home from "./pages/Home"
+import Home from "./pages/Home";
 import AnnouncementPage from "./pages/AnnouncementPage";
 import EventsPage from "./pages/EventsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-function App() {
 
+const isAuthenticated = () => {
+  return !!localStorage.getItem('token');
+}
+
+const ProtectedRoute = ({ children }) => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
+function App() {
   useEffect(() => {
     Aos.init({
       duration: 2000,
       once: true
     });
-  }, [])
+  }, []);
 
   return (
     <>
-    <Router>
-      <Routes>
-        <Route path="/home" element={<Home/>}/>
-        <Route path="/announcements" element={<AnnouncementPage/>}/>
-        <Route path="/events" element={<EventsPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-        <Route path="/" element={<LoginPage/>}/>
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+
+          {/* Protected routes */}
+          <Route 
+            path="/home" 
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/announcements" 
+            element={
+              <ProtectedRoute>
+                <AnnouncementPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/events" 
+            element={
+              <ProtectedRoute>
+                <EventsPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Optional: Redirect unknown paths to login or home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

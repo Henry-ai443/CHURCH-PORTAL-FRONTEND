@@ -6,7 +6,13 @@ const AllAnnouncements = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try{
-                const response = await fetch("http://localhost:8000/api/announcements/all/");
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://10.111.8.15:8000/api/announcements/all/",{
+                    headers:{
+                        "content-Type":"application/json",
+                        "Authorization":`Token ${token}`,
+                    }
+                });
                 const data = await response.json();
                 setAnnouncements(data);
             }catch(error){
@@ -15,6 +21,7 @@ const AllAnnouncements = () => {
         };
         fetchAnnouncements();
     })
+
     return(
 
 <div className="container my-5">

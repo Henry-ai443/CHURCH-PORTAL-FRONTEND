@@ -37,68 +37,76 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setErrors({});
-    setGeneralError("");
-    setSuccess("");
-    setIsSubmitting(true);
+  setErrors({});
+  setGeneralError("");
+  setSuccess("");
+  setIsSubmitting(true);
 
-    const { username, password } = formData;
+  const { username, password } = formData;
 
-    // Basic frontend validation
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
+  if (!username || !password) {
+    setGeneralError("Both username and password are required.");
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const response = await fetch("http://10.111.8.15:8000/api/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      switch (data.detail) {
+        case "User does not exist.":
+          setGeneralError(
+            <>
+              User does not exist.<br />
+              <small>
+                Don't have an account?{" "}
+                <a href="/register" style={{ color: "#1E90FF", textDecoration: "underline" }}>
+                  Register here
+                </a>
+                .
+              </small>
+            </>
+          );
+          break;
+
+        case "Incorrect password.":
+          setGeneralError("Incorrect password. Please try again.");
+          break;
+
+        case "Username and password are required.":
+          setGeneralError("Both username and password are required.");
+          break;
+
+        default:
+          setGeneralError("Login failed. Please try again.");
+      }
       setIsSubmitting(false);
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:8000/api/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+    // Success
+    localStorage.setItem("token", data.token);
+    setSuccess("Login successful!");
+    setProgressComplete(true);
+    setFormData({ username: "", password: "" });
 
-      const data = await response.json();
+    setTimeout(() => setFadeOut(true), 2000);
+    setTimeout(() => navigate("/home"), 2200);
+  } catch (error) {
+    setGeneralError("Login failed. Please try again.", error);
+    setIsSubmitting(false);
+  }
+};
 
-      if (!response.ok) {
-        if (typeof data === "object") {
-          setErrors(data);
-        } else {
-          setGeneralError("Login failed. Please try again.");
-        }
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Store token in localStorage
-      localStorage.setItem("authToken", data.token);
-
-      setSuccess("Login successful!");
-      setProgressComplete(true);
-      setFormData({
-        username: "",
-        password: "",
-      });
-
-      setTimeout(() => {
-        setFadeOut(true);
-      }, 2000)
-
-      setTimeout(() => {
-        navigate("/home");
-      }, 2500);
-    } catch (error) {
-      setGeneralError("Login failed. Please try again.");
-      setIsSubmitting(false);
-    }
-  };
 
   return (
   <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0   register-page">
@@ -106,7 +114,7 @@ const Login = () => {
     <div
       className="w-100 w-md-50 hero-image position-relative"
     >
-        <div className="hero-overlay-text">
+        <div className="hero-overlay-text fw-bold church-name">
             General Conference Church
         </div>
     </div>
@@ -134,7 +142,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Username:</label>
+            <label htmlFor="username" className="form-label fw-bold">Username:</label>
             <input
               type="text"
               id="username"
@@ -151,7 +159,7 @@ const Login = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password:</label>
+            <label htmlFor="password" className="form-label fw-bold">Password:</label>
             <input
               type="password"
               id="password"

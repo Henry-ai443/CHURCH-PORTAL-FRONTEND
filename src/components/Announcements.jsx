@@ -3,11 +3,17 @@ import { Link } from "react-router-dom";
 const Announcements = () => {
     const [announcements, setAnnouncements] = useState([]);
 
+
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try{
-
-                const res = await fetch("http://localhost:8000/api/announcements/latest/");
+                const token = localStorage.getItem("token");
+                const res = await fetch("http://10.111.8.15:8000/api/announcements/latest/",{
+                    headers:{
+                        "Content-Type":"application/json",
+                        "Authorization":`Token ${token}`
+                    }
+                });
                 const data = await res.json();
                 setAnnouncements(data);
 
