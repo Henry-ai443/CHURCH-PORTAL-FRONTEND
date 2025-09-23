@@ -26,7 +26,9 @@ style={{
         <h3 style={{
             fontWeight:"300",
             letterSpacing:"2px"
-        }}>WELCOME TO:</h3>
+        }}
+        className="fw-bold"
+        >WELCOME TO:</h3>
         <h1 style={{
             fontSize:"3rem",
             fontWeight:"bold",

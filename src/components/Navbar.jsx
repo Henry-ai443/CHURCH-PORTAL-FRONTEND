@@ -134,7 +134,7 @@ const Navbar = () =>{
         }}>
             <ul className='navbar-nav text-center fw-bold fs-5'>
                 <li className='nav-item'>
-                    <a href="/" className='nav-link text-white'><AiFillHome size={18} className='me-2 fw-bold'/>Home</a>
+                    <a href="/home" className='nav-link text-white'><AiFillHome size={18} className='me-2 fw-bold'/>Home</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"
@@ -171,7 +171,7 @@ const Navbar = () =>{
                     }}/>
                 </li>
                 <li className='nav-item'>
-                    <a href="/login" className='nav-link text-white'><FaSignInAlt size={18} className='me-2'/>Login</a>
+                    <a href="/" className='nav-link text-white'><FaSignInAlt size={18} className='me-2'/>Login</a>
                     <hr style={{
                         color:"white",
                         fontWeight:"bold"

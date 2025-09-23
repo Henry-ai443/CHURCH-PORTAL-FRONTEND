@@ -6,7 +6,7 @@ const AllAnnouncements = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try{
-                const response = await fetch("http://10.111.8.15:8000/api/announcements/all/");
+                const response = await fetch("http://localhost:8000/api/announcements/all/");
                 const data = await response.json();
                 setAnnouncements(data);
             }catch(error){

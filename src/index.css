@@ -43,3 +43,50 @@ main{
     position:relative;
     z-index: 1;
 }
+.login-progress-bar{
+    position: relative;
+    height: 4px;
+    background-color: #007bff;
+    width: 0%;
+    transition: width 2s ease-in-out, opacity 0.5s ease-in-out;
+    margin-top: 1rem;
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 1;
+}
+.login-progress-bar.complete{
+    width: 100%;
+}
+.login-progress-bar.fade-out{
+    opacity: 0;
+}
+.hero-image {
+  background-image: url('/Hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 767.98px) {
+  .hero-image {
+    height: 40vh;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-image {
+    height: 100vh;
+  }
+}
+.hero-overlay-text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    padding: 0.1rem;
+    white-space: nowrap;
+}
