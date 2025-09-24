@@ -55,19 +55,13 @@ const Navbar = () =>{
 
                 <ul className='navbar-nav d-none d-lg-flex flex-row gap-4'>
                     <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><AiFillHome size={18} className='me-2 fw-bold'/>Home</a>
+                        <a href="/home" className='nav-link text-white fw-bold fs-5'><AiFillHome size={18} className='me-2 fw-bold'/>Home</a>
                     </li>
                     <li className='nav-item'>
                         <a href="/announcements" className='nav-link text-white fw-bold fs-5'><FaBullhorn size={18} className='me-2'/>Announcements</a>
                     </li>
                     <li className='nav-item'>
                         <a href="/events" className='nav-link text-white fw-bold fs-5'><FaCalendarAlt size={18} className='me-2'/>Events</a>
-                    </li>
-                    <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><GiHolyGrail size={18} className='me-2'/>Sermons</a>
-                    </li>
-                    <li className='nav-item'>
-                        <a href="/" className='nav-link text-white fw-bold fs-5'><FaHandHoldingHeart size={18} className='me-2'/>Donations</a>
                     </li>
                     <li className='nav-item'>
                     <a href="/logout" className='nav-link text-white fw-bold fs-5' onClick={(e) => { 
