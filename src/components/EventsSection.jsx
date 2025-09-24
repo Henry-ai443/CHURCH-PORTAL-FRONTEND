@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const EventsSection = () => {
     const [events, setEvents] = useState([]);
-    const BASE_URL = "http://10.111.8.15:8000";
+    const BASE_URL = "https://church-portal-backend.onrender.com";
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -55,7 +55,7 @@ const EventsSection = () => {
                             >
                                 {event.image ? (
                                     <img
-                                        src={`${BASE_URL}${event.image}`}
+                                        src={`${BASE_URL}/${event.image}`}
                                         alt={event.title}
                                         className='card-img-top'
                                         style={{

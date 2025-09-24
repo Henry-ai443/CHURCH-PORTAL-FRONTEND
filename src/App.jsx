@@ -32,11 +32,9 @@ function App() {
     <>
       <Router>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected routes */}
           <Route 
             path="/home" 
             element={
@@ -61,8 +59,6 @@ function App() {
               </ProtectedRoute>
             } 
           />
-
-          {/* Optional: Redirect unknown paths to login or home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

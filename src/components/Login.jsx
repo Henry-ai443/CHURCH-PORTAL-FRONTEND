@@ -53,7 +53,7 @@ const Login = () => {
   }
 
   try {
-    const response = await fetch("http://10.111.8.15:8000/api/login/", {
+    const response = await fetch("https://church-portal-backend.onrender.com/api/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),

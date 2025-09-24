@@ -7,7 +7,7 @@ const AllAnnouncements = () => {
         const fetchAnnouncements = async () => {
             try{
                 const token = localStorage.getItem("token");
-                const response = await fetch("http://10.111.8.15:8000/api/announcements/all/",{
+                const response = await fetch("https://church-portal-backend.onrender.com/api/announcements/all/",{
                     headers:{
                         "content-Type":"application/json",
                         "Authorization":`Token ${token}`,

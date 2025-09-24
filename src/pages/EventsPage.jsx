@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 const EventsPage = () => {
 
-    const BASE_URL = "http://10.111.8.15:8000";
+    const BASE_URL = "https://church-portal-backend.onrender.com";
     const [events, setEvents] = useState([])
 
 
@@ -13,7 +13,7 @@ const EventsPage = () => {
         const fetchEvents = async () => {
             try{
                 const token = localStorage.getItem("token");
-                const response = await fetch("http://10.111.8.15:8000/api/events/", {
+                const response = await fetch("https://church-portal-backend.onrender.com/api/events/", {
                     headers:{
                         "Content-Type":"application/json",
                         "Authorization": `Token ${token}`,
@@ -60,7 +60,7 @@ return(
                             >
                                 {event.image ? (
                                     <img 
-                                    src={`${BASE_URL}${event.image}`}
+                                    src={`${BASE_URL}/${event.image}`}
                                     alt={event.title}
                                     className='card-img-top'
                                     style={{

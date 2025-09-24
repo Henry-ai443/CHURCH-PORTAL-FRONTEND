@@ -57,7 +57,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://10.111.8.15:8000/api/register/", {
+      const response = await fetch("https://church-portal-backend.onrender.com/api/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
