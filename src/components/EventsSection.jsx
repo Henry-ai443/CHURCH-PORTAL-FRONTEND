@@ -17,6 +17,7 @@ const EventsSection = () => {
                     }
                 });
                 const data = await res.json();
+                console.log(data)
                 setEvents(data.slice(0, 3)); // Return the first three events...
             } catch (error) {
                 console.error("Error fetching events: ", error);
