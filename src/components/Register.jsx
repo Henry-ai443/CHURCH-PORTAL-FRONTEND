@@ -82,8 +82,8 @@ const Register = () => {
         localStorage.setItem("token", data.token);
         setSuccess("Registration successful! Redirecting...");
         setTimeout(() => {
-          navigate("/home");
-        }, 3000);
+          navigate("/");
+        }, 2000);
       }
     } catch (error) {
       setGeneralError("Registration failed. Please try again.", error);

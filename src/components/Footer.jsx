@@ -28,7 +28,7 @@ const Footer = () => {
                 <div className="col-lg-4 mb-4 quickLinks">
                     <h6 className="fw-bold text-uppercase text-decoration-underline">Quick Links</h6>
                     <ul className="list-unstyled mt-3">
-                        <li><a href="/" className="footer-link">Home</a></li>
+                        <li><a href="/home" className="footer-link">Home</a></li>
                         <li><a href="/announcements" className="footer-link">Announcements</a></li>
                         <li><a href="/events" className="footer-link">Events</a></li>
                         <li><a href="" className="footer-link">Sermons</a></li>
@@ -56,7 +56,7 @@ const Footer = () => {
                     fontSize:"0.85rem",
                 }}
                 >
-                    &copy;{new Date().getFullYear()} COG. All rights reserved.
+                    &copy;{new Date().getFullYear()} NOVA WORKS SOFTWARES. All rights reserved.
                 </div>
             </div>
 
