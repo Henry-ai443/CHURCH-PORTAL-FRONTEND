@@ -17,8 +17,8 @@ const EventsSection = () => {
                     }
                 });
                 const data = await res.json();
-                console.log(data)
-                setEvents(data.slice(0, 3)); // Return the first three events...
+                console.log(data);
+                setEvents(data.slice(0, 3)); // First three events
             } catch (error) {
                 console.error("Error fetching events: ", error);
             }
@@ -27,7 +27,8 @@ const EventsSection = () => {
     }, []);
 
     return (
-        <section className='py-5'
+        <section
+            className='py-5'
             style={{
                 background: "linear-gradient(135deg, rgba(30, 144, 255, 0.08), rgba(0, 51, 102, 0.08))",
             }}
@@ -56,7 +57,7 @@ const EventsSection = () => {
                             >
                                 {event.image ? (
                                     <img
-                                        src={`${BASE_URL}/${event.image}`}
+                                        src={event.image} // ✅ Use full Cloudinary URL directly
                                         alt={event.title}
                                         className='card-img-top'
                                         style={{
