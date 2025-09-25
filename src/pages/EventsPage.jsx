@@ -40,7 +40,7 @@ return(
         }}
         >
             <div className='container text-center'>
-                <h2 className='text-3xl fw-bold text-dark'>Upcoming Events</h2>
+                <h2 className='fw-bold text-dark'>Upcoming Events</h2>
 
                 <div className='row g-4'>
                     {events.map((event, index) => (
@@ -60,7 +60,7 @@ return(
                             >
                                 {event.image ? (
                                     <img 
-                                    src={`${BASE_URL}/${event.image}`}
+                                    src={`${event.image}`}
                                     alt={event.title}
                                     className='card-img-top'
                                     style={{
