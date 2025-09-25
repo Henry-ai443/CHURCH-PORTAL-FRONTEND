@@ -56,12 +56,12 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="" className="footer-link">
+                <a href="/sermons" className="footer-link">
                   Sermons
                 </a>
               </li>
               <li>
-                <a href="/" className="footer-link">
+                <a href="/donations" className="footer-link">
                   Donations
                 </a>
               </li>
