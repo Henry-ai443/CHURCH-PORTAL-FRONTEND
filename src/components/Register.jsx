@@ -173,7 +173,7 @@ const Register = () => {
                   value={formData.email}
                   disabled={isSubmitting}
                 />
-                {errors.email && <div className="text-danger">{errors.email[0]}</div>}
+                {errors.email && <div className="text-danger fw-bold">{errors.email[0]}</div>}
               </div>
 
               <div className="mb-3">
@@ -187,7 +187,7 @@ const Register = () => {
                   value={formData.password}
                   disabled={isSubmitting}
                 />
-                {errors.password && <div className="text-danger">{errors.password[0]}</div>}
+                {errors.password && <div className="text-danger fw-bold">{errors.password[0]}</div>}
               </div>
 
               <div className="mb-3">
@@ -202,7 +202,7 @@ const Register = () => {
                   disabled={isSubmitting}
                 />
                 {errors.confirmPassword && (
-                  <div className="text-danger">{errors.confirmPassword[0]}</div>
+                  <div className="text-danger fw-bold">{errors.confirmPassword[0]}</div>
                 )}
               </div>
 
