@@ -42,8 +42,13 @@ const Register = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const { name, email, password, confirmPassword } = formData;
+    // Trim inputs
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
 
+    // Basic validation
     if (!name || !email || !password || !confirmPassword) {
       setGeneralError("All fields are required.");
       setIsSubmitting(false);
@@ -51,7 +56,7 @@ const Register = () => {
     }
 
     if (password !== confirmPassword) {
-      setGeneralError("Passwords do not match.");
+      setErrors({ confirmPassword: ["Passwords do not match."] });
       setIsSubmitting(false);
       return;
     }
@@ -73,20 +78,29 @@ const Register = () => {
 
       if (!response.ok) {
         setIsSubmitting(false);
-        if (typeof data === "object") {
+
+        // Handle structured errors
+        if (data?.detail) {
+          setGeneralError(data.detail);
+        } else if (data?.non_field_errors) {
+          setGeneralError(data.non_field_errors[0]);
+        } else if (typeof data === "object") {
           setErrors(data);
         } else {
           setGeneralError("Registration failed. Please try again.");
         }
-      } else {
-        localStorage.setItem("token", data.token);
-        setSuccess("Registration successful! Redirecting...");
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+
+        return;
       }
+
+      localStorage.setItem("token", data.token);
+      setSuccess("Registration successful! Redirecting...");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
     } catch (error) {
-      setGeneralError("Registration failed. Please try again.", error);
+      console.error("Registration error:", error);
+      setGeneralError("Registration failed. Please try again.");
       setIsSubmitting(false);
     }
   };
@@ -102,9 +116,7 @@ const Register = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="hero-overlay-text">
-          General Conference Church
-        </div>
+        <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
       {/* Form Section */}
@@ -123,82 +135,102 @@ const Register = () => {
           {generalError && <div className="alert alert-danger fw-bold">{generalError}</div>}
           {success && <div className="alert alert-success fw-bold">{success}</div>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Username:</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter your name..."
-                onChange={handleChange}
-                name="name"
-                value={formData.name}
-                disabled={isSubmitting}
-              />
-              {errors.username && <div className="text-danger">{errors.username[0]}</div>}
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Email:</label>
-              <input
-                type="email"
-                className="form-control"
-                placeholder="Enter your email..."
-                onChange={handleChange}
-                name="email"
-                value={formData.email}
-                disabled={isSubmitting}
-              />
-              {errors.email && <div className="text-danger">{errors.email[0]}</div>}
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Password:</label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Enter your password..."
-                onChange={handleChange}
-                name="password"
-                value={formData.password}
-                disabled={isSubmitting}
-              />
-              {errors.password && <div className="text-danger">{errors.password[0]}</div>}
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Confirm Password:</label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Confirm password..."
-                onChange={handleChange}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="d-flex justify-content-center">
+          {success && (
+            <div className="text-center mb-3">
               <button
-                type="submit"
-                className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                disabled={isSubmitting}
+                className="btn btn-success"
+                onClick={() => navigate("/")}
               >
-                {isSubmitting && (
-                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                )}
-                {isSubmitting ? "Registering..." : "Register"}
+                Go to Dashboard
               </button>
             </div>
+          )}
 
-            <p className="text-center fw-bold mt-3">
-              Already have an account?{" "}
-              <Link to="/" style={{ textDecoration: "none" }}>
-                Login
-              </Link>
-            </p>
-          </form>
+          {!success && (
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Username:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter your name..."
+                  onChange={handleChange}
+                  name="name"
+                  value={formData.name}
+                  disabled={isSubmitting}
+                />
+                {errors.username && <div className="text-danger">{errors.username[0]}</div>}
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Email:</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Enter your email..."
+                  onChange={handleChange}
+                  name="email"
+                  value={formData.email}
+                  disabled={isSubmitting}
+                />
+                {errors.email && <div className="text-danger">{errors.email[0]}</div>}
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Password:</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Enter your password..."
+                  onChange={handleChange}
+                  name="password"
+                  value={formData.password}
+                  disabled={isSubmitting}
+                />
+                {errors.password && <div className="text-danger">{errors.password[0]}</div>}
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Confirm Password:</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Confirm password..."
+                  onChange={handleChange}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  disabled={isSubmitting}
+                />
+                {errors.confirmPassword && (
+                  <div className="text-danger">{errors.confirmPassword[0]}</div>
+                )}
+              </div>
+
+              <div className="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  {isSubmitting ? "Registering..." : "Register"}
+                </button>
+              </div>
+
+              <p className="text-center fw-bold mt-3">
+                Already have an account?{" "}
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  Login
+                </Link>
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>
