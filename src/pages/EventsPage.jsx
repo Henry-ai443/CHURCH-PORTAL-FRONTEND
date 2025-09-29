@@ -65,7 +65,10 @@ const EventsPage = () => {
           <h2 className="fw-bold text-dark mb-4">Upcoming Events</h2>
 
           {loading ? (
-            <p>Loading events...</p>
+            <p
+            className="text-primary fw-semibold fs-4"
+            style={{ fontSize: "1.5rem", fontWeight:"bold" }}
+            >Loading events...</p>
           ) : error ? (
             <p style={{ color: "red" }}>Error: {error}</p>
           ) : events.length === 0 ? (

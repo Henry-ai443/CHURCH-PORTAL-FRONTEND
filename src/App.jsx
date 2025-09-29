@@ -9,6 +9,7 @@ import EventsPage from "./pages/EventsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import EventDetailPage from "./pages/EventDetailPage";
+import Profile from "./components/Profile";
 
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
@@ -66,6 +67,15 @@ function App() {
           element={
             <ProtectedRoute>
               <EventDetailPage />
+            </ProtectedRoute>
+          }
+          />
+
+          <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
           />
