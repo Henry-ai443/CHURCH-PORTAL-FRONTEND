@@ -53,7 +53,7 @@ const Profile = () => {
       const cloudData = await cloudRes.json();
 
       // Update profile on your backend
-      const backendRes = await fetch("http://127.0.0.1:8000/api/profile/me/", {
+      const backendRes = await fetch("https://church-portal-backend.onrender.com/api/profile/me/", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
