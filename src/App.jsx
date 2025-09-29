@@ -9,7 +9,7 @@ import EventsPage from "./pages/EventsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import EventDetailPage from "./pages/EventDetailPage";
-import Profile from "./components/Profile";
+import Profile from "./pages/ProfilePage";
 
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
