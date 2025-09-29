@@ -6,7 +6,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch profile on mount
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
@@ -22,7 +21,7 @@ const Profile = () => {
 
         const res = await fetch("https://church-portal-backend.onrender.com/api/profile/me/", {
           headers: {
-            Authorization: `Token ${token}`, // Adjust if your backend uses Bearer
+            Authorization: `Token ${token}`, // or Bearer depending on your backend
             "Content-Type": "application/json",
           },
         });
@@ -44,7 +43,6 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // Handle image upload to Cloudinary + update profile picture URL
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -58,7 +56,6 @@ const Profile = () => {
       formData.append("file", file);
       formData.append("upload_preset", "your_upload_preset"); // Replace with your preset
 
-      // Upload to Cloudinary
       const cloudRes = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
         method: "POST",
         body: formData,
@@ -70,7 +67,6 @@ const Profile = () => {
 
       const cloudData = await cloudRes.json();
 
-      // Update profile with new image URL
       const token = localStorage.getItem("token");
       const updateRes = await fetch("https://church-portal-backend.onrender.com/api/profile/me/", {
         method: "PUT",
@@ -95,33 +91,74 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center mt-5">
+        <div className="spinner-border text-primary" role="status" aria-hidden="true"></div>
+        <span className="sr-only ms-2">Loading...</span>
+      </div>
+    );
 
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+  if (error)
+    return (
+      <div className="alert alert-danger mt-5 text-center" role="alert">
+        Error: {error}
+      </div>
+    );
 
-  if (!profile) return <p>No profile found.</p>;
+  if (!profile)
+    return (
+      <div className="alert alert-warning mt-5 text-center" role="alert">
+        No profile found.
+      </div>
+    );
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto", padding: "1rem" }}>
-      <h1>Profile Page</h1>
+    <div className="container mt-5">
+      <div className="card mx-auto" style={{ maxWidth: "500px" }}>
+        <div className="card-header text-center bg-primary text-white">
+          <h3>User Profile</h3>
+        </div>
+        <div className="card-body text-center">
+          {profile.profile_picture ? (
+            <img
+              src={profile.profile_picture}
+              alt="Profile"
+              className="rounded-circle img-thumbnail mb-3"
+              style={{ width: "150px", height: "150px", objectFit: "cover" }}
+            />
+          ) : (
+            <div
+              className="bg-secondary rounded-circle mb-3 d-flex align-items-center justify-content-center text-white"
+              style={{ width: "150px", height: "150px", fontSize: "3rem" }}
+            >
+              {profile.username.charAt(0).toUpperCase()}
+            </div>
+          )}
 
-      <div style={{ marginBottom: "1rem" }}>
-        {profile.profile_picture ? (
-          <img
-            src={profile.profile_picture}
-            alt="Profile"
-            style={{ width: "150px", height: "150px", borderRadius: "50%", objectFit: "cover" }}
-          />
-        ) : (
-          <p>No profile picture set</p>
-        )}
+          <div className="mb-3">
+            <label htmlFor="profileImage" className="form-label">
+              Update Profile Picture
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              id="profileImage"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={loading}
+            />
+          </div>
+
+          <h4 className="card-title">{profile.username}</h4>
+          <p className="card-text mb-1">
+            <strong>Email:</strong> {profile.email}
+          </p>
+          <p className="card-text">
+            <strong>Bio:</strong> {profile.bio ? profile.bio : <em>No bio available.</em>}
+          </p>
+        </div>
       </div>
-
-      <input type="file" accept="image/*" onChange={handleImageUpload} />
-
-      <h2>{profile.username}</h2>
-      <p>Email: {profile.email}</p>
-      <p>Bio: {profile.bio || "No bio available."}</p>
     </div>
   );
 };
