@@ -8,6 +8,7 @@ import AnnouncementPage from "./pages/AnnouncementPage";
 import EventsPage from "./pages/EventsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import EventDetailPage from "./pages/EventDetailPage";
 
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
@@ -58,6 +59,15 @@ function App() {
                 <EventsPage />
               </ProtectedRoute>
             } 
+          />
+
+          <Route
+          path="/events/:id"
+          element={
+            <ProtectedRoute>
+              <EventDetailPage />
+            </ProtectedRoute>
+          }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

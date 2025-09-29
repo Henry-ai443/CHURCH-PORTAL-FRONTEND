@@ -42,7 +42,7 @@ const Register = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    // Trim inputs
+
     const name = formData.name.trim();
     const email = formData.email.trim();
     const password = formData.password;
