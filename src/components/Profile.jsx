@@ -130,9 +130,9 @@ const Profile = () => {
         <h2 className="mb-4 text-primary text-center">My Profile</h2>
         <div className="d-flex flex-column flex-md-row align-items-center gap-4">
           <div className="text-center" style={{ flexShrink: 0 }}>
-            {profile.profile_picture ? (
+            {profile.image ? (
               <img
-                src={profile.profile_picture}
+                src={profile.image}
                 alt="Profile"
                 className="rounded-circle mb-3"
                 style={{
@@ -161,7 +161,7 @@ const Profile = () => {
               className="btn btn-outline-primary btn-sm w-100"
               style={{ cursor: "pointer" }}
             >
-              Upload New Picturehttps://church-portal-backend.onrender.com
+              Upload New Picture
             </label>
             <input
               id="upload-image"
