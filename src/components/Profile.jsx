@@ -76,7 +76,7 @@ const Profile = () => {
         {
           method: "PATCH",
           headers: authHeaders,
-          body: JSON.stringify({ profile_picture: data.secure_url }),
+          body: JSON.stringify({ image: data.secure_url }),
         }
       );
 
@@ -161,7 +161,7 @@ const Profile = () => {
               className="btn btn-outline-primary btn-sm w-100"
               style={{ cursor: "pointer" }}
             >
-              Upload New Picture
+              Upload New Picturehttps://church-portal-backend.onrender.com
             </label>
             <input
               id="upload-image"
