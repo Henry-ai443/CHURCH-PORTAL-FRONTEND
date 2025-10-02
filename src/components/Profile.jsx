@@ -2,24 +2,36 @@ import React, { useEffect, useState } from "react";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
-  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Fetch profile on component mount
+  const authHeaders = {
+    Authorization: `Token ${localStorage.getItem("token")}`,
+    "Content-Type": "application/json",
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
+      setError(null);
       try {
-        const res = await fetch("https://church-portal-backend.onrender.com/api/profile/me/", {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        });
+        console.log("Fetching profile data...");
+        const res = await fetch(
+          "https://church-portal-backend.onrender.com/api/profile/me/",
+          { headers: authHeaders }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.detail || "Failed to fetch profile");
+        }
+
         const data = await res.json();
+        console.log("Profile fetched:", data);
         setProfile(data);
       } catch (err) {
         console.error("Error fetching profile:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -28,39 +40,57 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // Handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    console.log("Selected file:", file);
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "church_portal");
 
-    try {
-      setLoading(true);
+    setLoading(true);
+    setError(null);
 
-      const res = await fetch("https://api.cloudinary.com/v1_1/dcftzqhx7/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+    try {
+      console.log("Uploading image to Cloudinary...");
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dcftzqhx7/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
+      console.log("Cloudinary response:", data);
 
-      // Update profile with uploaded image URL
-      const updateRes = await fetch("https://church-portal-backend.onrender.com/api/profile/me/", {
-        method: "PATCH",
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ profile_picture: data.secure_url }),
-      });
+      if (!res.ok) {
+        throw new Error(data.error?.message || "Cloudinary upload failed");
+      }
+
+      console.log("Updating profile with new image URL:", data.secure_url);
+      const updateRes = await fetch(
+        "https://church-portal-backend.onrender.com/api/profile/me/",
+        {
+          method: "PATCH",
+          headers: authHeaders,
+          body: JSON.stringify({ profile_picture: data.secure_url }),
+        }
+      );
 
       const updatedProfile = await updateRes.json();
+      console.log("Profile update response:", updatedProfile);
+
+      if (!updateRes.ok) {
+        throw new Error(updatedProfile.detail || "Failed to update profile");
+      }
+
       setProfile(updatedProfile);
     } catch (err) {
-      console.error("Error uploading image:", err);
+      console.error("Error uploading image or updating profile:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -75,6 +105,14 @@ const Profile = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container text-center mt-5">
+        <p className="text-danger fw-bold">{error}</p>
+      </div>
+    );
+  }
+
   if (!profile) {
     return (
       <div className="container text-center mt-5">
@@ -84,42 +122,76 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="card shadow-sm p-4">
-        <h2 className="mb-4 text-primary">My Profile</h2>
-
-        <div className="row align-items-center mb-3">
-          <div className="col-md-4 text-center">
+    <div className="container mt-5" style={{ maxWidth: "700px" }}>
+      <div
+        className="card shadow p-4"
+        style={{ borderRadius: "12px", backgroundColor: "#f9f9f9" }}
+      >
+        <h2 className="mb-4 text-primary text-center">My Profile</h2>
+        <div className="d-flex flex-column flex-md-row align-items-center gap-4">
+          <div className="text-center" style={{ flexShrink: 0 }}>
             {profile.profile_picture ? (
               <img
                 src={profile.profile_picture}
                 alt="Profile"
-                className="img-fluid rounded-circle mb-3"
-                style={{ width: "180px", height: "180px", objectFit: "cover" }}
+                className="rounded-circle mb-3"
+                style={{
+                  width: "180px",
+                  height: "180px",
+                  objectFit: "cover",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                }}
               />
             ) : (
               <div
                 className="bg-secondary text-white d-flex justify-content-center align-items-center rounded-circle mb-3"
-                style={{ width: "180px", height: "180px" }}
+                style={{
+                  width: "180px",
+                  height: "180px",
+                  fontSize: "1.2rem",
+                  fontWeight: "600",
+                }}
               >
                 No Image
               </div>
             )}
 
+            <label
+              htmlFor="upload-image"
+              className="btn btn-outline-primary btn-sm w-100"
+              style={{ cursor: "pointer" }}
+            >
+              Upload New Picture
+            </label>
             <input
+              id="upload-image"
               type="file"
               accept="image/*"
-              className="form-control"
               onChange={handleImageUpload}
+              style={{ display: "none" }}
+              disabled={loading}
+              aria-label="Upload profile picture"
             />
           </div>
 
-          <div className="col-md-8">
-            <p><strong>Username:</strong> {profile.username}</p>
-            <p><strong>Email:</strong> {profile.email}</p>
-            <p><strong>Bio:</strong> {profile.bio || "No bio provided."}</p>
-            <p><strong>Joined:</strong> {new Date(profile.created).toLocaleDateString()}</p>
-            <p><strong>Last Updated:</strong> {new Date(profile.updated).toLocaleDateString()}</p>
+          <div style={{ flexGrow: 1 }}>
+            <p>
+              <strong>Username:</strong> {profile.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {profile.email}
+            </p>
+            <p>
+              <strong>Bio:</strong> {profile.bio || "No bio provided."}
+            </p>
+            <p>
+              <strong>Joined:</strong>{" "}
+              {new Date(profile.created).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Last Updated:</strong>{" "}
+              {new Date(profile.updated).toLocaleDateString()}
+            </p>
           </div>
         </div>
       </div>
