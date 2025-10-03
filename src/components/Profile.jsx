@@ -58,7 +58,7 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // Handle profile image upload (same as before)
+  // Handle profile image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -135,7 +135,6 @@ const Profile = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        // Try to get detail message or fallback to generic error
         throw new Error(data.detail || "Failed to update profile");
       }
 
@@ -215,7 +214,7 @@ const Profile = () => {
       <h2 className="mb-4 text-primary text-center">My Profile</h2>
 
       {/* Profile image centered on top */}
-      <div className="text-center mb-4">
+      <div className="d-flex flex-column align-items-center mb-4">
         {profile.image ? (
           <img
             src={profile.image}
@@ -230,7 +229,7 @@ const Profile = () => {
           />
         ) : (
           <div
-            className="bg-secondary text-white d-flex justify-content-center align-items-center rounded-circle mb-3 mx-auto"
+            className="bg-secondary text-white d-flex justify-content-center align-items-center rounded-circle mb-3"
             style={{
               width: "180px",
               height: "180px",
@@ -244,7 +243,7 @@ const Profile = () => {
 
         <label
           htmlFor="upload-image"
-          className="btn btn-outline-primary btn-sm w-50"
+          className="btn btn-outline-primary btn-sm w-50 mt-2"
           style={{ cursor: "pointer" }}
         >
           Upload New Picture
@@ -346,9 +345,9 @@ const Profile = () => {
                 id="bio"
                 name="bio"
                 className="form-control"
+                rows="3"
                 value={formData.bio}
                 onChange={handleProfileChange}
-                rows={3}
                 disabled={submittingProfile}
               />
             </div>
@@ -357,20 +356,9 @@ const Profile = () => {
               type="submit"
               className="btn btn-primary"
               disabled={submittingProfile}
-              aria-busy={submittingProfile}
+              aria-disabled={submittingProfile}
             >
-              {submittingProfile ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  Saving...
-                </>
-              ) : (
-                "Save Changes"
-              )}
+              {submittingProfile ? "Saving..." : "Save Changes"}
             </button>
           </form>
 
@@ -409,28 +397,16 @@ const Profile = () => {
                 disabled={submittingPassword}
                 required
                 aria-required="true"
-                minLength={8}
               />
             </div>
 
             <button
               type="submit"
-              className="btn btn-warning"
+              className="btn btn-primary"
               disabled={submittingPassword}
-              aria-busy={submittingPassword}
+              aria-disabled={submittingPassword}
             >
-              {submittingPassword ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  Changing...
-                </>
-              ) : (
-                "Change Password"
-              )}
+              {submittingPassword ? "Changing..." : "Change Password"}
             </button>
           </form>
         </div>
@@ -440,3 +416,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
