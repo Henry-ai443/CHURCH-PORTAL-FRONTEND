@@ -38,8 +38,17 @@ const YouthMessageForm = () => {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        throw new Error(data.detail || 'Failed to submit message');
+        // Show detailed error messages
+        if (typeof data === 'object') {
+          const errorMessages = Object.entries(data)
+            .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+            .join('\n');
+          throw new Error(errorMessages || 'Failed to submit message');
+        } else {
+          throw new Error(data.detail || 'Failed to submit message');
+        }
       }
 
       setSuccess('Your message has been submitted successfully.');
@@ -56,7 +65,11 @@ const YouthMessageForm = () => {
       <h3 className="text-primary text-center mb-4">Youth Questions</h3>
 
       {success && <div className="alert alert-success">{success}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div className="alert alert-danger" style={{ whiteSpace: 'pre-wrap' }}>
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
