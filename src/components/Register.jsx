@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getNames } from "country-list";
 
 const Register = () => {
+  const [countries] = useState(getNames()); // Get country list once on mount
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
@@ -19,7 +22,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    country: "",          // Added country state
+    country: "", // will hold selected country
   });
 
   const [errors, setErrors] = useState({});
@@ -47,7 +50,7 @@ const Register = () => {
     const email = formData.email.trim();
     const password = formData.password;
     const confirmPassword = formData.confirmPassword;
-    const country = formData.country.trim();        // Get country value
+    const country = formData.country.trim();
 
     // Basic validation
     if (!name || !email || !password || !confirmPassword || !country) {
@@ -74,7 +77,7 @@ const Register = () => {
             username: name,
             email: email,
             password: password,
-            country: country,        // Send country in request body
+            country: country,
           }),
         }
       );
@@ -84,7 +87,6 @@ const Register = () => {
       if (!response.ok) {
         setIsSubmitting(false);
 
-        // Handle structured errors
         if (data?.detail) {
           setGeneralError(data.detail);
         } else if (data?.non_field_errors) {
@@ -154,6 +156,7 @@ const Register = () => {
 
           {!success && (
             <form onSubmit={handleSubmit}>
+              {/* Username */}
               <div className="mb-3">
                 <label className="form-label">Username:</label>
                 <input
@@ -170,6 +173,7 @@ const Register = () => {
                 )}
               </div>
 
+              {/* Email */}
               <div className="mb-3">
                 <label className="form-label">Email:</label>
                 <input
@@ -186,22 +190,32 @@ const Register = () => {
                 )}
               </div>
 
+              {/* Country Dropdown */}
               <div className="mb-3">
                 <label className="form-label">Country:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your country..."
-                  onChange={handleChange}
+                <select
                   name="country"
+                  className="form-select"
                   value={formData.country}
+                  onChange={handleChange}
                   disabled={isSubmitting}
-                />
+                  required
+                >
+                  <option value="" disabled>
+                    Select your country
+                  </option>
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
                 {errors.country && (
                   <div className="text-danger fw-bold">{errors.country[0]}</div>
                 )}
               </div>
 
+              {/* Password */}
               <div className="mb-3">
                 <label className="form-label">Password:</label>
                 <input
@@ -218,6 +232,7 @@ const Register = () => {
                 )}
               </div>
 
+              {/* Confirm Password */}
               <div className="mb-3">
                 <label className="form-label">Confirm Password:</label>
                 <input

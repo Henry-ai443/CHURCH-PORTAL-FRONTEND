@@ -283,6 +283,9 @@ const Profile = () => {
             <strong>Email:</strong> {profile.email}
           </p>
           <p>
+            <strong>USER ID:</strong> {profile.unique_id || "Not assigned yet"}
+          </p>
+          <p>
             <strong>Bio:</strong> {profile.bio || "No bio provided."}
           </p>
           <p>
@@ -416,4 +419,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
