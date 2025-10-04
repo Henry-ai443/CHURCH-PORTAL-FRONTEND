@@ -19,6 +19,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    country: "",          // Added country state
   });
 
   const [errors, setErrors] = useState({});
@@ -42,14 +43,14 @@ const Register = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-
     const name = formData.name.trim();
     const email = formData.email.trim();
     const password = formData.password;
     const confirmPassword = formData.confirmPassword;
+    const country = formData.country.trim();        // Get country value
 
     // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !country) {
       setGeneralError("All fields are required.");
       setIsSubmitting(false);
       return;
@@ -62,17 +63,21 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("https://church-portal-backend.onrender.com/api/register/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: name,
-          email: email,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        "https://church-portal-backend.onrender.com/api/register/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: name,
+            email: email,
+            password: password,
+            country: country,        // Send country in request body
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -132,15 +137,16 @@ const Register = () => {
             Create an Account
           </h3>
 
-          {generalError && <div className="alert alert-danger fw-bold">{generalError}</div>}
-          {success && <div className="alert alert-success fw-bold">{success}</div>}
+          {generalError && (
+            <div className="alert alert-danger fw-bold">{generalError}</div>
+          )}
+          {success && (
+            <div className="alert alert-success fw-bold">{success}</div>
+          )}
 
           {success && (
             <div className="text-center mb-3">
-              <button
-                className="btn btn-success"
-                onClick={() => navigate("/")}
-              >
+              <button className="btn btn-success" onClick={() => navigate("/")}>
                 Go to Dashboard
               </button>
             </div>
@@ -159,7 +165,9 @@ const Register = () => {
                   value={formData.name}
                   disabled={isSubmitting}
                 />
-                {errors.username && <div className="text-danger">{errors.username[0]}</div>}
+                {errors.username && (
+                  <div className="text-danger">{errors.username[0]}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -173,7 +181,25 @@ const Register = () => {
                   value={formData.email}
                   disabled={isSubmitting}
                 />
-                {errors.email && <div className="text-danger fw-bold">{errors.email[0]}</div>}
+                {errors.email && (
+                  <div className="text-danger fw-bold">{errors.email[0]}</div>
+                )}
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Country:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter your country..."
+                  onChange={handleChange}
+                  name="country"
+                  value={formData.country}
+                  disabled={isSubmitting}
+                />
+                {errors.country && (
+                  <div className="text-danger fw-bold">{errors.country[0]}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -187,7 +213,9 @@ const Register = () => {
                   value={formData.password}
                   disabled={isSubmitting}
                 />
-                {errors.password && <div className="text-danger fw-bold">{errors.password[0]}</div>}
+                {errors.password && (
+                  <div className="text-danger fw-bold">{errors.password[0]}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -202,7 +230,9 @@ const Register = () => {
                   disabled={isSubmitting}
                 />
                 {errors.confirmPassword && (
-                  <div className="text-danger fw-bold">{errors.confirmPassword[0]}</div>
+                  <div className="text-danger fw-bold">
+                    {errors.confirmPassword[0]}
+                  </div>
                 )}
               </div>
 
