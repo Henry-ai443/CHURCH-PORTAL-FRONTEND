@@ -153,7 +153,7 @@ const Login = () => {
         @media (max-width: 767px) {
           .container-fluid {
             flex-direction: column;
-            height: 100vh; /* Fixed 100vh for half-half split */
+            height: 100vh;
             overflow: hidden;
           }
         }
@@ -166,46 +166,53 @@ const Login = () => {
           min-height: 400px;
           overflow: visible;
           flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         @media (max-width: 767px) {
           .hero-image {
             width: 100%;
-            height: 50vh; /* Exactly half screen height */
+            height: 50vh;
             min-height: auto;
           }
         }
 
         .hero-overlay-text-wrapper {
-          position: absolute;
-          top: 20px;
-          left: 50%;
-          transform: translateX(-50%);
+          position: relative;
           background: rgba(0, 0, 0, 0.5);
-          padding: 10px 25px;
-          border-radius: 30px 30px 0 0;
-          filter: drop-shadow(0 0 8px #1E90FF);
-          user-select: none;
+          padding: 15px 30px 35px 30px;
+          border-radius: 40px 40px 40px 40px;
+          text-align: center;
           max-width: 90vw;
-          overflow: visible;
+          user-select: none;
+          color: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
           pointer-events: none;
-          z-index: 2;
         }
 
         .semi-circular-text {
           width: 100%;
-          height: 100px;
-          display: block;
+          height: 120px;
           overflow: visible;
+          margin-bottom: 8px;
         }
 
         .semi-circular-text text {
-          fill: #1E90FF;
+          fill: white;
           font-weight: 700;
           font-size: 28px;
-          filter:
-            drop-shadow(0 0 5px #1E90FF)
-            drop-shadow(0 0 10px #1E90FF)
-            drop-shadow(0 0 15px #1E90FF);
+        }
+
+        .slogan-text {
+          font-size: 16px;
+          font-weight: 600;
+          font-style: italic;
+          color: white;
+          user-select: none;
         }
 
         .form-section {
@@ -220,10 +227,10 @@ const Login = () => {
         @media (max-width: 767px) {
           .form-section {
             width: 100%;
-            height: 50vh; /* Exactly half screen height */
+            height: 50vh;
             padding: 2rem 1.5rem 3rem;
             order: 2;
-            overflow-y: auto; /* allow scroll if needed */
+            overflow-y: auto;
             min-height: auto;
           }
         }
@@ -333,6 +340,7 @@ const Login = () => {
                 </textPath>
               </text>
             </svg>
+            <div className="slogan-text">Uniting youths in Christ</div>
           </div>
         </div>
 
