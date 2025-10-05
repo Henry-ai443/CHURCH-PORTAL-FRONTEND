@@ -3,18 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Lock scrolling only on desktop (>=768px)
-    if (window.innerWidth >= 768) {
-      document.body.style.overflow = "hidden";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
-
-      return () => {
+    // Disable body scroll on desktop, allow scroll on phones
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        document.body.style.overflow = "hidden";
+      } else {
         document.body.style.overflow = "auto";
-        document.body.style.margin = "initial";
-        document.body.style.padding = "initial";
-      };
-    }
+      }
+    };
+
+    handleResize(); // Set on mount
+    window.addEventListener("resize", handleResize);
+
+    // Remove margin and padding always
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const [formData, setFormData] = useState({
@@ -29,18 +39,17 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [progressComplete, setProgressComplete] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // <-- password toggle state
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
 
-    // Clear field-specific error when typing
     setErrors({ ...errors, [name]: "" });
     setGeneralError("");
   };
@@ -127,91 +136,229 @@ const Login = () => {
   return (
     <>
       <style>{`
-        /* Hero Image */
-        .hero-image {
+        html, body, #root {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+        }
+        .container-fluid {
           height: 100vh;
-          background: url('/Hero.jpg') center/cover no-repeat;
+          padding: 0 !important;
+          margin: 0 !important;
+          display: flex;
+          flex-direction: row;
+          overflow: hidden;
+        }
+        @media (max-width: 767px) {
+          .container-fluid {
+            flex-direction: column;
+            height: 100vh; /* Fixed 100vh for half-half split */
+            overflow: hidden;
+          }
+        }
+
+        .hero-image {
           position: relative;
+          background: url("/Hero.jpg") center/cover no-repeat;
+          width: 50%;
+          height: 100vh;
+          min-height: 400px;
+          overflow: visible;
+          flex-shrink: 0;
+        }
+        @media (max-width: 767px) {
+          .hero-image {
+            width: 100%;
+            height: 50vh; /* Exactly half screen height */
+            min-height: auto;
+          }
         }
 
-        /* Overlay text */
-        .hero-overlay-text {
+        .hero-overlay-text-wrapper {
           position: absolute;
-          top: 50%;
+          top: 20px;
           left: 50%;
-          transform: translate(-50%, -50%);
-          color: white;
-          font-weight: 700;
-          font-size: 2.25rem;
-          text-shadow: 0 0 10px rgba(0,0,0,0.7);
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.5);
+          padding: 10px 25px;
+          border-radius: 30px 30px 0 0;
+          filter: drop-shadow(0 0 8px #1E90FF);
           user-select: none;
-          text-align: center;
-          padding: 0 10px;
+          max-width: 90vw;
+          overflow: visible;
+          pointer-events: none;
+          z-index: 2;
         }
 
-        /* Glowing button */
-        .glow-btn {
+        .semi-circular-text {
+          width: 100%;
+          height: 100px;
+          display: block;
+          overflow: visible;
+        }
+
+        .semi-circular-text text {
+          fill: #1E90FF;
+          font-weight: 700;
+          font-size: 28px;
+          filter:
+            drop-shadow(0 0 5px #1E90FF)
+            drop-shadow(0 0 10px #1E90FF)
+            drop-shadow(0 0 15px #1E90FF);
+        }
+
+        .form-section {
+          width: 50%;
+          background: #f8f9fa;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem 3rem;
+          overflow-y: auto;
+        }
+        @media (max-width: 767px) {
+          .form-section {
+            width: 100%;
+            height: 50vh; /* Exactly half screen height */
+            padding: 2rem 1.5rem 3rem;
+            order: 2;
+            overflow-y: auto; /* allow scroll if needed */
+            min-height: auto;
+          }
+        }
+
+        .form-container {
+          width: 100%;
+          max-width: 400px;
+          background: white;
+          padding: 2rem 2.5rem;
+          border-radius: 8px;
+          box-shadow:
+            0 0 10px rgba(30, 144, 255, 0.3),
+            0 0 30px rgba(135, 206, 250, 0.4);
+          overflow-y: auto;
+        }
+
+        h3 {
+          margin-bottom: 1.5rem;
+          color: #1E90FF;
+          font-weight: 700;
+          text-align: center;
+        }
+
+        .btn-primary.glow-btn {
           box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
+          font-weight: 700;
         }
-        .glow-btn:hover {
-          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+        .btn-primary.glow-btn:hover {
+          box-shadow: 0 0 20px rgba(30, 144, 255,0.9), 0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
         }
 
-        /* Progress bar */
         .login-progress-bar {
           height: 5px;
-          background-color: #1E90FF;
-          width: 0;
-          margin-bottom: 1rem;
+          background: #1E90FF;
           border-radius: 3px;
-          transition: width 2s ease-in-out, opacity 0.5s ease-in-out;
+          margin-bottom: 1rem;
+          width: 0;
+          transition: width 1.5s ease-in-out;
         }
         .login-progress-bar.complete {
           width: 100%;
         }
         .login-progress-bar.fade-out {
           opacity: 0;
+          transition: opacity 0.5s ease-in-out;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 767.98px) {
-          .hero-image {
-            height: 50vh;
-            min-height: 250px;
-          }
-          .form-section {
-            height: auto;
-            padding-top: 20px;
-          }
-          .register-page {
-            overflow-y: auto;
-          }
+        /* Password toggle button styles */
+        .password-toggle-btn {
+          position: absolute;
+          top: 50%;
+          right: 0.75rem;
+          transform: translateY(-50%);
+          border: none;
+          background: transparent;
+          padding: 0;
+          cursor: pointer;
+          font-size: 1.2rem;
+          color: #555;
+          user-select: none;
+          height: 1.5em;
+          line-height: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Checkbox + label */
+        .form-check-label {
+          user-select: none;
+          cursor: pointer;
+        }
+
+        /* Forgot password link */
+        .forgot-password {
+          font-size: 0.9rem;
+          color: #1E90FF;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+        .forgot-password:hover {
+          color: #104E8B;
         }
       `}</style>
 
-      <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+      <div className="container-fluid" role="main" aria-label="Login page">
         {/* Hero Image Section */}
-        <div className="w-100 w-md-50 hero-image position-relative">
-          <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
+        <div className="hero-image" aria-hidden="true">
+          <div className="hero-overlay-text-wrapper" aria-hidden="true">
+            <svg
+              viewBox="0 0 500 150"
+              className="semi-circular-text"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="General Conference Youth Hub"
+            >
+              <path
+                id="curve"
+                fill="transparent"
+                d="M50,140 A200,200 0 0,1 450,140"
+              />
+              <text textAnchor="middle">
+                <textPath href="#curve" startOffset="50%">
+                  GENERAL CONFERENCE YOUTH HUB
+                </textPath>
+              </text>
+            </svg>
+          </div>
         </div>
 
         {/* Form Section */}
-        <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
-          <div
-            className="shadow rounded p-4"
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-            }}
-          >
-            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+        <div className="form-section">
+          <div className="form-container" aria-label="Login form">
+            <h3>Login</h3>
 
             {generalError && (
-              <div className="alert alert-danger fw-bold">{generalError}</div>
+              <div
+                className="alert alert-danger fw-bold"
+                role="alert"
+                tabIndex={-1}
+              >
+                {generalError}
+              </div>
             )}
-            {success && <div className="alert alert-success fw-bold">{success}</div>}
+            {success && (
+              <div
+                className="alert alert-success fw-bold"
+                role="alert"
+                tabIndex={-1}
+              >
+                {success}
+              </div>
+            )}
 
             {/* Progress Bar */}
             {progressComplete && (
@@ -223,7 +370,7 @@ const Login = () => {
               ></div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label fw-bold">
                   Username:
@@ -250,7 +397,6 @@ const Login = () => {
                   Password:
                 </label>
 
-                {/* Wrapper div with relative position */}
                 <div style={{ position: "relative" }}>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -263,33 +409,15 @@ const Login = () => {
                     autoComplete="current-password"
                     aria-invalid={errors.password ? "true" : "false"}
                     disabled={isSubmitting}
-                    style={{ paddingRight: "2.5rem" }} // space for the button
+                    style={{ paddingRight: "2.5rem" }}
                   />
 
-                  {/* Password toggle button */}
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                     tabIndex={-1}
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "0.75rem",
-                      transform: "translateY(-50%)",
-                      border: "none",
-                      background: "transparent",
-                      padding: "0",
-                      cursor: "pointer",
-                      fontSize: "1.2rem",
-                      color: "#555",
-                      userSelect: "none",
-                      height: "1.5em",
-                      lineHeight: "1",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                    className="password-toggle-btn"
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
@@ -300,58 +428,44 @@ const Login = () => {
                 )}
               </div>
 
-              <div className="mb-3 d-flex justify-content-between align-items-center">
-                <div className="form-check">
+              <div className="mb-3 form-check d-flex justify-content-between align-items-center">
+                <div>
                   <input
                     type="checkbox"
-                    className="form-check-input"
                     id="rememberMe"
                     name="rememberMe"
+                    className="form-check-input"
                     checked={formData.rememberMe}
                     onChange={handleChange}
                     disabled={isSubmitting}
                   />
                   <label
-                    className="form-check-label"
                     htmlFor="rememberMe"
-                    style={{ userSelect: "none" }}
+                    className="form-check-label ms-2"
                   >
-                    Remember Me
+                    Remember me
                   </label>
                 </div>
 
                 <Link
                   to="/forgot-password"
-                  className="text-primary fw-bold fs-4"
-                  style={{ textDecoration: "none" }}
+                  className="forgot-password"
+                  tabIndex={isSubmitting ? -1 : 0}
                 >
-                  Forgot Password?
+                  Forgot password?
                 </Link>
               </div>
 
               <div className="d-flex justify-content-center">
                 <button
                   type="submit"
-                  className="btn btn-primary glow-btn px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-primary glow-btn"
                   disabled={isSubmitting}
+                  aria-disabled={isSubmitting}
                 >
-                  {isSubmitting && (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  )}
                   {isSubmitting ? "Logging in..." : "Login"}
                 </button>
               </div>
-
-              <p className="text-center fw-bold mt-3">
-                Don't have an account?{" "}
-                <Link to="/register" style={{ textDecoration: "none" }}>
-                  Register
-                </Link>
-              </p>
             </form>
           </div>
         </div>
@@ -361,3 +475,4 @@ const Login = () => {
 };
 
 export default Login;
+
