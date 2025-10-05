@@ -28,15 +28,19 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    // Remove top margin and padding for the body
+    // Remove all margins and paddings to remove space at the top
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+    document.documentElement.style.margin = "0";
+    document.documentElement.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
+      document.documentElement.style.margin = "initial";
+      document.documentElement.style.padding = "initial";
     };
   }, []);
 
@@ -173,7 +177,7 @@ const Login = () => {
                   disabled={isSubmitting}
                   required
                   style={{
-                    paddingRight: "3rem", // Adjust to make space for the emoji
+                    paddingRight: "3rem", // Ensure enough space for the emoji
                   }}
                 />
                 <button
@@ -184,7 +188,7 @@ const Login = () => {
                   style={{
                     position: "absolute",
                     top: "50%",
-                    right: "1rem", // Adjust to center the emoji better
+                    right: "0.75rem", // Proper placement of the emoji
                     transform: "translateY(-50%)",
                     border: "none",
                     background: "transparent",
