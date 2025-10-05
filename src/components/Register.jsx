@@ -121,6 +121,8 @@ const Register = () => {
         <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
+          <div className="hero-overlay-text">YOUTH HUB</div>
+
       {/* Form Section */}
       <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div

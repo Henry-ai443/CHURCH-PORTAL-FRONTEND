@@ -28,9 +28,15 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
+    // Remove top margin and padding for the body
     document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
     return () => {
       document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
     };
   }, []);
 
@@ -103,6 +109,9 @@ const Login = () => {
         }}
       >
         <div className="hero-overlay-text">General Conference Church</div>
+        <div className="hero-overlay-text fw-bol">
+          YOUTH HUB
+        </div>
       </div>
 
       {/* Form Section */}
@@ -166,7 +175,7 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
-                  style={{ paddingRight: "2.5rem" }}
+                  style={{ paddingRight: "3rem" }} // Adjust padding to fit emoji
                 />
                 <button
                   type="button"
