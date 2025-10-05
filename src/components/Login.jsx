@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Enable scrolling on phones (removed overflow hidden)
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
@@ -125,13 +124,15 @@ const Login = () => {
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow: hidden; /* prevent scrolling */
+          overflow: hidden;
         }
+
         .register-page {
-          min-height: 100vh;
           display: flex;
           flex-direction: column;
+          height: 100vh;
         }
+
         @media (min-width: 768px) {
           .register-page {
             flex-direction: row;
@@ -148,6 +149,7 @@ const Login = () => {
           justify-content: center;
           flex-shrink: 0;
         }
+
         @media (min-width: 768px) {
           .hero-image {
             height: 100vh;
@@ -161,12 +163,11 @@ const Login = () => {
           left: 50%;
           transform: translate(-50%, -50%);
           background: rgba(0, 0, 0, 0.55);
-          padding: 35px 60px 70px 60px;
+          padding: 35px 80px 70px 80px;
           border-radius: 50px;
+          width: 500px;
           max-width: 95vw;
-          width: 400px;
           text-align: center;
-          user-select: none;
           color: white;
           display: flex;
           flex-direction: column;
@@ -185,16 +186,15 @@ const Login = () => {
         .semi-circular-text text {
           fill: white;
           font-weight: 700;
-          font-size: 44px;
+          font-size: 36px;
         }
 
         .slogan-text {
           font-size: 22px;
           font-weight: 600;
           font-style: italic;
-          color: white;
-          user-select: none;
           margin-top: 8px;
+          user-select: none;
         }
 
         .form-section {
@@ -207,6 +207,7 @@ const Login = () => {
           justify-content: center;
           flex-shrink: 0;
         }
+
         @media (min-width: 768px) {
           .form-section {
             height: 100vh;
@@ -217,16 +218,17 @@ const Login = () => {
         .form-container {
           width: 100%;
           max-width: 400px;
-          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
-          border-radius: 8px;
           background: white;
           padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
         }
 
         .btn-primary {
           box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
         }
+
         .btn-primary:hover {
           box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
@@ -240,15 +242,16 @@ const Login = () => {
           transition: width 2s ease;
           margin-bottom: 12px;
         }
+
         .login-progress-bar.complete {
           width: 100%;
         }
+
         .login-progress-bar.fade-out {
           opacity: 0;
           transition: opacity 0.4s ease;
         }
 
-        /* Password toggle button */
         .password-toggle-btn {
           position: absolute;
           top: 50%;
@@ -274,7 +277,7 @@ const Login = () => {
       `}</style>
 
       <div className="container-fluid p-0 register-page">
-        {/* Hero Image Section */}
+        {/* Hero Section */}
         <div className="hero-image">
           <div className="hero-overlay-text-wrapper" aria-hidden="true">
             <svg
@@ -299,7 +302,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Form Section */}
+        {/* Login Form Section */}
         <div className="form-section">
           <div className="form-container">
             <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
@@ -310,7 +313,6 @@ const Login = () => {
             {success && (
               <div className="alert alert-success fw-bold">{success}</div>
             )}
-
             {progressComplete && (
               <div
                 className={`login-progress-bar ${
@@ -347,7 +349,6 @@ const Login = () => {
                 <label htmlFor="password" className="form-label fw-bold">
                   Password:
                 </label>
-
                 <div style={{ position: "relative" }}>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -363,7 +364,6 @@ const Login = () => {
                     style={{ paddingRight: "2.5rem" }}
                     required
                   />
-
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -374,7 +374,6 @@ const Login = () => {
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
-
                 {errors.password && (
                   <div className="text-danger">{errors.password[0]}</div>
                 )}
@@ -390,10 +389,7 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
-                <label
-                  className="form-check-label fw-bold"
-                  htmlFor="rememberMe"
-                >
+                <label className="form-check-label fw-bold" htmlFor="rememberMe">
                   Remember me
                 </label>
               </div>
