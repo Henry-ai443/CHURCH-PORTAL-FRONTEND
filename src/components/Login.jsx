@@ -48,7 +48,7 @@ const Login = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const { username, password } = formData;
+    const { username, password, rememberMe } = formData;
 
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
@@ -104,7 +104,13 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", data.token);
+      // Store token based on rememberMe
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
+
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "", rememberMe: false });
@@ -125,11 +131,14 @@ const Login = () => {
           height: 100%;
           margin: 0;
           padding: 0;
+          overflow-x: hidden;
         }
         .register-page {
-          min-height: 100vh;
+          height: 100vh; /* Changed from min-height to height */
           display: flex;
           flex-direction: column;
+          margin: 0;
+          padding: 0;
         }
         @media (min-width: 768px) {
           .register-page {
@@ -141,14 +150,16 @@ const Login = () => {
           position: relative;
           background: url('/Hero.jpg') center/cover no-repeat;
           width: 100%;
-          height: 50vh;
+          /* Use flex to control height */
+          flex: 1 1 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          min-height: 50vh; /* Minimum height on small screens */
         }
         @media (min-width: 768px) {
           .hero-image {
-            height: 100vh;
+            height: 100vh; /* Full height on larger screens */
             width: 50%;
           }
         }
@@ -197,11 +208,13 @@ const Login = () => {
         .form-section {
           background: #f8f9fa;
           width: 100%;
-          height: 50vh;
-          padding: 1.5rem 1.5rem;
+          /* Use flex to control height */
+          flex: 1 1 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          min-height: 50vh; /* Minimum height on small screens */
+          padding: 1.5rem 1.5rem;
         }
         @media (min-width: 768px) {
           .form-section {
@@ -302,10 +315,22 @@ const Login = () => {
             <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
             {generalError && (
-              <div className="alert alert-danger fw-bold">{generalError}</div>
+              <div
+                className="alert alert-danger fw-bold"
+                aria-live="assertive"
+                role="alert"
+              >
+                {generalError}
+              </div>
             )}
             {success && (
-              <div className="alert alert-success fw-bold">{success}</div>
+              <div
+                className="alert alert-success fw-bold"
+                aria-live="polite"
+                role="status"
+              >
+                {success}
+              </div>
             )}
 
             {progressComplete && (
@@ -334,6 +359,7 @@ const Login = () => {
                   aria-invalid={errors.username ? "true" : "false"}
                   disabled={isSubmitting}
                   required
+                  autoFocus
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
@@ -365,7 +391,7 @@ const Login = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    tabIndex={-1}
+                    // removed tabIndex so keyboard users can focus
                     className="password-toggle-btn"
                   >
                     {showPassword ? "🙈" : "👁️"}
