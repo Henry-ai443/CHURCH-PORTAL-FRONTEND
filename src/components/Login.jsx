@@ -2,43 +2,29 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+    document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
 
-  useEffect(() => {
-    if (isMobile) {
-      document.body.style.overflow = "hidden";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
-    } else {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
-    }
     return () => {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
     };
-  }, [isMobile]);
+  }, []);
 
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     rememberMe: false,
   });
+
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -59,6 +45,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     const { username, password } = formData;
+
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -76,6 +63,7 @@ const Login = () => {
       );
 
       const data = await response.json();
+
       if (!response.ok) {
         setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
@@ -84,7 +72,9 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => navigate("/home"), 2500);
+      setTimeout(() => {
+        navigate("/home");
+      }, 2500);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
@@ -94,82 +84,55 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="login-container d-flex flex-column flex-md-row"
-      style={{
-        height: "100vh",
-        margin: 0,
-        padding: 0,
-        overflow: "hidden",
-      }}
-    >
-      {/* Hero Section */}
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
+      {/* Hero Image Section */}
       <div
-        className="hero-section d-flex align-items-center justify-content-center text-center"
+        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          width: isMobile ? "100%" : "50%",
-          height: isMobile ? "40%" : "100%",
-          position: "relative",
+          height: "40vh",
         }}
       >
-        <div
-          className="hero-overlay-text"
+        <div className="hero-overlay-text text-white fw-bold fs-4 px-3 py-2 rounded-4"
           style={{
             background: "rgba(0, 0, 0, 0.65)",
-            padding: isMobile ? "20px 30px" : "40px 60px",
-            borderRadius: "60px",
-            color: "white",
-            fontWeight: "700",
-            letterSpacing: "1px",
-            lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem",
-            textShadow: "0 2px 4px rgba(0,0,0,0.4)",
+            maxWidth: "90%",
+            textShadow: "0 2px 4px rgba(0,0,0,0.5)",
           }}
         >
           GENERAL CONFERENCE YOUTH HUB
-          <div
-            style={{
-              marginTop: "10px",
-              fontSize: isMobile ? "1rem" : "1.25rem",
-              fontStyle: "italic",
-              fontWeight: "600",
-            }}
-          >
+          <div className="fw-semibold fst-italic" style={{ fontSize: "1.1rem" }}>
             Uniting youths in Christ
           </div>
         </div>
       </div>
 
       {/* Form Section */}
-      <div
-        className="form-section d-flex align-items-center justify-content-center bg-light"
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4"
         style={{
-          width: isMobile ? "100%" : "50%",
-          height: isMobile ? "60%" : "100%",
-          padding: "1rem",
+          height: "60vh",
         }}
       >
         <div
           className="p-4 shadow rounded bg-white"
-          style={{ width: "100%", maxWidth: "400px" }}
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+          }}
         >
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
-            <div className="alert alert-danger fw-bold" aria-live="assertive">
-              {generalError}
-            </div>
+            <div className="alert alert-danger fw-bold">{generalError}</div>
           )}
           {success && (
-            <div className="alert alert-success fw-bold" aria-live="polite">
-              {success}
-            </div>
+            <div className="alert alert-success fw-bold">{success}</div>
           )}
 
           <form onSubmit={handleSubmit} noValidate>
+            {/* Username */}
             <div className="mb-3">
               <label htmlFor="username" className="form-label fw-bold">
                 Username:
@@ -191,6 +154,7 @@ const Login = () => {
               )}
             </div>
 
+            {/* Password */}
             <div className="mb-3 position-relative">
               <label htmlFor="password" className="form-label fw-bold">
                 Password:
@@ -233,6 +197,7 @@ const Login = () => {
               )}
             </div>
 
+            {/* Remember Me */}
             <div className="mb-3 form-check">
               <input
                 type="checkbox"
@@ -250,17 +215,17 @@ const Login = () => {
 
             <button
               type="submit"
-              className="btn btn-primary w-100 fw-bold"
+              className="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
               disabled={isSubmitting}
             >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2"></span>
-                  Logging in...
-                </>
-              ) : (
-                "Login"
+              {isSubmitting && (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               )}
+              {isSubmitting ? "Logging in..." : "Login"}
             </button>
           </form>
 
