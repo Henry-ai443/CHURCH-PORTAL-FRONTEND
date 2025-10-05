@@ -40,7 +40,6 @@ const YouthMessageForm = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        // Show detailed error messages
         if (typeof data === 'object') {
           const errorMessages = Object.entries(data)
             .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
@@ -53,6 +52,9 @@ const YouthMessageForm = () => {
 
       setSuccess('Your message has been submitted successfully.');
       setFormData({ title: '', message: '', is_anonymous: false });
+
+      // Remove success message and animation after 3 seconds
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message || 'Something went wrong.');
     } finally {
@@ -64,7 +66,14 @@ const YouthMessageForm = () => {
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
       <h3 className="text-primary text-center mb-4">Youth Questions</h3>
 
-      {success && <div className="alert alert-success">{success}</div>}
+      {/* Success animation */}
+      {success && (
+        <div className="success-animation">
+          <div className="checkmark">&#10003;</div>
+          <div className="alert alert-success">{success}</div>
+        </div>
+      )}
+
       {error && (
         <div className="alert alert-danger" style={{ whiteSpace: 'pre-wrap' }}>
           {error}
@@ -119,6 +128,45 @@ const YouthMessageForm = () => {
           {loading ? 'Submitting...' : 'Submit Question'}
         </button>
       </form>
+
+      <style jsx>{`
+        .success-animation {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 15px;
+          animation: fadeInOut 3s forwards;
+        }
+        .checkmark {
+          font-size: 24px;
+          color: #28a745; /* Bootstrap success green */
+          animation: scaleBounce 0.6s ease forwards;
+        }
+
+        @keyframes scaleBounce {
+          0% {
+            transform: scale(0);
+            opacity: 0;
+          }
+          60% {
+            transform: scale(1.4);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes fadeInOut {
+          0%, 100% {
+            opacity: 0;
+          }
+          10%, 90% {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 };
