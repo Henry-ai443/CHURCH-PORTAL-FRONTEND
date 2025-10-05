@@ -3,23 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Reset margin/padding and hide overflow to prevent scroll
-    document.documentElement.style.height = "100%";
-    document.documentElement.style.margin = "0";
-    document.documentElement.style.padding = "0";
-    document.body.style.height = "100%";
+    // Enable scrolling on phones (removed overflow hidden)
     document.body.style.margin = "0";
     document.body.style.padding = "0";
-    document.body.style.overflow = "hidden";
 
     return () => {
-      document.documentElement.style.height = "";
-      document.documentElement.style.margin = "";
-      document.documentElement.style.padding = "";
-      document.body.style.height = "";
-      document.body.style.margin = "";
-      document.body.style.padding = "";
-      document.body.style.overflow = "";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
     };
   }, []);
 
@@ -58,7 +48,7 @@ const Login = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const { username, password, rememberMe } = formData;
+    const { username, password } = formData;
 
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
@@ -114,12 +104,7 @@ const Login = () => {
         return;
       }
 
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-
+      localStorage.setItem("token", data.token);
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "", rememberMe: false });
@@ -136,22 +121,17 @@ const Login = () => {
   return (
     <>
       <style>{`
-        /* Reset all margins and paddings */
         html, body, #root {
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow: hidden;
+          overflow: hidden; /* prevent scrolling */
         }
-
         .register-page {
+          min-height: 100vh;
           display: flex;
           flex-direction: column;
-          height: 100vh; /* Full viewport height */
-          margin: 0;
-          padding: 0;
         }
-
         @media (min-width: 768px) {
           .register-page {
             flex-direction: row;
@@ -159,16 +139,20 @@ const Login = () => {
         }
 
         .hero-image {
-          flex: 1 1 0;
-          height: 100%;
-          background-image: url('/Hero.jpg');
-          background-position: center;
-          background-repeat: no-repeat;
-          background-size: cover;
           position: relative;
+          background: url('/Hero.jpg') center/cover no-repeat;
+          width: 100%;
+          height: 50vh;
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
+        }
+        @media (min-width: 768px) {
+          .hero-image {
+            height: 100vh;
+            width: 50%;
+          }
         }
 
         .hero-overlay-text-wrapper {
@@ -177,9 +161,10 @@ const Login = () => {
           left: 50%;
           transform: translate(-50%, -50%);
           background: rgba(0, 0, 0, 0.55);
-          padding: 25px 40px 50px 40px;
+          padding: 35px 60px 70px 60px;
           border-radius: 50px;
-          max-width: 90vw;
+          max-width: 95vw;
+          width: 400px;
           text-align: center;
           user-select: none;
           color: white;
@@ -200,26 +185,33 @@ const Login = () => {
         .semi-circular-text text {
           fill: white;
           font-weight: 700;
-          font-size: 36px;
+          font-size: 44px;
         }
 
         .slogan-text {
-          font-size: 18px;
+          font-size: 22px;
           font-weight: 600;
           font-style: italic;
           color: white;
           user-select: none;
-          margin-top: 4px;
+          margin-top: 8px;
         }
 
         .form-section {
-          flex: 1 1 0;
-          height: 100%;
           background: #f8f9fa;
+          width: 100%;
+          height: 50vh;
+          padding: 1.5rem 1.5rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 0; /* No padding to avoid extra height */
+          flex-shrink: 0;
+        }
+        @media (min-width: 768px) {
+          .form-section {
+            height: 100vh;
+            width: 50%;
+          }
         }
 
         .form-container {
@@ -229,9 +221,6 @@ const Login = () => {
           border-radius: 8px;
           background: white;
           padding: 2rem;
-          box-sizing: border-box;
-          overflow-y: auto; /* Scroll inside form if needed */
-          max-height: 90vh;
         }
 
         .btn-primary {
@@ -285,8 +274,9 @@ const Login = () => {
       `}</style>
 
       <div className="container-fluid p-0 register-page">
-        <div className="hero-image" aria-hidden="true">
-          <div className="hero-overlay-text-wrapper">
+        {/* Hero Image Section */}
+        <div className="hero-image">
+          <div className="hero-overlay-text-wrapper" aria-hidden="true">
             <svg
               viewBox="0 0 500 150"
               className="semi-circular-text"
@@ -309,27 +299,16 @@ const Login = () => {
           </div>
         </div>
 
+        {/* Form Section */}
         <div className="form-section">
           <div className="form-container">
             <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
             {generalError && (
-              <div
-                className="alert alert-danger fw-bold"
-                aria-live="assertive"
-                role="alert"
-              >
-                {generalError}
-              </div>
+              <div className="alert alert-danger fw-bold">{generalError}</div>
             )}
             {success && (
-              <div
-                className="alert alert-success fw-bold"
-                aria-live="polite"
-                role="status"
-              >
-                {success}
-              </div>
+              <div className="alert alert-success fw-bold">{success}</div>
             )}
 
             {progressComplete && (
@@ -358,7 +337,6 @@ const Login = () => {
                   aria-invalid={errors.username ? "true" : "false"}
                   disabled={isSubmitting}
                   required
-                  autoFocus
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
@@ -390,6 +368,7 @@ const Login = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
+                    tabIndex={-1}
                     className="password-toggle-btn"
                   >
                     {showPassword ? "🙈" : "👁️"}
