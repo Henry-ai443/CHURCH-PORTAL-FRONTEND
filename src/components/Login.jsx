@@ -99,6 +99,9 @@ const Login = () => {
       className={`container-fluid vh-100 d-flex p-0 ${
         isMobile ? "flex-column" : "flex-md-row"
       } register-page`}
+      style={{
+        overflow: "hidden", // Prevent scrollbars globally
+      }}
     >
       {/* Hero Section */}
       <div
@@ -107,8 +110,9 @@ const Login = () => {
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: isMobile ? "50vh" : "100vh",
+          height: isMobile ? "40vh" : "100vh",
           width: isMobile ? "100%" : "50%",
+          flexShrink: 0,
         }}
         aria-label="Hero image with General Conference Church"
       >
@@ -116,21 +120,23 @@ const Login = () => {
           className="hero-overlay-text"
           style={{
             background: "rgba(0, 0, 0, 0.65)",
-            padding: isMobile ? "20px 30px" : "40px 60px",
-            borderRadius: "60px",
+            padding: isMobile ? "15px 20px" : "40px 60px",
+            borderRadius: "40px",
             color: "white",
             maxWidth: "90vw",
             fontWeight: "700",
-            letterSpacing: "1px",
+            letterSpacing: "0.5px",
             lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem",
+            fontSize: isMobile ? "clamp(1rem, 4vw, 1.6rem)" : "2rem",
+            textWrap: "balance",
+            textAlign: "center",
           }}
         >
           GENERAL CONFERENCE YOUTH HUB
           <div
             style={{
               marginTop: "10px",
-              fontSize: isMobile ? "1rem" : "1.25rem",
+              fontSize: isMobile ? "clamp(0.8rem, 3.5vw, 1.1rem)" : "1.25rem",
               fontStyle: "italic",
               fontWeight: "600",
             }}
@@ -144,19 +150,19 @@ const Login = () => {
       <div
         className="d-flex align-items-center justify-content-center bg-light form-section p-4"
         style={{
-          height: isMobile ? "50vh" : "100vh",
+          height: isMobile ? "60vh" : "100vh",
           width: isMobile ? "100%" : "50%",
-          overflowY: isMobile ? "auto" : "visible",
+          overflow: "hidden", // Prevent scroll in form
         }}
       >
         <div
-          className="p-4 shadow rounded bg-white"
+          className="p-4 shadow rounded bg-white d-flex flex-column justify-content-center"
           style={{
             width: "100%",
             maxWidth: "400px",
           }}
         >
-          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+          <h3 className="mb-3 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
             <div className="alert alert-danger fw-bold" aria-live="assertive">
@@ -170,7 +176,7 @@ const Login = () => {
           )}
 
           <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-3">
+            <div className="mb-2">
               <label htmlFor="username" className="form-label fw-bold">
                 Username:
               </label>
@@ -191,7 +197,7 @@ const Login = () => {
               )}
             </div>
 
-            <div className="mb-3 position-relative">
+            <div className="mb-2 position-relative">
               <label htmlFor="password" className="form-label fw-bold">
                 Password:
               </label>
@@ -234,7 +240,7 @@ const Login = () => {
               )}
             </div>
 
-            <div className="mb-3 form-check">
+            <div className="mb-2 form-check">
               <input
                 type="checkbox"
                 className="form-check-input"
@@ -258,7 +264,7 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="text-center fw-bold mt-3">
+          <p className="text-center fw-bold mt-2 mb-0">
             Don't have an account?{" "}
             <Link to="/register" style={{ textDecoration: "none" }}>
               Register here
