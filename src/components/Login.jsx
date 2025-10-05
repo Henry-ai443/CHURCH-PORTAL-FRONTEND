@@ -28,7 +28,6 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    // Disable scrolling on the whole page
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
@@ -48,6 +47,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrors({});
     setGeneralError("");
     setSuccess("");
@@ -83,58 +83,30 @@ const Login = () => {
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
         navigate("/home");
-      }, 2500);
+      }, 3000);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100 p-0 d-flex flex-column justify-content-between register-page">
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
       {/* Hero Image Section */}
       <div
-        className="w-100 d-flex align-items-center justify-content-center position-relative text-center"
+        className="w-100 w-md-50 hero-image position-relative"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "50vh",
         }}
-        aria-label="Hero image with General Conference Church"
       >
-        <div
-          className="hero-overlay-text"
-          style={{
-            background: "rgba(0, 0, 0, 0.65)",
-            padding: isMobile ? "20px 30px" : "40px 60px",
-            borderRadius: "60px",
-            color: "white",
-            maxWidth: "90vw",
-            fontWeight: "700",
-            letterSpacing: "1px",
-            lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem",
-          }}
-        >
-          GENERAL CONFERENCE YOUTH HUB
-          <div
-            style={{
-              marginTop: "10px",
-              fontSize: isMobile ? "1rem" : "1.25rem",
-              fontStyle: "italic",
-              fontWeight: "600",
-            }}
-          >
-            Uniting youths in Christ
-          </div>
-        </div>
+        <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
       {/* Form Section */}
-      <div className="w-100 d-flex align-items-center justify-content-center bg-light form-section p-4">
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div
           className="p-4 shadow rounded"
           style={{
@@ -145,121 +117,126 @@ const Login = () => {
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
-            <div className="alert alert-danger fw-bold" aria-live="assertive">
-              {generalError}
-            </div>
+            <div className="alert alert-danger fw-bold">{generalError}</div>
           )}
           {success && (
-            <div className="alert alert-success fw-bold" aria-live="polite">
-              {success}
+            <div className="alert alert-success fw-bold">{success}</div>
+          )}
+
+          {success && (
+            <div className="text-center mb-3">
+              <button
+                className="btn btn-success"
+                onClick={() => navigate("/home")}
+              >
+                Go to Dashboard
+              </button>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">
-                Username:
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="form-control"
-                placeholder="Enter your username..."
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                autoComplete="username"
-                disabled={isSubmitting}
-                required
-              />
-              {errors.username && (
-                <div className="text-danger">{errors.username[0]}</div>
-              )}
-            </div>
+          {!success && (
+            <form onSubmit={handleSubmit}>
+              {/* Username */}
+              <div className="mb-3">
+                <label className="form-label">Username:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter your username..."
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  required
+                />
+                {errors.username && (
+                  <div className="text-danger">{errors.username[0]}</div>
+                )}
+              </div>
 
-            <div className="mb-3 position-relative">
-              <label htmlFor="password" className="form-label fw-bold">
-                Password:
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className="form-control"
-                placeholder="Enter your password..."
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="current-password"
-                disabled={isSubmitting}
-                required
-                style={{ paddingRight: "2.5rem" }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                disabled={isSubmitting}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "0.75rem",
-                  transform: "translateY(-50%)",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  fontSize: "1.5rem",
-                  color: "#555",
-                  userSelect: "none",
-                  height: "1.5em",
-                  lineHeight: 1,
-                }}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
-              {errors.password && (
-                <div className="text-danger">{errors.password[0]}</div>
-              )}
-            </div>
+              {/* Password */}
+              <div className="mb-3 position-relative">
+                <label className="form-label">Password:</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="form-control"
+                  placeholder="Enter your password..."
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  required
+                  style={{ paddingRight: "2.5rem" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={isSubmitting}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "0.75rem",
+                    transform: "translateY(-50%)",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                    color: "#555",
+                    userSelect: "none",
+                    height: "1.5em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+                {errors.password && (
+                  <div className="text-danger">{errors.password[0]}</div>
+                )}
+              </div>
 
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-                disabled={isSubmitting}
-              />
-              <label className="form-check-label" htmlFor="rememberMe">
-                Remember Me
-              </label>
-            </div>
+              {/* Remember Me */}
+              <div className="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="rememberMe"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+                <label className="form-check-label" htmlFor="rememberMe">
+                  Remember Me
+                </label>
+              </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-100 fw-bold d-flex justify-content-center align-items-center"
-              disabled={isSubmitting}
-              aria-disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" />
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </form>
+              {/* Submit Button */}
+              <div className="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  {isSubmitting ? "Logging in..." : "Login"}
+                </button>
+              </div>
 
-          <p className="text-center fw-bold mt-3">
-            Don't have an account?{" "}
-            <Link to="/register" style={{ textDecoration: "none" }}>
-              Register here
-            </Link>
-            .
-          </p>
+              <p className="text-center fw-bold mt-3">
+                Don't have an account?{" "}
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  Register here
+                </Link>
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>
