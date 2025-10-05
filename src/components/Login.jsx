@@ -3,13 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Disable scrolling on mount
-    document.body.style.overflow = "hidden";
+    // Disable scroll on mobile only
+    if (window.innerWidth < 768) {
+      document.body.style.overflow = "hidden";
+    }
+
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
     return () => {
-      // Restore scroll on unmount
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
@@ -22,7 +24,6 @@ const Login = () => {
     rememberMe: false,
   });
 
-  const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,19 +37,16 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    setErrors({});
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
 
     const { username, password } = formData;
-
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -87,16 +85,15 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column p-0 register-page bg-light">
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page bg-light">
       {/* Hero Image Section */}
       <div
-        className="hero-image position-relative"
+        className="hero-image position-relative w-100 w-md-50"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "40vh",
-          flexShrink: 0,
+          height: "40vh", // Mobile view height
         }}
         aria-label="Hero image with General Conference Church"
       >
@@ -110,7 +107,7 @@ const Login = () => {
             background: "rgba(0, 0, 0, 0.65)",
             borderRadius: "30px",
             width: "85%",
-            height: "80%", // dark patch covers 80% of hero height
+            height: "80%", // enlarged dark patch
             color: "white",
             padding: "20px",
           }}
@@ -118,7 +115,7 @@ const Login = () => {
           <div
             style={{
               fontWeight: "700",
-              fontSize: "clamp(1.4rem, 5vw, 2rem)",
+              fontSize: "clamp(1.4rem, 4.5vw, 2rem)",
               letterSpacing: "1px",
               lineHeight: "1.2",
             }}
@@ -140,10 +137,11 @@ const Login = () => {
 
       {/* Form Section */}
       <div
-        className="d-flex align-items-center justify-content-center flex-grow-1"
+        className="d-flex align-items-center justify-content-center bg-light w-100 w-md-50 p-4"
         style={{
-          height: "60vh",
-          overflow: "hidden", // prevent scroll on mobile
+          height: "auto",
+          minHeight: "60vh",
+          overflow: "hidden", // disable scrolling on mobile
         }}
       >
         <div
@@ -206,7 +204,9 @@ const Login = () => {
                 autoComplete="current-password"
                 disabled={isSubmitting}
                 required
-                style={{ paddingRight: "2.5rem" }}
+                style={{
+                  paddingRight: "2.75rem", // more room for emoji
+                }}
               />
               <button
                 type="button"
@@ -216,20 +216,21 @@ const Login = () => {
                 style={{
                   position: "absolute",
                   top: "50%",
-                  right: "0.75rem",
+                  right: "0.85rem",
                   transform: "translateY(-50%)",
                   border: "none",
                   background: "transparent",
                   cursor: "pointer",
-                  fontSize: "1.4rem",
-                  color: "#555",
+                  fontSize: "1.3rem",
+                  color: "#666",
                   userSelect: "none",
+                  height: "1.6em",
+                  width: "1.6em",
+                  lineHeight: "1",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: "1.5em",
-                  width: "1.5em",
-                  padding: 0,
+                  padding: "0",
                 }}
               >
                 {showPassword ? "🙈" : "👁️"}
@@ -274,3 +275,4 @@ const Login = () => {
 };
 
 export default Login;
+
