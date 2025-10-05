@@ -2,17 +2,39 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
+    // Detect screen size once (and on resize)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Disable scrolling only on mobile
+    if (isMobile) {
+      document.body.style.overflow = "hidden";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+    }
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
     };
-  }, []);
+  }, [isMobile]);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -68,37 +90,7 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        switch (data.detail) {
-          case "User does not exist.":
-            setGeneralError(
-              <>
-                User does not exist.
-                <br />
-                <small>
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    style={{ color: "#0d6efd", textDecoration: "underline" }}
-                  >
-                    Register here
-                  </Link>
-                  .
-                </small>
-              </>
-            );
-            break;
-
-          case "Incorrect password.":
-            setGeneralError("Incorrect password. Please try again.");
-            break;
-
-          case "Username and password are required.":
-            setGeneralError("Both username and password are required.");
-            break;
-
-          default:
-            setGeneralError("Login failed. Please try again.");
-        }
+        setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
         return;
       }
@@ -111,6 +103,7 @@ const Login = () => {
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -119,41 +112,34 @@ const Login = () => {
     <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
       {/* Hero Image Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative"
+        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          minHeight: "50vh",
         }}
         aria-label="Hero image with General Conference Church"
       >
         <div
           className="hero-overlay-text"
           style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
             background: "rgba(0, 0, 0, 0.65)",
-            padding: "40px 60px",
+            padding: isMobile ? "20px 30px" : "40px 60px",
             borderRadius: "60px",
-            maxWidth: "90vw",
             color: "white",
-            textAlign: "center",
-            userSelect: "none",
-            pointerEvents: "none",
+            maxWidth: "90vw",
             fontWeight: "700",
-            fontSize: "2rem",
             letterSpacing: "1px",
+            lineHeight: "1.2",
+            fontSize: isMobile ? "1.5rem" : "2rem", // smaller on mobile
           }}
-          aria-hidden="true"
         >
-          {/* replicate your semicircular text with SVG if you want */}
           GENERAL CONFERENCE YOUTH HUB
           <div
             style={{
               marginTop: "10px",
-              fontSize: "1.25rem",
+              fontSize: isMobile ? "1rem" : "1.25rem",
               fontStyle: "italic",
               fontWeight: "600",
             }}
@@ -175,10 +161,14 @@ const Login = () => {
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
-            <div className="alert alert-danger fw-bold">{generalError}</div>
+            <div className="alert alert-danger fw-bold" aria-live="assertive">
+              {generalError}
+            </div>
           )}
           {success && (
-            <div className="alert alert-success fw-bold">{success}</div>
+            <div className="alert alert-success fw-bold" aria-live="polite">
+              {success}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} noValidate>
