@@ -3,19 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Reset body margins etc.
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "";
-      document.body.style.padding = "";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
     };
   }, []);
 
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
@@ -41,6 +44,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     const { username, password } = formData;
+
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -56,25 +60,38 @@ const Login = () => {
           body: JSON.stringify({ username, password }),
         }
       );
+
       const data = await response.json();
+
       if (!response.ok) {
         switch (data.detail) {
           case "User does not exist.":
             setGeneralError(
               <>
-                User does not exist. <br />
+                User does not exist.
+                <br />
                 <small>
-                  Don’t have an account?{" "}
-                  <Link to="/register" className="text-info">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/register"
+                    style={{ color: "#1E90FF", textDecoration: "underline" }}
+                  >
                     Register here
                   </Link>
+                  .
                 </small>
               </>
             );
             break;
+
           case "Incorrect password.":
             setGeneralError("Incorrect password. Please try again.");
             break;
+
+          case "Username and password are required.":
+            setGeneralError("Both username and password are required.");
+            break;
+
           default:
             setGeneralError("Login failed. Please try again.");
         }
@@ -82,11 +99,13 @@ const Login = () => {
         return;
       }
 
+      // Save token based on rememberMe
       if (rememberMe) {
         localStorage.setItem("token", data.token);
       } else {
         sessionStorage.setItem("token", data.token);
       }
+
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "" });
@@ -101,177 +120,166 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="hero-image-section">
-        <div className="text-overlay text-center text-white">
-          <h1 className="fw-bold display-6 mb-2">Welcome Back</h1>
-          <p className="lead mb-0">General Conference Youth Hub</p>
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+      {/* Hero Image Section */}
+      <div className="w-100 w-md-50 hero-image position-relative">
+        <div className="hero-overlay-text fw-bold church-name">
+          General Conference Church
         </div>
       </div>
 
-      <div className="form-section">
-        <div className="form-wrapper shadow rounded p-4">
+      {/* Form Section */}
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+        <div
+          className="shadow rounded p-4"
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
-          {generalError && <div className="alert alert-danger">{generalError}</div>}
-          {success && <div className="alert alert-success">{success}</div>}
+          {generalError && (
+            <div className="alert alert-danger fw-bold">{generalError}</div>
+          )}
+          {success && <div className="alert alert-success fw-bold">{success}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">Username</label>
+              <label htmlFor="username" className="form-label fw-bold">
+                Username:
+              </label>
               <input
                 type="text"
-                className="form-control"
                 id="username"
+                className="form-control"
+                placeholder="Username...(e.g., john_doe)"
+                onChange={handleChange}
                 name="username"
-                placeholder="e.g. john_doe"
                 value={formData.username}
-                onChange={handleChange}
+                autoComplete="username"
+                aria-invalid={errors.username ? "true" : "false"}
                 disabled={isSubmitting}
               />
+              {errors.username && (
+                <div className="text-danger">{errors.username[0]}</div>
+              )}
             </div>
 
-            <div className="mb-3 position-relative">
-              <label htmlFor="password" className="form-label fw-bold">Password</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                className="form-control pe-5"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={isSubmitting}
-              />
-              <button
-                type="button"
-                className="password-toggle-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                tabIndex={-1}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label fw-bold">
+                Password:
+              </label>
+
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className="form-control"
+                  placeholder="Enter your password..."
+                  onChange={handleChange}
+                  name="password"
+                  value={formData.password}
+                  autoComplete="current-password"
+                  aria-invalid={errors.password ? "true" : "false"}
+                  disabled={isSubmitting}
+                  style={{ paddingRight: "2.5rem" }}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "0.75rem",
+                    transform: "translateY(-50%)",
+                    border: "none",
+                    background: "transparent",
+                    padding: "0",
+                    cursor: "pointer",
+                    fontSize: "1.2rem",
+                    color: "#555",
+                    userSelect: "none",
+                    height: "1.5em",
+                    lineHeight: "1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
+
+              {errors.password && (
+                <div className="text-danger">{errors.password[0]}</div>
+              )}
             </div>
 
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="mb-3 d-flex justify-content-between align-items-center">
               <div className="form-check">
                 <input
                   type="checkbox"
-                  id="rememberMe"
                   className="form-check-input"
+                  id="rememberMe"
                   checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  onChange={() => setRememberMe(!rememberMe)}
                 />
-                <label htmlFor="rememberMe" className="form-check-label fw-bold">
+                <label className="form-check-label" htmlFor="rememberMe">
                   Remember Me
                 </label>
               </div>
-              <Link to="/forgot-password" className="text-primary fw-bold">
+
+              <Link
+                to="/forgot-password"
+                className="text-decoration-none text-info fw-bold small"
+              >
                 Forgot Password?
               </Link>
             </div>
 
-            <div className="d-grid mb-3">
+            <div className="d-flex justify-content-center">
               <button
                 type="submit"
-                className="btn btn-primary glow-btn fw-bold"
+                className="btn btn-primary glow-btn px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" />
-                    Logging in...
-                  </>
-                ) : (
-                  "Login"
+                {isSubmitting && (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                 )}
+                {isSubmitting ? "Logging in..." : "Login"}
               </button>
             </div>
 
-            <p className="text-center fw-bold">
+            <p className="text-center fw-bold mt-3">
               Don't have an account?{" "}
-              <Link to="/register" className="text-info">Register</Link>
+              <Link to="/register" className="text-decoration-none text-info">
+                Register
+              </Link>
             </p>
           </form>
         </div>
       </div>
 
-      <style jsx="true">{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+      <style>{`
+        .hero-image {
+          background: url("/Hero.jpg") center/cover no-repeat;
+          min-height: 100vh;
         }
-        html, body, .login-container {
-          height: 100%;
-          width: 100%;
-        }
-        .login-container {
-          display: flex;
-          flex-direction: column;
-        }
-        .hero-image-section {
-          background: url("/youth-hero.jpg") center/cover no-repeat;
-          height: 50vh;
-          position: relative;
-        }
-        @media (min-width: 768px) {
-          .login-container {
-            flex-direction: row;
-          }
-          .hero-image-section {
-            height: 100vh;
-            width: 50%;
-          }
-        }
-        .text-overlay {
-          background: rgba(0, 0, 0, 0.4);
-          padding: 2rem;
-          border-radius: 10px;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          position: absolute;
-        }
-        .form-section {
-          background: #f9fbff;
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem;
-        }
-        .form-wrapper {
-          background: #ffffff;
-          border-radius: 12px;
-          box-shadow: 0 0 25px rgba(30, 144, 255, 0.1);
-          width: 100%;
-          max-width: 400px;
-        }
-        .form-control:focus {
-          border-color: #1e90ff;
-          box-shadow: 0 0 5px #1e90ff;
-        }
-        .password-toggle-btn {
-          position: absolute;
-          top: 50%;
-          right: 1rem;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          font-size: 1.25rem;
-          color: #888;
-          cursor: pointer;
-        }
-        .password-toggle-btn:hover {
-          color: #1e90ff;
-        }
+
         .glow-btn {
           box-shadow: 0 0 10px rgba(30, 144, 255, 0.7),
             0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
         }
+
         .glow-btn:hover {
           box-shadow: 0 0 20px rgba(30, 144, 255, 0.9),
             0 0 40px rgba(135, 206, 250, 0.8);
