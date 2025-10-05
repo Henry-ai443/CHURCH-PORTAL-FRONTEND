@@ -53,7 +53,6 @@ const YouthMessageForm = () => {
       setSuccess('Your message has been submitted successfully.');
       setFormData({ title: '', message: '', is_anonymous: false });
 
-      // Remove success message and animation after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message || 'Something went wrong.');
@@ -63,10 +62,9 @@ const YouthMessageForm = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '600px' }}>
-      <h3 className="text-primary text-center mb-4">Youth Questions</h3>
+    <div className="form-container">
+      <h3 className="form-title">Youth Questions</h3>
 
-      {/* Success animation */}
       {success && (
         <div className="success-animation">
           <div className="checkmark">&#10003;</div>
@@ -89,7 +87,7 @@ const YouthMessageForm = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="form-control"
+            className="form-control custom-input"
             required
             disabled={loading}
           />
@@ -103,7 +101,7 @@ const YouthMessageForm = () => {
             value={formData.message}
             onChange={handleChange}
             rows="5"
-            className="form-control"
+            className="form-control custom-input"
             required
             disabled={loading}
           />
@@ -124,12 +122,51 @@ const YouthMessageForm = () => {
           </label>
         </div>
 
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+        <button type="submit" className="btn submit-btn w-100" disabled={loading}>
           {loading ? 'Submitting...' : 'Submit Question'}
         </button>
       </form>
 
       <style jsx>{`
+        .form-container {
+          background: #fff;
+          padding: 30px;
+          margin: 40px auto;
+          border-radius: 12px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          max-width: 600px;
+        }
+
+        .form-title {
+          text-align: center;
+          margin-bottom: 25px;
+          font-weight: bold;
+          background: linear-gradient(to right, #4e54c8, #8f94fb);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .custom-input {
+          border-radius: 8px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+          padding: 10px 12px;
+        }
+
+        .submit-btn {
+          background: linear-gradient(to right, #4e54c8, #8f94fb);
+          border: none;
+          padding: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          border-radius: 8px;
+          transition: background 0.3s ease, transform 0.2s;
+        }
+
+        .submit-btn:hover {
+          background: linear-gradient(to right, #3b3fc1, #7c82f3);
+          transform: scale(1.02);
+        }
+
         .success-animation {
           display: flex;
           align-items: center;
@@ -138,9 +175,10 @@ const YouthMessageForm = () => {
           margin-bottom: 15px;
           animation: fadeInOut 3s forwards;
         }
+
         .checkmark {
           font-size: 24px;
-          color: #28a745; /* Bootstrap success green */
+          color: #28a745;
           animation: scaleBounce 0.6s ease forwards;
         }
 
