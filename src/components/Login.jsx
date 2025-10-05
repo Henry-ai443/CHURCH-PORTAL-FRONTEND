@@ -5,7 +5,7 @@ const Login = () => {
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
-    document.body.style.overflow = "hidden"; // Prevent scrolling
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.margin = "initial";
@@ -127,6 +127,7 @@ const Login = () => {
           margin: 0;
           padding: 0;
           overflow: hidden;
+          font-family: system-ui, sans-serif;
         }
 
         .register-page {
@@ -142,30 +143,20 @@ const Login = () => {
         }
 
         .hero-image {
-          position: relative;
+          flex: 0 0 50%;
           background: url('/Hero.jpg') center/cover no-repeat;
-          flex: 1 0 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          position: relative;
+          height: 50vh;
+          min-height: 300px;
         }
 
-        .form-section {
-          background: #f8f9fa;
-          flex: 1 0 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1.5rem;
-        }
-
-        .form-container {
-          width: 100%;
-          max-width: 400px;
-          background: white;
-          padding: 2rem;
-          border-radius: 8px;
-          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
+        @media (min-width: 768px) {
+          .hero-image {
+            height: 100vh;
+          }
         }
 
         .hero-overlay-text-wrapper {
@@ -173,11 +164,11 @@ const Login = () => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          background: rgba(0, 0, 0, 0.55);
-          padding: 35px 80px 70px 80px;
-          border-radius: 50px;
-          width: 500px;
+          background: rgba(0, 0, 0, 0.65);
+          padding: 40px 100px 80px 100px;
+          border-radius: 60px;
           max-width: 95vw;
+          width: 550px;
           text-align: center;
           color: white;
           display: flex;
@@ -185,36 +176,67 @@ const Login = () => {
           align-items: center;
           justify-content: center;
           pointer-events: none;
+          user-select: none;
         }
 
         .semi-circular-text {
           width: 100%;
-          height: 160px;
+          height: 170px;
           overflow: visible;
-          margin-bottom: 12px;
+          margin-bottom: 14px;
         }
 
         .semi-circular-text text {
           fill: white;
           font-weight: 700;
-          font-size: 36px;
+          font-size: 34px;
+          letter-spacing: 1px;
         }
 
         .slogan-text {
           font-size: 22px;
           font-weight: 600;
           font-style: italic;
-          margin-top: 8px;
-          user-select: none;
+          margin-top: 10px;
+        }
+
+        .form-section {
+          flex: 0 0 50%;
+          background: #f8f9fa;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
+          height: 50vh;
+          min-height: 300px;
+        }
+
+        @media (min-width: 768px) {
+          .form-section {
+            height: 100vh;
+          }
+        }
+
+        .form-container {
+          width: 100%;
+          max-width: 400px;
+          background: white;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
         }
 
         .btn-primary {
-          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
+          box-shadow:
+            0 0 10px rgba(30, 144, 255, 0.7),
+            0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
         }
 
         .btn-primary:hover {
-          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+          box-shadow:
+            0 0 20px rgba(30, 144, 255, 0.9),
+            0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
         }
 
@@ -254,15 +276,11 @@ const Login = () => {
           align-items: center;
           justify-content: center;
         }
-
-        .form-check-label {
-          user-select: none;
-        }
       `}</style>
 
-      <div className="container-fluid p-0 register-page">
-        {/* Hero Section */}
-        <div className="hero-image">
+      <div className="container-fluid p-0 register-page" role="main">
+        {/* Hero Image Section */}
+        <div className="hero-image" aria-label="Hero image with conference text">
           <div className="hero-overlay-text-wrapper" aria-hidden="true">
             <svg
               viewBox="0 0 500 150"
@@ -325,6 +343,9 @@ const Login = () => {
                   disabled={isSubmitting}
                   required
                 />
+                {errors.username && (
+                  <div className="text-danger">{errors.username[0]}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -354,10 +375,15 @@ const Login = () => {
                     aria-label={showPassword ? "Hide password" : "Show password"}
                     tabIndex={-1}
                     className="password-toggle-btn"
+                    disabled={isSubmitting}
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
+
+                {errors.password && (
+                  <div className="text-danger">{errors.password[0]}</div>
+                )}
               </div>
 
               <div className="mb-3 form-check">
@@ -365,52 +391,33 @@ const Login = () => {
                   type="checkbox"
                   className="form-check-input"
                   id="rememberMe"
+                  onChange={handleChange}
                   name="rememberMe"
                   checked={formData.rememberMe}
-                  onChange={handleChange}
                   disabled={isSubmitting}
                 />
-                <label
-                  className="form-check-label fw-bold"
-                  htmlFor="rememberMe"
-                >
-                  Remember me
+                <label className="form-check-label" htmlFor="rememberMe">
+                  Remember Me
                 </label>
               </div>
 
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <Link
-                  to="/forgot-password"
-                  style={{ fontWeight: "600", textDecoration: "none" }}
-                >
-                  Forgot password?
-                </Link>
-              </div>
-
-              <div className="d-flex justify-content-center">
-                <button
-                  type="submit"
-                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting && (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                  {isSubmitting ? "Logging in..." : "Login"}
-                </button>
-              </div>
-
-              <p className="text-center fw-bold mt-3">
-                Don't have an account?{" "}
-                <Link to="/register" style={{ textDecoration: "none" }}>
-                  Register
-                </Link>
-              </p>
+              <button
+                type="submit"
+                className="btn btn-primary w-100 fw-bold"
+                disabled={isSubmitting}
+                aria-disabled={isSubmitting}
+              >
+                {isSubmitting ? "Logging in..." : "Login"}
+              </button>
             </form>
+
+            <div className="text-center mt-3">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-primary">
+                Register here
+              </Link>
+              .
+            </div>
           </div>
         </div>
       </div>
