@@ -2,44 +2,32 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    // Disable scrolling only on mobile
-    if (isMobile) {
-      document.body.style.overflow = "hidden";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
-    } else {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-    }
+    // Disable scrolling on mount
+    document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
 
     return () => {
+      // Restore scroll on unmount
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
     };
-  }, [isMobile]);
+  }, []);
 
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     rememberMe: false,
   });
+
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -60,6 +48,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     const { username, password } = formData;
+
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -75,10 +64,14 @@ const Login = () => {
           body: JSON.stringify({ username, password }),
         }
       );
+
       const data = await response.json();
 
       if (!response.ok) {
-        setGeneralError(data.detail || "Login failed. Please try again.");
+        const message =
+          data.detail ||
+          "Login failed. Please check your credentials and try again.";
+        setGeneralError(message);
         setIsSubmitting(false);
         return;
       }
@@ -89,54 +82,53 @@ const Login = () => {
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div
-      className={`container-fluid vh-100 d-flex p-0 ${
-        isMobile ? "flex-column" : "flex-md-row"
-      } register-page`}
-      style={{
-        overflow: "hidden", // Prevent scrollbars globally
-      }}
-    >
-      {/* Hero Section */}
+    <div className="container-fluid vh-100 d-flex flex-column p-0 register-page bg-light">
+      {/* Hero Image Section */}
       <div
-        className="hero-image position-relative d-flex align-items-center justify-content-center text-center"
+        className="hero-image position-relative"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: isMobile ? "40vh" : "100vh",
-          width: isMobile ? "100%" : "50%",
+          height: "40vh",
           flexShrink: 0,
         }}
         aria-label="Hero image with General Conference Church"
       >
         <div
-          className="hero-overlay-text"
+          className="hero-overlay-text d-flex flex-column justify-content-center align-items-center text-center"
           style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             background: "rgba(0, 0, 0, 0.65)",
-            padding: isMobile ? "15px 20px" : "40px 60px",
-            borderRadius: "40px",
+            borderRadius: "30px",
+            width: "85%",
+            height: "80%", // dark patch covers 80% of hero height
             color: "white",
-            maxWidth: "90vw",
-            fontWeight: "700",
-            letterSpacing: "0.5px",
-            lineHeight: "1.2",
-            fontSize: isMobile ? "clamp(1rem, 4vw, 1.6rem)" : "2rem",
-            textWrap: "balance",
-            textAlign: "center",
+            padding: "20px",
           }}
         >
-          GENERAL CONFERENCE YOUTH HUB
+          <div
+            style={{
+              fontWeight: "700",
+              fontSize: "clamp(1.4rem, 5vw, 2rem)",
+              letterSpacing: "1px",
+              lineHeight: "1.2",
+            }}
+          >
+            GENERAL CONFERENCE YOUTH HUB
+          </div>
           <div
             style={{
               marginTop: "10px",
-              fontSize: isMobile ? "clamp(0.8rem, 3.5vw, 1.1rem)" : "1.25rem",
+              fontSize: "clamp(1rem, 3.5vw, 1.25rem)",
               fontStyle: "italic",
               fontWeight: "600",
             }}
@@ -148,35 +140,40 @@ const Login = () => {
 
       {/* Form Section */}
       <div
-        className="d-flex align-items-center justify-content-center bg-light form-section p-4"
+        className="d-flex align-items-center justify-content-center flex-grow-1"
         style={{
-          height: isMobile ? "60vh" : "100vh",
-          width: isMobile ? "100%" : "50%",
-          overflow: "hidden", // Prevent scroll in form
+          height: "60vh",
+          overflow: "hidden", // prevent scroll on mobile
         }}
       >
         <div
-          className="p-4 shadow rounded bg-white d-flex flex-column justify-content-center"
+          className="p-4 shadow rounded bg-white"
           style={{
             width: "100%",
             maxWidth: "400px",
           }}
         >
-          <h3 className="mb-3 text-center fw-bold text-primary">Login</h3>
+          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
-            <div className="alert alert-danger fw-bold" aria-live="assertive">
+            <div
+              className="alert alert-danger fw-bold"
+              aria-live="assertive"
+            >
               {generalError}
             </div>
           )}
           {success && (
-            <div className="alert alert-success fw-bold" aria-live="polite">
+            <div
+              className="alert alert-success fw-bold"
+              aria-live="polite"
+            >
               {success}
             </div>
           )}
 
           <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-2">
+            <div className="mb-3">
               <label htmlFor="username" className="form-label fw-bold">
                 Username:
               </label>
@@ -192,12 +189,9 @@ const Login = () => {
                 disabled={isSubmitting}
                 required
               />
-              {errors.username && (
-                <div className="text-danger">{errors.username[0]}</div>
-              )}
             </div>
 
-            <div className="mb-2 position-relative">
+            <div className="mb-3 position-relative">
               <label htmlFor="password" className="form-label fw-bold">
                 Password:
               </label>
@@ -218,7 +212,6 @@ const Login = () => {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
                 disabled={isSubmitting}
                 style={{
                   position: "absolute",
@@ -228,19 +221,22 @@ const Login = () => {
                   border: "none",
                   background: "transparent",
                   cursor: "pointer",
-                  fontSize: "1.2rem",
+                  fontSize: "1.4rem",
                   color: "#555",
                   userSelect: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "1.5em",
+                  width: "1.5em",
+                  padding: 0,
                 }}
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
-              {errors.password && (
-                <div className="text-danger">{errors.password[0]}</div>
-              )}
             </div>
 
-            <div className="mb-2 form-check">
+            <div className="mb-3 form-check">
               <input
                 type="checkbox"
                 className="form-check-input"
@@ -264,7 +260,7 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="text-center fw-bold mt-2 mb-0">
+          <p className="text-center fw-bold mt-3">
             Don't have an account?{" "}
             <Link to="/register" style={{ textDecoration: "none" }}>
               Register here
