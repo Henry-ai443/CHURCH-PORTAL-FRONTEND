@@ -3,41 +3,51 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
+    // Lock scrolling only on desktop (>=768px)
+    if (window.innerWidth >= 768) {
+      document.body.style.overflow = "hidden";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
 
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-    };
+      return () => {
+        document.body.style.overflow = "auto";
+        document.body.style.margin = "initial";
+        document.body.style.padding = "initial";
+      };
+    }
   }, []);
 
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    rememberMe: false,
   });
 
-  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [progressComplete, setProgressComplete] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // <-- password toggle state
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+
+    // Clear field-specific error when typing
+    setErrors({ ...errors, [name]: "" });
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrors({});
     setGeneralError("");
     setSuccess("");
@@ -99,16 +109,11 @@ const Login = () => {
         return;
       }
 
-      // Save token based on rememberMe
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-
+      // Success
+      localStorage.setItem("token", data.token);
       setSuccess("Login successful!");
       setProgressComplete(true);
-      setFormData({ username: "", password: "" });
+      setFormData({ username: "", password: "", rememberMe: false });
 
       setTimeout(() => setFadeOut(true), 2000);
       setTimeout(() => navigate("/home"), 2200);
@@ -120,173 +125,238 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
-      {/* Hero Image Section */}
-      <div className="w-100 w-md-50 hero-image position-relative">
-        <div className="hero-overlay-text fw-bold church-name">
-          General Conference Church
+    <>
+      <style>{`
+        /* Hero Image */
+        .hero-image {
+          height: 100vh;
+          background: url('/Hero.jpg') center/cover no-repeat;
+          position: relative;
+        }
+
+        /* Overlay text */
+        .hero-overlay-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-weight: 700;
+          font-size: 2.25rem;
+          text-shadow: 0 0 10px rgba(0,0,0,0.7);
+          user-select: none;
+          text-align: center;
+          padding: 0 10px;
+        }
+
+        /* Glowing button */
+        .glow-btn {
+          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
+          transition: all 0.3s ease-in-out;
+        }
+        .glow-btn:hover {
+          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+          transform: translateY(-2px);
+        }
+
+        /* Progress bar */
+        .login-progress-bar {
+          height: 5px;
+          background-color: #1E90FF;
+          width: 0;
+          margin-bottom: 1rem;
+          border-radius: 3px;
+          transition: width 2s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        .login-progress-bar.complete {
+          width: 100%;
+        }
+        .login-progress-bar.fade-out {
+          opacity: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+          .hero-image {
+            height: 50vh;
+            min-height: 250px;
+          }
+          .form-section {
+            height: auto;
+            padding-top: 20px;
+          }
+          .register-page {
+            overflow-y: auto;
+          }
+        }
+      `}</style>
+
+      <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+        {/* Hero Image Section */}
+        <div className="w-100 w-md-50 hero-image position-relative">
+          <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
         </div>
-      </div>
 
-      {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
-        <div
-          className="shadow rounded p-4"
-          style={{
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        >
-          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+        {/* Form Section */}
+        <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+          <div
+            className="shadow rounded p-4"
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+            }}
+          >
+            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
-          {generalError && (
-            <div className="alert alert-danger fw-bold">{generalError}</div>
-          )}
-          {success && <div className="alert alert-success fw-bold">{success}</div>}
+            {generalError && (
+              <div className="alert alert-danger fw-bold">{generalError}</div>
+            )}
+            {success && <div className="alert alert-success fw-bold">{success}</div>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">
-                Username:
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="form-control"
-                placeholder="Username...(e.g., john_doe)"
-                onChange={handleChange}
-                name="username"
-                value={formData.username}
-                autoComplete="username"
-                aria-invalid={errors.username ? "true" : "false"}
-                disabled={isSubmitting}
-              />
-              {errors.username && (
-                <div className="text-danger">{errors.username[0]}</div>
-              )}
-            </div>
+            {/* Progress Bar */}
+            {progressComplete && (
+              <div
+                className={`login-progress-bar ${
+                  progressComplete ? "complete" : ""
+                } ${fadeOut ? "fade-out" : ""}`}
+                aria-hidden="true"
+              ></div>
+            )}
 
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label fw-bold">
-                Password:
-              </label>
-
-              <div style={{ position: "relative" }}>
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label fw-bold">
+                  Username:
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
+                  type="text"
+                  id="username"
                   className="form-control"
-                  placeholder="Enter your password..."
+                  placeholder="Username...(e.g., john_doe)"
                   onChange={handleChange}
-                  name="password"
-                  value={formData.password}
-                  autoComplete="current-password"
-                  aria-invalid={errors.password ? "true" : "false"}
+                  name="username"
+                  value={formData.username}
+                  autoComplete="username"
+                  aria-invalid={errors.username ? "true" : "false"}
                   disabled={isSubmitting}
-                  style={{ paddingRight: "2.5rem" }}
                 />
+                {errors.username && (
+                  <div className="text-danger">{errors.username[0]}</div>
+                )}
+              </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  tabIndex={-1}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "0.75rem",
-                    transform: "translateY(-50%)",
-                    border: "none",
-                    background: "transparent",
-                    padding: "0",
-                    cursor: "pointer",
-                    fontSize: "1.2rem",
-                    color: "#555",
-                    userSelect: "none",
-                    height: "1.5em",
-                    lineHeight: "1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label fw-bold">
+                  Password:
+                </label>
+
+                {/* Wrapper div with relative position */}
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="form-control"
+                    placeholder="Enter your password..."
+                    onChange={handleChange}
+                    name="password"
+                    value={formData.password}
+                    autoComplete="current-password"
+                    aria-invalid={errors.password ? "true" : "false"}
+                    disabled={isSubmitting}
+                    style={{ paddingRight: "2.5rem" }} // space for the button
+                  />
+
+                  {/* Password toggle button */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "0.75rem",
+                      transform: "translateY(-50%)",
+                      border: "none",
+                      background: "transparent",
+                      padding: "0",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
+                      color: "#555",
+                      userSelect: "none",
+                      height: "1.5em",
+                      lineHeight: "1",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+
+                {errors.password && (
+                  <div className="text-danger">{errors.password[0]}</div>
+                )}
+              </div>
+
+              <div className="mb-3 d-flex justify-content-between align-items-center">
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="rememberMe"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="rememberMe"
+                    style={{ userSelect: "none" }}
+                  >
+                    Remember Me
+                  </label>
+                </div>
+
+                <Link
+                  to="/forgot-password"
+                  className="text-primary fw-bold fs-4"
+                  style={{ textDecoration: "none" }}
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  Forgot Password?
+                </Link>
+              </div>
+
+              <div className="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-primary glow-btn px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  {isSubmitting ? "Logging in..." : "Login"}
                 </button>
               </div>
 
-              {errors.password && (
-                <div className="text-danger">{errors.password[0]}</div>
-              )}
-            </div>
-
-            <div className="mb-3 d-flex justify-content-between align-items-center">
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe(!rememberMe)}
-                />
-                <label className="form-check-label" htmlFor="rememberMe">
-                  Remember Me
-                </label>
-              </div>
-
-              <Link
-                to="/forgot-password"
-                className="text-decoration-none text-info fw-bold small"
-              >
-                Forgot Password?
-              </Link>
-            </div>
-
-            <div className="d-flex justify-content-center">
-              <button
-                type="submit"
-                className="btn btn-primary glow-btn px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                {isSubmitting ? "Logging in..." : "Login"}
-              </button>
-            </div>
-
-            <p className="text-center fw-bold mt-3">
-              Don't have an account?{" "}
-              <Link to="/register" className="text-decoration-none text-info">
-                Register
-              </Link>
-            </p>
-          </form>
+              <p className="text-center fw-bold mt-3">
+                Don't have an account?{" "}
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  Register
+                </Link>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-
-      <style>{`
-        .hero-image {
-          background: url("/Hero.jpg") center/cover no-repeat;
-          min-height: 100vh;
-        }
-
-        .glow-btn {
-          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7),
-            0 0 20px rgba(135, 206, 250, 0.7);
-          transition: all 0.3s ease-in-out;
-        }
-
-        .glow-btn:hover {
-          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9),
-            0 0 40px rgba(135, 206, 250, 0.8);
-          transform: translateY(-2px);
-        }
-      `}</style>
-    </div>
+    </>
   );
 };
 
