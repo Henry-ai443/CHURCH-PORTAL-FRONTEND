@@ -5,34 +5,26 @@ const Login = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Detect screen size once (and on resize)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
-    // Disable scrolling only on mobile
     if (isMobile) {
       document.body.style.overflow = "hidden";
       document.body.style.margin = "0";
       document.body.style.padding = "0";
     } else {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
     }
-
     return () => {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
     };
   }, [isMobile]);
 
@@ -41,7 +33,6 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
-
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
@@ -56,21 +47,18 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-
     setErrors({});
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
 
     const { username, password } = formData;
-
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -88,7 +76,6 @@ const Login = () => {
       );
 
       const data = await response.json();
-
       if (!response.ok) {
         setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
@@ -97,9 +84,7 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/home");
-      }, 2500);
+      setTimeout(() => navigate("/home"), 2500);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
@@ -109,17 +94,26 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
-      {/* Hero Image Section */}
+    <div
+      className="login-container d-flex flex-column flex-md-row"
+      style={{
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+        overflow: "hidden",
+      }}
+    >
+      {/* Hero Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
+        className="hero-section d-flex align-items-center justify-content-center text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          minHeight: "50vh",
+          width: isMobile ? "100%" : "50%",
+          height: isMobile ? "40%" : "100%",
+          position: "relative",
         }}
-        aria-label="Hero image with General Conference Church"
       >
         <div
           className="hero-overlay-text"
@@ -128,11 +122,11 @@ const Login = () => {
             padding: isMobile ? "20px 30px" : "40px 60px",
             borderRadius: "60px",
             color: "white",
-            maxWidth: "90vw",
             fontWeight: "700",
             letterSpacing: "1px",
             lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem", // smaller on mobile
+            fontSize: isMobile ? "1.5rem" : "2rem",
+            textShadow: "0 2px 4px rgba(0,0,0,0.4)",
           }}
         >
           GENERAL CONFERENCE YOUTH HUB
@@ -150,13 +144,17 @@ const Login = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+      <div
+        className="form-section d-flex align-items-center justify-content-center bg-light"
+        style={{
+          width: isMobile ? "100%" : "50%",
+          height: isMobile ? "60%" : "100%",
+          padding: "1rem",
+        }}
+      >
         <div
-          className="p-4 shadow rounded"
-          style={{
-            width: "100%",
-            maxWidth: "400px",
-          }}
+          className="p-4 shadow rounded bg-white"
+          style={{ width: "100%", maxWidth: "400px" }}
         >
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
@@ -226,9 +224,6 @@ const Login = () => {
                   cursor: "pointer",
                   fontSize: "1.2rem",
                   color: "#555",
-                  userSelect: "none",
-                  height: "1.5em",
-                  lineHeight: 1,
                 }}
               >
                 {showPassword ? "🙈" : "👁️"}
@@ -257,9 +252,15 @@ const Login = () => {
               type="submit"
               className="btn btn-primary w-100 fw-bold"
               disabled={isSubmitting}
-              aria-disabled={isSubmitting}
             >
-              {isSubmitting ? "Logging in..." : "Login"}
+              {isSubmitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
 
