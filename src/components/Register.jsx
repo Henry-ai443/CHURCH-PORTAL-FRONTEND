@@ -6,14 +6,19 @@ const Register = () => {
   const [countries] = useState(getNames());
 
   useEffect(() => {
+    // Fix for no space at the top or bottom
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+    document.documentElement.style.margin = "0";
+    document.documentElement.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
+      document.documentElement.style.margin = "initial";
+      document.documentElement.style.padding = "initial";
     };
   }, []);
 
@@ -108,7 +113,7 @@ const Register = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+    <div className="container-fluid vh-100 d-flex flex-column p-0 register-page">
       {/* Hero Image Section */}
       <div
         className="w-100 w-md-50 hero-image position-relative"
@@ -116,12 +121,14 @@ const Register = () => {
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          flex: "1", // Make sure hero image stretches to fill the space
         }}
       >
         <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
       </div>
+
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4 flex-grow-1">
         <div
           className="p-4 shadow rounded"
           style={{

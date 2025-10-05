@@ -177,7 +177,7 @@ const Login = () => {
                   disabled={isSubmitting}
                   required
                   style={{
-                    paddingRight: "3rem", // Ensure enough space for the emoji
+                    paddingRight: "3.5rem", // Ensure there is enough space for the emoji
                   }}
                 />
                 <button
@@ -188,7 +188,7 @@ const Login = () => {
                   style={{
                     position: "absolute",
                     top: "50%",
-                    right: "0.75rem", // Proper placement of the emoji
+                    right: "1rem", // Adjust this to properly place the emoji inside
                     transform: "translateY(-50%)",
                     border: "none",
                     background: "transparent",
