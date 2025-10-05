@@ -79,35 +79,37 @@ const YouthMessageForm = () => {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">Title</label>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
           <input
             type="text"
             id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="form-control custom-input"
+            className="form-control"
+            placeholder="Enter your question title"
             required
             disabled={loading}
           />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="message" className="form-label">Message</label>
+        <div className="form-group">
+          <label htmlFor="message">Message</label>
           <textarea
             id="message"
             name="message"
             value={formData.message}
             onChange={handleChange}
             rows="5"
-            className="form-control custom-input"
+            className="form-control"
+            placeholder="Type your full message here..."
             required
             disabled={loading}
           />
         </div>
 
-        <div className="form-check mb-3">
+        <div className="form-check">
           <input
             type="checkbox"
             id="is_anonymous"
@@ -122,49 +124,84 @@ const YouthMessageForm = () => {
           </label>
         </div>
 
-        <button type="submit" className="btn submit-btn w-100" disabled={loading}>
+        <button type="submit" className="btn-submit" disabled={loading}>
           {loading ? 'Submitting...' : 'Submit Question'}
         </button>
       </form>
 
       <style jsx>{`
         .form-container {
-          background: #fff;
-          padding: 30px;
+          background: #ffffff;
+          padding: 40px;
           margin: 40px auto;
           border-radius: 12px;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-          max-width: 600px;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+          max-width: 800px;
+          width: 95%;
+          font-family: 'Segoe UI', sans-serif;
         }
 
         .form-title {
           text-align: center;
+          color: #007bff;
           margin-bottom: 25px;
-          font-weight: bold;
-          background: linear-gradient(to right, #4e54c8, #8f94fb);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
         }
 
-        .custom-input {
-          border-radius: 8px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-          padding: 10px 12px;
+        .form-group {
+          margin-bottom: 20px;
         }
 
-        .submit-btn {
-          background: linear-gradient(to right, #4e54c8, #8f94fb);
-          border: none;
-          padding: 12px;
-          font-size: 16px;
+        label {
           font-weight: 600;
-          border-radius: 8px;
-          transition: background 0.3s ease, transform 0.2s;
+          margin-bottom: 6px;
+          display: block;
+          color: #333;
         }
 
-        .submit-btn:hover {
-          background: linear-gradient(to right, #3b3fc1, #7c82f3);
-          transform: scale(1.02);
+        .form-control {
+          width: 100%;
+          padding: 12px 14px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          transition: border 0.3s;
+        }
+
+        .form-control:focus {
+          border-color: #007bff;
+          outline: none;
+        }
+
+        .form-check {
+          margin: 20px 0;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .form-check-label {
+          font-size: 15px;
+          color: #555;
+        }
+
+        .btn-submit {
+          background-color: #007bff;
+          color: white;
+          padding: 12px;
+          border: none;
+          border-radius: 6px;
+          font-size: 16px;
+          width: 100%;
+          transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+          background-color: #0056b3;
+          cursor: pointer;
+        }
+
+        .btn-submit:disabled {
+          background-color: #6c757d;
+          cursor: not-allowed;
         }
 
         .success-animation {
@@ -202,6 +239,16 @@ const YouthMessageForm = () => {
           }
           10%, 90% {
             opacity: 1;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .form-container {
+            padding: 25px 20px;
+          }
+
+          .form-title {
+            font-size: 20px;
           }
         }
       `}</style>
