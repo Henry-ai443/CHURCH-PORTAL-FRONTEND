@@ -37,7 +37,7 @@ const Login = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    setErrors({ ...errors, [name]: "" });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     setGeneralError("");
   };
 
@@ -105,7 +105,12 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", data.token);
+      if (formData.rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
+
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "", rememberMe: false });
@@ -143,20 +148,13 @@ const Login = () => {
         }
 
         .hero-image {
-          flex: 0 0 50%;
+          flex: 1 1 0;
+          min-height: 0;
           background: url('/Hero.jpg') center/cover no-repeat;
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
-          height: 50vh;
-          min-height: 300px;
-        }
-
-        @media (min-width: 768px) {
-          .hero-image {
-            height: 100vh;
-          }
         }
 
         .hero-overlay-text-wrapper {
@@ -201,20 +199,13 @@ const Login = () => {
         }
 
         .form-section {
-          flex: 0 0 50%;
+          flex: 1 1 0;
+          min-height: 0;
           background: #f8f9fa;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 2rem;
-          height: 50vh;
-          min-height: 300px;
-        }
-
-        @media (min-width: 768px) {
-          .form-section {
-            height: 100vh;
-          }
         }
 
         .form-container {
@@ -373,7 +364,6 @@ const Login = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    tabIndex={-1}
                     className="password-toggle-btn"
                     disabled={isSubmitting}
                   >
