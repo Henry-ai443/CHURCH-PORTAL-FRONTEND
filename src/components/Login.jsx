@@ -15,7 +15,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Disable body scroll, margin & padding to avoid extra space
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
@@ -43,7 +42,6 @@ const Login = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    // Simple validation
     if (!formData.username || !formData.password) {
       setGeneralError("Username and password are required.");
       setIsSubmitting(false);
@@ -51,10 +49,7 @@ const Login = () => {
     }
 
     try {
-      // Fake login delay
       await new Promise((res) => setTimeout(res, 1500));
-
-      // Fake success for demo
       setSuccess("Login successful!");
       setTimeout(() => navigate("/home"), 1500);
     } catch {
@@ -66,7 +61,7 @@ const Login = () => {
   return (
     <>
       <style>{`
-        /* Root & container full height, no body scroll */
+        /* Make sure root covers full viewport */
         html, body, #root {
           height: 100%;
           margin: 0;
@@ -82,25 +77,30 @@ const Login = () => {
           width: 100vw;
         }
 
-        /* On desktop, side by side */
         @media (min-width: 768px) {
           .container {
             flex-direction: row;
           }
         }
 
-        /* Hero image styles */
+        /* Hero styles */
         .hero {
-          flex: 1;
+          width: 100vw;
+          height: 50vh;
           background: url('/Hero.jpg') center/cover no-repeat;
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
-          position: relative;
-          min-height: 50vh;
         }
 
-        /* Overlay text on hero */
+        @media (min-width: 768px) {
+          .hero {
+            width: 50vw;
+            height: 100vh;
+          }
+        }
+
         .hero-text {
           background: rgba(0, 0, 0, 0.7);
           padding: 40px 60px;
@@ -126,14 +126,21 @@ const Login = () => {
 
         /* Form section */
         .form-section {
-          flex: 1;
+          width: 100vw;
+          height: 50vh;
+          background: #f8f9fa;
           display: flex;
           justify-content: center;
           align-items: center;
           padding: 2rem;
-          background: #f8f9fa;
-          min-height: 50vh;
           overflow-y: auto;
+        }
+
+        @media (min-width: 768px) {
+          .form-section {
+            width: 50vw;
+            height: 100vh;
+          }
         }
 
         .form-box {
@@ -249,7 +256,13 @@ const Login = () => {
                 fill="transparent"
                 d="M50,140 A200,200 0 0,1 450,140"
               />
-              <text textAnchor="middle" fill="white" fontWeight="700" fontSize="34px" letterSpacing="1px">
+              <text
+                textAnchor="middle"
+                fill="white"
+                fontWeight="700"
+                fontSize="34px"
+                letterSpacing="1px"
+              >
                 <textPath href="#curve" startOffset="50%">
                   GENERAL CONFERENCE YOUTH HUB
                 </textPath>
@@ -336,10 +349,7 @@ const Login = () => {
 
             <div className="register-link">
               Don't have an account?{" "}
-              <Link to="/register">
-                Register here
-              </Link>
-              .
+              <Link to="/register">Register here</Link>.
             </div>
           </div>
         </section>
