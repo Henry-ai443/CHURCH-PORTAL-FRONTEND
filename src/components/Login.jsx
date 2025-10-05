@@ -5,10 +5,12 @@ const Login = () => {
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+    document.body.style.overflow = "hidden"; // Prevent scrolling
 
     return () => {
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
+      document.body.style.overflow = "auto";
     };
   }, []);
 
@@ -142,19 +144,28 @@ const Login = () => {
         .hero-image {
           position: relative;
           background: url('/Hero.jpg') center/cover no-repeat;
-          width: 100%;
-          height: 50vh;
+          flex: 1 0 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-shrink: 0;
         }
 
-        @media (min-width: 768px) {
-          .hero-image {
-            height: 100vh;
-            width: 50%;
-          }
+        .form-section {
+          background: #f8f9fa;
+          flex: 1 0 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem;
+        }
+
+        .form-container {
+          width: 100%;
+          max-width: 400px;
+          background: white;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
         }
 
         .hero-overlay-text-wrapper {
@@ -195,33 +206,6 @@ const Login = () => {
           font-style: italic;
           margin-top: 8px;
           user-select: none;
-        }
-
-        .form-section {
-          background: #f8f9fa;
-          width: 100%;
-          height: 50vh;
-          padding: 1.5rem 1.5rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        @media (min-width: 768px) {
-          .form-section {
-            height: 100vh;
-            width: 50%;
-          }
-        }
-
-        .form-container {
-          width: 100%;
-          max-width: 400px;
-          background: white;
-          padding: 2rem;
-          border-radius: 8px;
-          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
         }
 
         .btn-primary {
@@ -302,7 +286,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Login Form Section */}
+        {/* Form Section */}
         <div className="form-section">
           <div className="form-container">
             <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
@@ -313,6 +297,7 @@ const Login = () => {
             {success && (
               <div className="alert alert-success fw-bold">{success}</div>
             )}
+
             {progressComplete && (
               <div
                 className={`login-progress-bar ${
@@ -340,15 +325,13 @@ const Login = () => {
                   disabled={isSubmitting}
                   required
                 />
-                {errors.username && (
-                  <div className="text-danger">{errors.username[0]}</div>
-                )}
               </div>
 
               <div className="mb-3">
                 <label htmlFor="password" className="form-label fw-bold">
                   Password:
                 </label>
+
                 <div style={{ position: "relative" }}>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -364,6 +347,7 @@ const Login = () => {
                     style={{ paddingRight: "2.5rem" }}
                     required
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -374,9 +358,6 @@ const Login = () => {
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
-                {errors.password && (
-                  <div className="text-danger">{errors.password[0]}</div>
-                )}
               </div>
 
               <div className="mb-3 form-check">
@@ -389,7 +370,10 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
-                <label className="form-check-label fw-bold" htmlFor="rememberMe">
+                <label
+                  className="form-check-label fw-bold"
+                  htmlFor="rememberMe"
+                >
                   Remember me
                 </label>
               </div>
