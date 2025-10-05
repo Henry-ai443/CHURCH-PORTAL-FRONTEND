@@ -3,9 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    rememberMe: false,
+  });
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Detect screen size once (and on resize)
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -18,37 +28,12 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    // Disable scrolling only on mobile
-    if (isMobile) {
-      document.body.style.overflow = "hidden";
-      document.body.style.margin = "0";
-      document.body.style.padding = "0";
-    } else {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-    }
-
+    // Disable scrolling on the whole page
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
     };
-  }, [isMobile]);
-
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    rememberMe: false,
-  });
-
-  const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const navigate = useNavigate();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -63,7 +48,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setErrors({});
     setGeneralError("");
     setSuccess("");
@@ -109,15 +93,15 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+    <div className="container-fluid vh-100 p-0 d-flex flex-column justify-content-between register-page">
       {/* Hero Image Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
+        className="w-100 d-flex align-items-center justify-content-center position-relative text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          minHeight: "50vh",
+          height: "50vh",
         }}
         aria-label="Hero image with General Conference Church"
       >
@@ -132,7 +116,7 @@ const Login = () => {
             fontWeight: "700",
             letterSpacing: "1px",
             lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem", // smaller on mobile
+            fontSize: isMobile ? "1.5rem" : "2rem",
           }}
         >
           GENERAL CONFERENCE YOUTH HUB
@@ -150,7 +134,7 @@ const Login = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+      <div className="w-100 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div
           className="p-4 shadow rounded"
           style={{
@@ -214,7 +198,6 @@ const Login = () => {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
                 disabled={isSubmitting}
                 style={{
                   position: "absolute",
@@ -224,7 +207,7 @@ const Login = () => {
                   border: "none",
                   background: "transparent",
                   cursor: "pointer",
-                  fontSize: "1.2rem",
+                  fontSize: "1.5rem",
                   color: "#555",
                   userSelect: "none",
                   height: "1.5em",
@@ -255,11 +238,18 @@ const Login = () => {
 
             <button
               type="submit"
-              className="btn btn-primary w-100 fw-bold"
+              className="btn btn-primary w-100 fw-bold d-flex justify-content-center align-items-center"
               disabled={isSubmitting}
               aria-disabled={isSubmitting}
             >
-              {isSubmitting ? "Logging in..." : "Login"}
+              {isSubmitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
 
