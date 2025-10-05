@@ -3,13 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Enable scrolling on phones (removed overflow hidden)
+    // Reset margin/padding and hide overflow to prevent scroll
+    document.documentElement.style.height = "100%";
+    document.documentElement.style.margin = "0";
+    document.documentElement.style.padding = "0";
+    document.body.style.height = "100%";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
+      document.documentElement.style.height = "";
+      document.documentElement.style.margin = "";
+      document.documentElement.style.padding = "";
+      document.body.style.height = "";
+      document.body.style.margin = "";
+      document.body.style.padding = "";
+      document.body.style.overflow = "";
     };
   }, []);
 
@@ -104,7 +114,6 @@ const Login = () => {
         return;
       }
 
-      // Store token based on rememberMe
       if (rememberMe) {
         localStorage.setItem("token", data.token);
       } else {
@@ -127,19 +136,22 @@ const Login = () => {
   return (
     <>
       <style>{`
+        /* Reset all margins and paddings */
         html, body, #root {
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow-x: hidden;
+          overflow: hidden;
         }
+
         .register-page {
-          height: 100vh; /* Changed from min-height to height */
           display: flex;
           flex-direction: column;
+          height: 100vh; /* Full viewport height */
           margin: 0;
           padding: 0;
         }
+
         @media (min-width: 768px) {
           .register-page {
             flex-direction: row;
@@ -147,21 +159,16 @@ const Login = () => {
         }
 
         .hero-image {
+          flex: 1 1 0;
+          height: 100%;
+          background-image: url('/Hero.jpg');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
           position: relative;
-          background: url('/Hero.jpg') center/cover no-repeat;
-          width: 100%;
-          /* Use flex to control height */
-          flex: 1 1 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 50vh; /* Minimum height on small screens */
-        }
-        @media (min-width: 768px) {
-          .hero-image {
-            height: 100vh; /* Full height on larger screens */
-            width: 50%;
-          }
         }
 
         .hero-overlay-text-wrapper {
@@ -206,21 +213,13 @@ const Login = () => {
         }
 
         .form-section {
+          flex: 1 1 0;
+          height: 100%;
           background: #f8f9fa;
-          width: 100%;
-          /* Use flex to control height */
-          flex: 1 1 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 50vh; /* Minimum height on small screens */
-          padding: 1.5rem 1.5rem;
-        }
-        @media (min-width: 768px) {
-          .form-section {
-            height: 100vh;
-            width: 50%;
-          }
+          padding: 0; /* No padding to avoid extra height */
         }
 
         .form-container {
@@ -230,6 +229,9 @@ const Login = () => {
           border-radius: 8px;
           background: white;
           padding: 2rem;
+          box-sizing: border-box;
+          overflow-y: auto; /* Scroll inside form if needed */
+          max-height: 90vh;
         }
 
         .btn-primary {
@@ -280,13 +282,11 @@ const Login = () => {
         .form-check-label {
           user-select: none;
         }
-
       `}</style>
 
       <div className="container-fluid p-0 register-page">
-        {/* Hero Image Section */}
-        <div className="hero-image">
-          <div className="hero-overlay-text-wrapper" aria-hidden="true">
+        <div className="hero-image" aria-hidden="true">
+          <div className="hero-overlay-text-wrapper">
             <svg
               viewBox="0 0 500 150"
               className="semi-circular-text"
@@ -309,7 +309,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Form Section */}
         <div className="form-section">
           <div className="form-container">
             <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
@@ -391,7 +390,6 @@ const Login = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    // removed tabIndex so keyboard users can focus
                     className="password-toggle-btn"
                   >
                     {showPassword ? "🙈" : "👁️"}
