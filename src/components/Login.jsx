@@ -108,10 +108,7 @@ const Login = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="hero-overlay-text">General Conference Church</div>
-        <div className="hero-overlay-text fw-bol">
-          YOUTH HUB
-        </div>
+        <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
       </div>
 
       {/* Form Section */}
@@ -175,7 +172,9 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
-                  style={{ paddingRight: "3rem" }} // Adjust padding to fit emoji
+                  style={{
+                    paddingRight: "3rem", // Adjust to make space for the emoji
+                  }}
                 />
                 <button
                   type="button"
@@ -185,7 +184,7 @@ const Login = () => {
                   style={{
                     position: "absolute",
                     top: "50%",
-                    right: "0.75rem",
+                    right: "1rem", // Adjust to center the emoji better
                     transform: "translateY(-50%)",
                     border: "none",
                     background: "transparent",
