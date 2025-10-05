@@ -3,14 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
+    // Reset body margins etc.
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
+      document.body.style.margin = "";
+      document.body.style.padding = "";
     };
   }, []);
 
@@ -34,14 +35,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
 
     const { username, password } = formData;
-
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -57,9 +56,7 @@ const Login = () => {
           body: JSON.stringify({ username, password }),
         }
       );
-
       const data = await response.json();
-
       if (!response.ok) {
         switch (data.detail) {
           case "User does not exist.":
@@ -90,7 +87,6 @@ const Login = () => {
       } else {
         sessionStorage.setItem("token", data.token);
       }
-
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "" });
@@ -105,18 +101,16 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container d-flex flex-column flex-md-row">
-      {/* Hero image section */}
-      <div className="hero-image-section w-100 w-md-50 d-flex align-items-center justify-content-center">
+    <div className="login-container">
+      <div className="hero-image-section">
         <div className="text-overlay text-center text-white">
           <h1 className="fw-bold display-6 mb-2">Welcome Back</h1>
           <p className="lead mb-0">General Conference Youth Hub</p>
         </div>
       </div>
 
-      {/* Form section */}
-      <div className="form-section w-100 w-md-50 d-flex align-items-center justify-content-center p-4 bg-light">
-        <div className="form-wrapper shadow rounded p-4 w-100" style={{ maxWidth: "400px" }}>
+      <div className="form-section">
+        <div className="form-wrapper shadow rounded p-4">
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && <div className="alert alert-danger">{generalError}</div>}
@@ -137,32 +131,29 @@ const Login = () => {
               />
             </div>
 
-            <div className="mb-3">
+            <div className="mb-3 position-relative">
               <label htmlFor="password" className="form-label fw-bold">Password</label>
-              <div className="position-relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="form-control pe-5"
-                  id="password"
-                  name="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
-                <button
-                  type="button"
-                  className="password-toggle-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? "🙈" : "👁️"}
-                </button>
-              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control pe-5"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isSubmitting}
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
             </div>
 
-            {/* Remember Me & Forgot Password */}
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div className="form-check">
                 <input
@@ -176,12 +167,11 @@ const Login = () => {
                   Remember Me
                 </label>
               </div>
-              <Link to="/forgot-password" className="text-decoration-none text-dark fw-bold">
+              <Link to="/forgot-password" className="text-primary fw-bold">
                 Forgot Password?
               </Link>
             </div>
 
-            {/* Submit button with glow */}
             <div className="d-grid mb-3">
               <button
                 type="submit"
@@ -201,7 +191,7 @@ const Login = () => {
 
             <p className="text-center fw-bold">
               Don't have an account?{" "}
-              <Link to="/register" className="text-decoration-none text-info">Register</Link>
+              <Link to="/register" className="text-info">Register</Link>
             </p>
           </form>
         </div>
@@ -213,57 +203,56 @@ const Login = () => {
           padding: 0;
           box-sizing: border-box;
         }
-
-        html,
-        body,
-        .login-container {
+        html, body, .login-container {
           height: 100%;
           width: 100%;
         }
-
         .login-container {
-          min-height: 100vh;
-          overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
-
         .hero-image-section {
-          background: url("/Hero.jpg") center/cover no-repeat;
+          background: url("/youth-hero.jpg") center/cover no-repeat;
           height: 50vh;
+          position: relative;
         }
-
         @media (min-width: 768px) {
+          .login-container {
+            flex-direction: row;
+          }
           .hero-image-section {
             height: 100vh;
+            width: 50%;
           }
         }
-
         .text-overlay {
           background: rgba(0, 0, 0, 0.4);
           padding: 2rem;
           border-radius: 10px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          position: absolute;
         }
-
         .form-section {
-          height: 50vh;
+          background: #f9fbff;
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
         }
-
-        @media (min-width: 768px) {
-          .form-section {
-            height: 100vh;
-          }
-        }
-
         .form-wrapper {
           background: #ffffff;
           border-radius: 12px;
-          box-shadow: 0 0 25px rgba(30, 144, 255, 0.15);
+          box-shadow: 0 0 25px rgba(30, 144, 255, 0.1);
+          width: 100%;
+          max-width: 400px;
         }
-
         .form-control:focus {
           border-color: #1e90ff;
           box-shadow: 0 0 5px #1e90ff;
         }
-
         .password-toggle-btn {
           position: absolute;
           top: 50%;
@@ -274,20 +263,18 @@ const Login = () => {
           font-size: 1.25rem;
           color: #888;
           cursor: pointer;
-          z-index: 2;
         }
-
         .password-toggle-btn:hover {
           color: #1e90ff;
         }
-
         .glow-btn {
-          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
+          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7),
+            0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
         }
-
         .glow-btn:hover {
-          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9),
+            0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
         }
       `}</style>
@@ -296,4 +283,3 @@ const Login = () => {
 };
 
 export default Login;
-
