@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getNames } from "country-list";
 
-const Login = () => {
+const Register = () => {
+  const [countries] = useState(getNames());
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
@@ -15,27 +18,23 @@ const Login = () => {
   }, []);
 
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
+    email: "",
     password: "",
-    rememberMe: false,
+    confirmPassword: "",
+    country: "",
   });
 
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-
-    setErrors({});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
     setGeneralError("");
   };
 
@@ -47,70 +46,63 @@ const Login = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const { username, password } = formData;
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
+    const country = formData.country.trim();
 
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
+    if (!name || !email || !password || !confirmPassword || !country) {
+      setGeneralError("All fields are required.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrors({ confirmPassword: ["Passwords do not match."] });
       setIsSubmitting(false);
       return;
     }
 
     try {
       const response = await fetch(
-        "https://church-portal-backend.onrender.com/api/login/",
+        "https://church-portal-backend.onrender.com/api/register/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({
+            username: name,
+            email: email,
+            password: password,
+            country: country,
+          }),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        switch (data.detail) {
-          case "User does not exist.":
-            setGeneralError(
-              <>
-                User does not exist.
-                <br />
-                <small>
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    style={{ color: "#0d6efd", textDecoration: "underline" }}
-                  >
-                    Register here
-                  </Link>
-                  .
-                </small>
-              </>
-            );
-            break;
-
-          case "Incorrect password.":
-            setGeneralError("Incorrect password. Please try again.");
-            break;
-
-          case "Username and password are required.":
-            setGeneralError("Both username and password are required.");
-            break;
-
-          default:
-            setGeneralError("Login failed. Please try again.");
-        }
         setIsSubmitting(false);
+        if (data?.detail) {
+          setGeneralError(data.detail);
+        } else if (data?.non_field_errors) {
+          setGeneralError(data.non_field_errors[0]);
+        } else if (typeof data === "object") {
+          setErrors(data);
+        } else {
+          setGeneralError("Registration failed. Please try again.");
+        }
         return;
       }
 
       localStorage.setItem("token", data.token);
-      setSuccess("Login successful! Redirecting...");
+      setSuccess("Registration successful! Redirecting...");
       setTimeout(() => {
-        navigate("/home");
-      }, 2500);
+        navigate("/");
+      }, 3000);
     } catch (error) {
-      console.error("Login error:", error);
-      setGeneralError("Login failed. Please try again.");
+      console.error("Registration error:", error);
+      setGeneralError("Registration failed. Please try again.");
       setIsSubmitting(false);
     }
   };
@@ -125,42 +117,8 @@ const Login = () => {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-        aria-label="Hero image with General Conference Church"
       >
-        <div
-          className="hero-overlay-text"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "rgba(0, 0, 0, 0.65)",
-            padding: "40px 60px",
-            borderRadius: "60px",
-            maxWidth: "90vw",
-            color: "white",
-            textAlign: "center",
-            userSelect: "none",
-            pointerEvents: "none",
-            fontWeight: "700",
-            fontSize: "2rem",
-            letterSpacing: "1px",
-          }}
-          aria-hidden="true"
-        >
-          {/* replicate your semicircular text with SVG if you want */}
-          GENERAL CONFERENCE YOUTH HUB
-          <div
-            style={{
-              marginTop: "10px",
-              fontSize: "1.25rem",
-              fontStyle: "italic",
-              fontWeight: "600",
-            }}
-          >
-            Uniting youths in Christ
-          </div>
-        </div>
+        <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
       {/* Form Section */}
@@ -172,7 +130,9 @@ const Login = () => {
             maxWidth: "400px",
           }}
         >
-          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+          <h3 className="mb-4 text-center fw-bold text-primary">
+            Create an Account
+          </h3>
 
           {generalError && (
             <div className="alert alert-danger fw-bold">{generalError}</div>
@@ -181,109 +141,143 @@ const Login = () => {
             <div className="alert alert-success fw-bold">{success}</div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">
-                Username:
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="form-control"
-                placeholder="Enter your username..."
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                autoComplete="username"
-                disabled={isSubmitting}
-                required
-              />
-              {errors.username && (
-                <div className="text-danger">{errors.username[0]}</div>
-              )}
-            </div>
-
-            <div className="mb-3 position-relative">
-              <label htmlFor="password" className="form-label fw-bold">
-                Password:
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className="form-control"
-                placeholder="Enter your password..."
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="current-password"
-                disabled={isSubmitting}
-                required
-                style={{ paddingRight: "2.5rem" }}
-              />
+          {success && (
+            <div className="text-center mb-3">
               <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
-                disabled={isSubmitting}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "0.75rem",
-                  transform: "translateY(-50%)",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  fontSize: "1.2rem",
-                  color: "#555",
-                  userSelect: "none",
-                  height: "1.5em",
-                  lineHeight: 1,
-                }}
+                className="btn btn-success"
+                onClick={() => navigate("/")}
               >
-                {showPassword ? "🙈" : "👁️"}
+                Go to Dashboard
               </button>
-              {errors.password && (
-                <div className="text-danger">{errors.password[0]}</div>
-              )}
             </div>
+          )}
 
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-                disabled={isSubmitting}
-              />
-              <label className="form-check-label" htmlFor="rememberMe">
-                Remember Me
-              </label>
-            </div>
+          {!success && (
+            <form onSubmit={handleSubmit}>
+              {/* Username */}
+              <div className="mb-3">
+                <label className="form-label">Username:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter your name..."
+                  onChange={handleChange}
+                  name="name"
+                  value={formData.name}
+                  disabled={isSubmitting}
+                />
+                {errors.username && (
+                  <div className="text-danger">{errors.username[0]}</div>
+                )}
+              </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-100 fw-bold"
-              disabled={isSubmitting}
-              aria-disabled={isSubmitting}
-            >
-              {isSubmitting ? "Logging in..." : "Login"}
-            </button>
-          </form>
+              {/* Email */}
+              <div className="mb-3">
+                <label className="form-label">Email:</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Enter your email..."
+                  onChange={handleChange}
+                  name="email"
+                  value={formData.email}
+                  disabled={isSubmitting}
+                />
+                {errors.email && (
+                  <div className="text-danger fw-bold">{errors.email[0]}</div>
+                )}
+              </div>
 
-          <p className="text-center fw-bold mt-3">
-            Don't have an account?{" "}
-            <Link to="/register" style={{ textDecoration: "none" }}>
-              Register here
-            </Link>
-            .
-          </p>
+              {/* Country Dropdown */}
+              <div className="mb-3">
+                <label className="form-label">Country:</label>
+                <select
+                  name="country"
+                  className="form-select"
+                  value={formData.country}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  required
+                >
+                  <option value="" disabled>
+                    Select your country
+                  </option>
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
+                {errors.country && (
+                  <div className="text-danger fw-bold">{errors.country[0]}</div>
+                )}
+              </div>
+
+              {/* Password */}
+              <div className="mb-3">
+                <label className="form-label">Password:</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Enter your password..."
+                  onChange={handleChange}
+                  name="password"
+                  value={formData.password}
+                  disabled={isSubmitting}
+                />
+                {errors.password && (
+                  <div className="text-danger fw-bold">{errors.password[0]}</div>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div className="mb-3">
+                <label className="form-label">Confirm Password:</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Confirm password..."
+                  onChange={handleChange}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  disabled={isSubmitting}
+                />
+                {errors.confirmPassword && (
+                  <div className="text-danger fw-bold">
+                    {errors.confirmPassword[0]}
+                  </div>
+                )}
+              </div>
+
+              <div className="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  {isSubmitting ? "Registering..." : "Register"}
+                </button>
+              </div>
+
+              <p className="text-center fw-bold mt-3">
+                Already have an account?{" "}
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  Login
+                </Link>
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;
