@@ -172,11 +172,11 @@ const Login = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                <label htmlFor="rememberMe" className="form-check-label">
+                <label htmlFor="rememberMe" className="form-check-label fw-bold">
                   Remember Me
                 </label>
               </div>
-              <Link to="/forgot-password" className="text-decoration-none text-info fw-bold small">
+              <Link to="/forgot-password" className="text-decoration-none text-dark fw-bold">
                 Forgot Password?
               </Link>
             </div>
@@ -227,7 +227,7 @@ const Login = () => {
         }
 
         .hero-image-section {
-          background: url("/youth-hero.jpg") center/cover no-repeat;
+          background: url("/Hero.jpg") center/cover no-repeat;
           height: 50vh;
         }
 
