@@ -5,16 +5,10 @@ const Login = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Detect screen size once (and on resize)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
@@ -41,13 +35,11 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
-
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -56,21 +48,18 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-
     setErrors({});
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
 
     const { username, password } = formData;
-
     if (!username || !password) {
       setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
@@ -86,7 +75,6 @@ const Login = () => {
           body: JSON.stringify({ username, password }),
         }
       );
-
       const data = await response.json();
 
       if (!response.ok) {
@@ -97,9 +85,7 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/home");
-      }, 2500);
+      setTimeout(() => navigate("/home"), 2500);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
@@ -109,15 +95,20 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
-      {/* Hero Image Section */}
+    <div
+      className={`container-fluid vh-100 d-flex p-0 ${
+        isMobile ? "flex-column" : "flex-md-row"
+      } register-page`}
+    >
+      {/* Hero Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
+        className="hero-image position-relative d-flex align-items-center justify-content-center text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          minHeight: "50vh",
+          height: isMobile ? "50vh" : "100vh",
+          width: isMobile ? "100%" : "50%",
         }}
         aria-label="Hero image with General Conference Church"
       >
@@ -132,7 +123,7 @@ const Login = () => {
             fontWeight: "700",
             letterSpacing: "1px",
             lineHeight: "1.2",
-            fontSize: isMobile ? "1.5rem" : "2rem", // smaller on mobile
+            fontSize: isMobile ? "1.5rem" : "2rem",
           }}
         >
           GENERAL CONFERENCE YOUTH HUB
@@ -150,9 +141,16 @@ const Login = () => {
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
+      <div
+        className="d-flex align-items-center justify-content-center bg-light form-section p-4"
+        style={{
+          height: isMobile ? "50vh" : "100vh",
+          width: isMobile ? "100%" : "50%",
+          overflowY: isMobile ? "auto" : "visible",
+        }}
+      >
         <div
-          className="p-4 shadow rounded"
+          className="p-4 shadow rounded bg-white"
           style={{
             width: "100%",
             maxWidth: "400px",
@@ -227,8 +225,6 @@ const Login = () => {
                   fontSize: "1.2rem",
                   color: "#555",
                   userSelect: "none",
-                  height: "1.5em",
-                  lineHeight: 1,
                 }}
               >
                 {showPassword ? "🙈" : "👁️"}
@@ -257,7 +253,6 @@ const Login = () => {
               type="submit"
               className="btn btn-primary w-100 fw-bold"
               disabled={isSubmitting}
-              aria-disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
