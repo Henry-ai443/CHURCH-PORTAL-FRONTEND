@@ -2,33 +2,30 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-      document.body.style.overflow = "auto";
-    };
-  }, []);
-
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     rememberMe: false,
   });
-
-  const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [progressComplete, setProgressComplete] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Disable body scroll, margin & padding to avoid extra space
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.margin = "";
+      document.body.style.padding = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -36,90 +33,32 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
 
-    const { username, password } = formData;
-
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
+    // Simple validation
+    if (!formData.username || !formData.password) {
+      setGeneralError("Username and password are required.");
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch(
-        "https://church-portal-backend.onrender.com/api/login/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+      // Fake login delay
+      await new Promise((res) => setTimeout(res, 1500));
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        switch (data.detail) {
-          case "User does not exist.":
-            setGeneralError(
-              <>
-                User does not exist.
-                <br />
-                <small>
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    style={{ color: "#1E90FF", textDecoration: "underline" }}
-                  >
-                    Register here
-                  </Link>
-                  .
-                </small>
-              </>
-            );
-            break;
-
-          case "Incorrect password.":
-            setGeneralError("Incorrect password. Please try again.");
-            break;
-
-          case "Username and password are required.":
-            setGeneralError("Both username and password are required.");
-            break;
-
-          default:
-            setGeneralError("Login failed. Please try again.");
-        }
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (formData.rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-
+      // Fake success for demo
       setSuccess("Login successful!");
-      setProgressComplete(true);
-      setFormData({ username: "", password: "", rememberMe: false });
-
-      setTimeout(() => setFadeOut(true), 2000);
-      setTimeout(() => navigate("/home"), 2200);
-    } catch (error) {
-      console.error("Login error:", error);
-      setGeneralError("Login failed. Please try again.");
+      setTimeout(() => navigate("/home"), 1500);
+    } catch {
+      setGeneralError("Login failed. Try again.");
       setIsSubmitting(false);
     }
   };
@@ -127,6 +66,7 @@ const Login = () => {
   return (
     <>
       <style>{`
+        /* Root & container full height, no body scroll */
         html, body, #root {
           height: 100%;
           margin: 0;
@@ -135,80 +75,68 @@ const Login = () => {
           font-family: system-ui, sans-serif;
         }
 
-        .register-page {
+        .container {
           display: flex;
           flex-direction: column;
           height: 100vh;
+          width: 100vw;
         }
 
+        /* On desktop, side by side */
         @media (min-width: 768px) {
-          .register-page {
+          .container {
             flex-direction: row;
           }
         }
 
-        .hero-image {
-          flex: 1 1 0;
-          min-height: 0;
+        /* Hero image styles */
+        .hero {
+          flex: 1;
           background: url('/Hero.jpg') center/cover no-repeat;
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
+          min-height: 50vh;
         }
 
-        .hero-overlay-text-wrapper {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(0, 0, 0, 0.65);
-          padding: 40px 100px 80px 100px;
+        /* Overlay text on hero */
+        .hero-text {
+          background: rgba(0, 0, 0, 0.7);
+          padding: 40px 60px;
           border-radius: 60px;
-          max-width: 95vw;
-          width: 550px;
-          text-align: center;
           color: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          text-align: center;
+          max-width: 90vw;
           pointer-events: none;
           user-select: none;
         }
 
-        .semi-circular-text {
+        .hero-text svg {
           width: 100%;
-          height: 170px;
-          overflow: visible;
-          margin-bottom: 14px;
+          height: 150px;
+          margin-bottom: 10px;
         }
 
-        .semi-circular-text text {
-          fill: white;
-          font-weight: 700;
-          font-size: 34px;
-          letter-spacing: 1px;
-        }
-
-        .slogan-text {
-          font-size: 22px;
-          font-weight: 600;
+        .hero-text .slogan {
+          font-size: 1.2rem;
           font-style: italic;
-          margin-top: 10px;
+          margin-top: 0.5rem;
         }
 
+        /* Form section */
         .form-section {
-          flex: 1 1 0;
-          min-height: 0;
-          background: #f8f9fa;
+          flex: 1;
           display: flex;
-          align-items: center;
           justify-content: center;
+          align-items: center;
           padding: 2rem;
+          background: #f8f9fa;
+          min-height: 50vh;
+          overflow-y: auto;
         }
 
-        .form-container {
+        .form-box {
           width: 100%;
           max-width: 400px;
           background: white;
@@ -217,183 +145,188 @@ const Login = () => {
           box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
         }
 
-        .btn-primary {
+        .form-box h3 {
+          color: #1e90ff;
+          margin-bottom: 1.5rem;
+          text-align: center;
+        }
+
+        .form-box .btn-primary {
+          background-color: #1e90ff;
+          border: none;
+          width: 100%;
+          padding: 0.75rem;
+          font-weight: bold;
           box-shadow:
             0 0 10px rgba(30, 144, 255, 0.7),
             0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
+          cursor: pointer;
+          border-radius: 5px;
         }
 
-        .btn-primary:hover {
+        .form-box .btn-primary:hover:not(:disabled) {
           box-shadow:
             0 0 20px rgba(30, 144, 255, 0.9),
             0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
         }
 
-        .login-progress-bar {
-          height: 4px;
-          background: #1e90ff;
-          width: 0%;
-          border-radius: 2px;
-          transition: width 2s ease;
-          margin-bottom: 12px;
-        }
-
-        .login-progress-bar.complete {
+        .form-box input[type="text"],
+        .form-box input[type="password"] {
           width: 100%;
+          padding: 0.5rem;
+          margin-bottom: 1rem;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+          font-size: 1rem;
         }
 
-        .login-progress-bar.fade-out {
-          opacity: 0;
-          transition: opacity 0.4s ease;
+        .form-box label {
+          font-weight: 600;
+        }
+
+        .form-check {
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+        }
+
+        .form-check input {
+          margin-right: 0.5rem;
+        }
+
+        .error-message {
+          color: #dc3545;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+
+        .success-message {
+          color: #198754;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          text-align: center;
         }
 
         .password-toggle-btn {
           position: absolute;
+          right: 10px;
           top: 50%;
-          right: 0.75rem;
           transform: translateY(-50%);
           border: none;
           background: transparent;
-          padding: 0;
           cursor: pointer;
           font-size: 1.2rem;
           color: #555;
           user-select: none;
-          height: 1.5em;
-          line-height: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          padding: 0;
+        }
+
+        .password-wrapper {
+          position: relative;
+        }
+
+        .register-link {
+          text-align: center;
+          margin-top: 1rem;
+          font-size: 0.9rem;
+        }
+
+        .register-link a {
+          color: #1e90ff;
+          text-decoration: underline;
         }
       `}</style>
 
-      <div className="container-fluid p-0 register-page" role="main">
-        {/* Hero Image Section */}
-        <div className="hero-image" aria-label="Hero image with conference text">
-          <div className="hero-overlay-text-wrapper" aria-hidden="true">
-            <svg
-              viewBox="0 0 500 150"
-              className="semi-circular-text"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="General Conference Youth Hub"
-            >
+      <div className="container" role="main">
+        <section className="hero" aria-label="Hero image">
+          <div className="hero-text" aria-hidden="true">
+            <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg">
               <path
                 id="curve"
                 fill="transparent"
                 d="M50,140 A200,200 0 0,1 450,140"
               />
-              <text textAnchor="middle">
+              <text textAnchor="middle" fill="white" fontWeight="700" fontSize="34px" letterSpacing="1px">
                 <textPath href="#curve" startOffset="50%">
                   GENERAL CONFERENCE YOUTH HUB
                 </textPath>
               </text>
             </svg>
-            <div className="slogan-text">Uniting youths in Christ</div>
+            <div className="slogan">Uniting youths in Christ</div>
           </div>
-        </div>
+        </section>
 
-        {/* Form Section */}
-        <div className="form-section">
-          <div className="form-container">
-            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
-
+        <section className="form-section" aria-label="Login form">
+          <div className="form-box">
+            <h3>Login</h3>
             {generalError && (
-              <div className="alert alert-danger fw-bold">{generalError}</div>
+              <div className="error-message" role="alert">
+                {generalError}
+              </div>
             )}
             {success && (
-              <div className="alert alert-success fw-bold">{success}</div>
-            )}
-
-            {progressComplete && (
-              <div
-                className={`login-progress-bar ${
-                  progressComplete ? "complete" : ""
-                } ${fadeOut ? "fade-out" : ""}`}
-                aria-hidden="true"
-              />
+              <div className="success-message" role="alert">
+                {success}
+              </div>
             )}
 
             <form onSubmit={handleSubmit} noValidate>
-              <div className="mb-3">
-                <label htmlFor="username" className="form-label fw-bold">
-                  Username:
-                </label>
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter username"
+                value={formData.username}
+                onChange={handleChange}
+                autoComplete="username"
+                disabled={isSubmitting}
+                required
+              />
+
+              <label htmlFor="password">Password</label>
+              <div className="password-wrapper">
                 <input
-                  type="text"
-                  id="username"
-                  className="form-control"
-                  placeholder="Username...(e.g., john_doe)"
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={formData.password}
                   onChange={handleChange}
-                  name="username"
-                  value={formData.username}
-                  autoComplete="username"
-                  aria-invalid={errors.username ? "true" : "false"}
+                  autoComplete="current-password"
                   disabled={isSubmitting}
                   required
+                  style={{ paddingRight: "2.5rem" }}
                 />
-                {errors.username && (
-                  <div className="text-danger">{errors.username[0]}</div>
-                )}
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="password-toggle-btn"
+                  disabled={isSubmitting}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
               </div>
 
-              <div className="mb-3">
-                <label htmlFor="password" className="form-label fw-bold">
-                  Password:
-                </label>
-
-                <div style={{ position: "relative" }}>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    className="form-control"
-                    placeholder="Enter your password..."
-                    onChange={handleChange}
-                    name="password"
-                    value={formData.password}
-                    autoComplete="current-password"
-                    aria-invalid={errors.password ? "true" : "false"}
-                    disabled={isSubmitting}
-                    style={{ paddingRight: "2.5rem" }}
-                    required
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="password-toggle-btn"
-                    disabled={isSubmitting}
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
-                </div>
-
-                {errors.password && (
-                  <div className="text-danger">{errors.password[0]}</div>
-                )}
-              </div>
-
-              <div className="mb-3 form-check">
+              <div className="form-check">
                 <input
-                  type="checkbox"
-                  className="form-check-input"
                   id="rememberMe"
-                  onChange={handleChange}
                   name="rememberMe"
+                  type="checkbox"
                   checked={formData.rememberMe}
+                  onChange={handleChange}
                   disabled={isSubmitting}
                 />
-                <label className="form-check-label" htmlFor="rememberMe">
-                  Remember Me
-                </label>
+                <label htmlFor="rememberMe">Remember Me</label>
               </div>
 
               <button
                 type="submit"
-                className="btn btn-primary w-100 fw-bold"
+                className="btn-primary"
                 disabled={isSubmitting}
                 aria-disabled={isSubmitting}
               >
@@ -401,15 +334,15 @@ const Login = () => {
               </button>
             </form>
 
-            <div className="text-center mt-3">
+            <div className="register-link">
               Don't have an account?{" "}
-              <Link to="/register" className="text-primary">
+              <Link to="/register">
                 Register here
               </Link>
               .
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
