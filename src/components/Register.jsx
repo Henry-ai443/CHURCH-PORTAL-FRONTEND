@@ -1,40 +1,47 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getNames } from "country-list";
 
-const Register = () => {
-  const [countries] = useState(getNames());
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-    };
-  }, []);
-
+const Login = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    username: "",
     password: "",
-    confirmPassword: "",
-    country: "",
+    rememberMe: false,
   });
-
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    setErrors({});
     setGeneralError("");
   };
 
@@ -46,69 +53,46 @@ const Register = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const name = formData.name.trim();
-    const email = formData.email.trim();
-    const password = formData.password;
-    const confirmPassword = formData.confirmPassword;
-    const country = formData.country.trim();
+    const { username, password } = formData;
 
-    if (!name || !email || !password || !confirmPassword || !country) {
-      setGeneralError("All fields are required.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setErrors({ confirmPassword: ["Passwords do not match."] });
+    if (!username || !password) {
+      setGeneralError("Both username and password are required.");
       setIsSubmitting(false);
       return;
     }
 
     try {
       const response = await fetch(
-        "https://church-portal-backend.onrender.com/api/register/",
+        "https://church-portal-backend.onrender.com/api/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: name,
-            email: email,
-            password: password,
-            country: country,
-          }),
+          body: JSON.stringify({ username, password }),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
+        setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
-        if (data?.detail) {
-          setGeneralError(data.detail);
-        } else if (data?.non_field_errors) {
-          setGeneralError(data.non_field_errors[0]);
-        } else if (typeof data === "object") {
-          setErrors(data);
-        } else {
-          setGeneralError("Registration failed. Please try again.");
-        }
         return;
       }
 
       localStorage.setItem("token", data.token);
-      setSuccess("Registration successful! Redirecting...");
+      setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, 3000);
     } catch (error) {
-      console.error("Registration error:", error);
-      setGeneralError("Registration failed. Please try again.");
+      console.error("Login error:", error);
+      setGeneralError("Login failed. Please try again.");
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
       {/* Hero Image Section */}
       <div
         className="w-100 w-md-50 hero-image position-relative"
@@ -130,9 +114,7 @@ const Register = () => {
             maxWidth: "400px",
           }}
         >
-          <h3 className="mb-4 text-center fw-bold text-primary">
-            Create an Account
-          </h3>
+          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
             <div className="alert alert-danger fw-bold">{generalError}</div>
@@ -145,7 +127,7 @@ const Register = () => {
             <div className="text-center mb-3">
               <button
                 className="btn btn-success"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
               >
                 Go to Dashboard
               </button>
@@ -160,95 +142,76 @@ const Register = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter your name..."
+                  placeholder="Enter your username..."
+                  name="username"
+                  value={formData.username}
                   onChange={handleChange}
-                  name="name"
-                  value={formData.name}
                   disabled={isSubmitting}
+                  required
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
                 )}
               </div>
 
-              {/* Email */}
-              <div className="mb-3">
-                <label className="form-label">Email:</label>
+              {/* Password */}
+              <div className="mb-3 position-relative">
+                <label className="form-label">Password:</label>
                 <input
-                  type="email"
+                  type={showPassword ? "text" : "password"}
                   className="form-control"
-                  placeholder="Enter your email..."
-                  onChange={handleChange}
-                  name="email"
-                  value={formData.email}
-                  disabled={isSubmitting}
-                />
-                {errors.email && (
-                  <div className="text-danger fw-bold">{errors.email[0]}</div>
-                )}
-              </div>
-
-              {/* Country Dropdown */}
-              <div className="mb-3">
-                <label className="form-label">Country:</label>
-                <select
-                  name="country"
-                  className="form-select"
-                  value={formData.country}
+                  placeholder="Enter your password..."
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
+                  style={{ paddingRight: "2.5rem" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={isSubmitting}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "0.75rem",
+                    transform: "translateY(-50%)",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                    color: "#555",
+                    userSelect: "none",
+                    height: "1.5em",
+                    lineHeight: 1,
+                  }}
                 >
-                  <option value="" disabled>
-                    Select your country
-                  </option>
-                  {countries.map((country) => (
-                    <option key={country} value={country}>
-                      {country}
-                    </option>
-                  ))}
-                </select>
-                {errors.country && (
-                  <div className="text-danger fw-bold">{errors.country[0]}</div>
-                )}
-              </div>
-
-              {/* Password */}
-              <div className="mb-3">
-                <label className="form-label">Password:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Enter your password..."
-                  onChange={handleChange}
-                  name="password"
-                  value={formData.password}
-                  disabled={isSubmitting}
-                />
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
                 {errors.password && (
-                  <div className="text-danger fw-bold">{errors.password[0]}</div>
+                  <div className="text-danger">{errors.password[0]}</div>
                 )}
               </div>
 
-              {/* Confirm Password */}
-              <div className="mb-3">
-                <label className="form-label">Confirm Password:</label>
+              {/* Remember Me */}
+              <div className="mb-3 form-check">
                 <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Confirm password..."
+                  type="checkbox"
+                  className="form-check-input"
+                  id="rememberMe"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
                   onChange={handleChange}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
                   disabled={isSubmitting}
                 />
-                {errors.confirmPassword && (
-                  <div className="text-danger fw-bold">
-                    {errors.confirmPassword[0]}
-                  </div>
-                )}
+                <label className="form-check-label" htmlFor="rememberMe">
+                  Remember Me
+                </label>
               </div>
 
+              {/* Submit Button */}
               <div className="d-flex justify-content-center">
                 <button
                   type="submit"
@@ -262,14 +225,14 @@ const Register = () => {
                       aria-hidden="true"
                     ></span>
                   )}
-                  {isSubmitting ? "Registering..." : "Register"}
+                  {isSubmitting ? "Logging in..." : "Login"}
                 </button>
               </div>
 
               <p className="text-center fw-bold mt-3">
-                Already have an account?{" "}
-                <Link to="/" style={{ textDecoration: "none" }}>
-                  Login
+                Don't have an account?{" "}
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  Register here
                 </Link>
               </p>
             </form>
@@ -280,4 +243,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
