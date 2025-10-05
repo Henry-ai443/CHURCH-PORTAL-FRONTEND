@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
+    // Prevent scrolling and page gaps
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
@@ -15,39 +16,31 @@ const Login = () => {
   }, []);
 
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
-    rememberMe: false,
   });
-
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({});
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({});
     setGeneralError("");
-    setSuccess("");
     setIsSubmitting(true);
 
-    const { username, password } = formData;
+    const email = formData.email.trim();
+    const password = formData.password;
 
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
+    if (!email || !password) {
+      setGeneralError("Both fields are required.");
       setIsSubmitting(false);
       return;
     }
@@ -58,27 +51,31 @@ const Login = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ email, password }),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
+        if (data?.detail) {
+          setGeneralError(data.detail);
+        } else if (data?.non_field_errors) {
+          setGeneralError(data.non_field_errors[0]);
+        } else if (typeof data === "object") {
+          setErrors(data);
+        } else {
+          setGeneralError("Login failed. Please try again.");
+        }
         return;
       }
 
       localStorage.setItem("token", data.token);
-      setSuccess("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/home");
-      }, 2500);
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -87,36 +84,20 @@ const Login = () => {
     <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
       {/* Hero Image Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
+        className="w-100 w-md-50 hero-image position-relative"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "40vh",
         }}
       >
-        <div className="hero-overlay-text text-white fw-bold fs-4 px-3 py-2 rounded-4"
-          style={{
-            background: "rgba(0, 0, 0, 0.65)",
-            maxWidth: "90%",
-            textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-          }}
-        >
-          GENERAL CONFERENCE YOUTH HUB
-          <div className="fw-semibold fst-italic" style={{ fontSize: "1.1rem" }}>
-            Uniting youths in Christ
-          </div>
-        </div>
+        <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4"
-        style={{
-          height: "60vh",
-        }}
-      >
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div
-          className="p-4 shadow rounded bg-white"
+          className="p-4 shadow rounded"
           style={{
             width: "100%",
             maxWidth: "400px",
@@ -127,117 +108,106 @@ const Login = () => {
           {generalError && (
             <div className="alert alert-danger fw-bold">{generalError}</div>
           )}
-          {success && (
-            <div className="alert alert-success fw-bold">{success}</div>
-          )}
 
-          <form onSubmit={handleSubmit} noValidate>
-            {/* Username */}
+          <form onSubmit={handleSubmit}>
+            {/* Email */}
             <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">
-                Username:
-              </label>
+              <label className="form-label">Email:</label>
               <input
-                type="text"
-                id="username"
+                type="email"
                 className="form-control"
-                placeholder="Enter your username..."
-                name="username"
-                value={formData.username}
+                placeholder="Enter your email..."
                 onChange={handleChange}
-                autoComplete="username"
+                name="email"
+                value={formData.email}
                 disabled={isSubmitting}
-                required
               />
-              {errors.username && (
-                <div className="text-danger">{errors.username[0]}</div>
+              {errors.email && (
+                <div className="text-danger fw-bold">{errors.email[0]}</div>
               )}
             </div>
 
             {/* Password */}
-            <div className="mb-3 position-relative">
-              <label htmlFor="password" className="form-label fw-bold">
-                Password:
-              </label>
+            <div className="mb-3">
+              <label className="form-label">Password:</label>
               <input
-                type={showPassword ? "text" : "password"}
-                id="password"
+                type="password"
                 className="form-control"
                 placeholder="Enter your password..."
+                onChange={handleChange}
                 name="password"
                 value={formData.password}
-                onChange={handleChange}
-                autoComplete="current-password"
                 disabled={isSubmitting}
-                required
-                style={{ paddingRight: "2.5rem" }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
-                disabled={isSubmitting}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "0.75rem",
-                  transform: "translateY(-50%)",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  fontSize: "1.2rem",
-                  color: "#555",
-                }}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
               {errors.password && (
-                <div className="text-danger">{errors.password[0]}</div>
+                <div className="text-danger fw-bold">{errors.password[0]}</div>
               )}
             </div>
 
-            {/* Remember Me */}
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleChange}
+            <div className="d-flex justify-content-center">
+              <button
+                type="submit"
+                className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
                 disabled={isSubmitting}
-              />
-              <label className="form-check-label" htmlFor="rememberMe">
-                Remember Me
-              </label>
+              >
+                {isSubmitting && (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                {isSubmitting ? "Logging in..." : "Login"}
+              </button>
             </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
-              disabled={isSubmitting}
-            >
-              {isSubmitting && (
-                <span
-                  className="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              )}
-              {isSubmitting ? "Logging in..." : "Login"}
-            </button>
+            <p className="text-center fw-bold mt-3">
+              Don’t have an account?{" "}
+              <Link to="/register" style={{ textDecoration: "none" }}>
+                Register
+              </Link>
+            </p>
           </form>
-
-          <p className="text-center fw-bold mt-3">
-            Don't have an account?{" "}
-            <Link to="/register" style={{ textDecoration: "none" }}>
-              Register here
-            </Link>
-            .
-          </p>
         </div>
       </div>
+
+      {/* ✅ Responsive layout fix for mobile */}
+      <style>{`
+        .login-page {
+          height: 100vh;
+          overflow: hidden;
+        }
+
+        @media (max-width: 767px) {
+          .login-page {
+            flex-direction: column;
+          }
+          .hero-image {
+            height: 40vh;
+          }
+          .form-section {
+            height: 60vh;
+            overflow-y: auto;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .hero-image,
+          .form-section {
+            height: 100vh;
+          }
+        }
+
+        .hero-overlay-text {
+          position: absolute;
+          bottom: 20px;
+          left: 20px;
+          color: white;
+          font-weight: bold;
+          font-size: 1.5rem;
+          text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+        }
+      `}</style>
     </div>
   );
 };
