@@ -3,16 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Disable scroll on mobile only
-    if (window.innerWidth < 768) {
-      document.body.style.overflow = "hidden";
-    }
-
+    // Disable scrolling globally
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
     };
@@ -23,12 +22,11 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
-
+  const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -37,11 +35,13 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    setErrors({});
     setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
     setGeneralError("");
     setSuccess("");
     setIsSubmitting(true);
@@ -64,38 +64,41 @@ const Login = () => {
       );
 
       const data = await response.json();
-
       if (!response.ok) {
-        const message =
-          data.detail ||
-          "Login failed. Please check your credentials and try again.";
-        setGeneralError(message);
+        setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
         return;
       }
 
       localStorage.setItem("token", data.token);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => navigate("/home"), 2500);
+      setTimeout(() => navigate("/home"), 2000);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page bg-light">
-      {/* Hero Image Section */}
+    <div
+      className="vh-100 vw-100 d-flex flex-column flex-md-row p-0"
+      style={{
+        overflow: "hidden",
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      {/* Hero Section */}
       <div
-        className="hero-image position-relative w-100 w-md-50"
+        className="hero-section position-relative w-100 w-md-50"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "40vh", // Mobile view height
+          height: "40vh",
         }}
-        aria-label="Hero image with General Conference Church"
       >
         <div
           className="hero-overlay-text d-flex flex-column justify-content-center align-items-center text-center"
@@ -107,16 +110,16 @@ const Login = () => {
             background: "rgba(0, 0, 0, 0.65)",
             borderRadius: "30px",
             width: "85%",
-            height: "80%", // enlarged dark patch
+            height: "80%", // dark patch covers 80% of hero
             color: "white",
+            fontWeight: "700",
+            letterSpacing: "1px",
             padding: "20px",
           }}
         >
           <div
             style={{
-              fontWeight: "700",
-              fontSize: "clamp(1.4rem, 4.5vw, 2rem)",
-              letterSpacing: "1px",
+              fontSize: "1.8rem",
               lineHeight: "1.2",
             }}
           >
@@ -125,7 +128,7 @@ const Login = () => {
           <div
             style={{
               marginTop: "10px",
-              fontSize: "clamp(1rem, 3.5vw, 1.25rem)",
+              fontSize: "1.2rem",
               fontStyle: "italic",
               fontWeight: "600",
             }}
@@ -137,11 +140,9 @@ const Login = () => {
 
       {/* Form Section */}
       <div
-        className="d-flex align-items-center justify-content-center bg-light w-100 w-md-50 p-4"
+        className="form-section d-flex align-items-center justify-content-center bg-light w-100 w-md-50"
         style={{
-          height: "auto",
-          minHeight: "60vh",
-          overflow: "hidden", // disable scrolling on mobile
+          height: "60vh",
         }}
       >
         <div
@@ -154,23 +155,18 @@ const Login = () => {
           <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
           {generalError && (
-            <div
-              className="alert alert-danger fw-bold"
-              aria-live="assertive"
-            >
+            <div className="alert alert-danger fw-bold" aria-live="assertive">
               {generalError}
             </div>
           )}
           {success && (
-            <div
-              className="alert alert-success fw-bold"
-              aria-live="polite"
-            >
+            <div className="alert alert-success fw-bold" aria-live="polite">
               {success}
             </div>
           )}
 
           <form onSubmit={handleSubmit} noValidate>
+            {/* Username */}
             <div className="mb-3">
               <label htmlFor="username" className="form-label fw-bold">
                 Username:
@@ -183,12 +179,12 @@ const Login = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                autoComplete="username"
                 disabled={isSubmitting}
                 required
               />
             </div>
 
+            {/* Password */}
             <div className="mb-3 position-relative">
               <label htmlFor="password" className="form-label fw-bold">
                 Password:
@@ -201,11 +197,10 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                autoComplete="current-password"
                 disabled={isSubmitting}
                 required
                 style={{
-                  paddingRight: "2.75rem", // more room for emoji
+                  paddingRight: "3rem", // space for emoji
                 }}
               />
               <button
@@ -216,27 +211,26 @@ const Login = () => {
                 style={{
                   position: "absolute",
                   top: "50%",
-                  right: "0.85rem",
+                  right: "0.8rem",
                   transform: "translateY(-50%)",
                   border: "none",
                   background: "transparent",
                   cursor: "pointer",
-                  fontSize: "1.3rem",
-                  color: "#666",
+                  fontSize: "1.5rem",
+                  color: "#555",
                   userSelect: "none",
-                  height: "1.6em",
-                  width: "1.6em",
-                  lineHeight: "1",
+                  lineHeight: 1,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: "0",
+                  padding: 0,
                 }}
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
 
+            {/* Remember Me */}
             <div className="mb-3 form-check">
               <input
                 type="checkbox"
@@ -252,6 +246,7 @@ const Login = () => {
               </label>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               className="btn btn-primary w-100 fw-bold"
@@ -275,4 +270,3 @@ const Login = () => {
 };
 
 export default Login;
-
