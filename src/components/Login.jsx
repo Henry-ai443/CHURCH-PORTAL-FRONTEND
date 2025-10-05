@@ -15,6 +15,7 @@ const Login = () => {
   }, []);
 
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
@@ -33,6 +34,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrors({});
     setGeneralError("");
     setSuccess("");
@@ -83,7 +85,12 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", data.token);
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
+
       setSuccess("Login successful!");
       setProgressComplete(true);
       setFormData({ username: "", password: "" });
@@ -98,11 +105,11 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container d-flex flex-column flex-md-row vh-100">
+    <div className="login-container d-flex flex-column flex-md-row">
       {/* Hero image section */}
       <div className="hero-image-section w-100 w-md-50 d-flex align-items-center justify-content-center">
         <div className="text-overlay text-center text-white">
-          <h1 className="fw-bold display-6">Welcome Back</h1>
+          <h1 className="fw-bold display-6 mb-2">Welcome Back</h1>
           <p className="lead mb-0">General Conference Youth Hub</p>
         </div>
       </div>
@@ -155,10 +162,30 @@ const Login = () => {
               </div>
             </div>
 
+            {/* Remember Me & Forgot Password */}
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  className="form-check-input"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="rememberMe" className="form-check-label">
+                  Remember Me
+                </label>
+              </div>
+              <Link to="/forgot-password" className="text-decoration-none text-info fw-bold small">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Submit button with glow */}
             <div className="d-grid mb-3">
               <button
                 type="submit"
-                className="btn btn-primary fw-bold"
+                className="btn btn-primary glow-btn fw-bold"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -180,16 +207,27 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Styles */}
       <style jsx="true">{`
-        .login-container {
+        * {
           margin: 0;
           padding: 0;
+          box-sizing: border-box;
+        }
+
+        html,
+        body,
+        .login-container {
+          height: 100%;
+          width: 100%;
+        }
+
+        .login-container {
+          min-height: 100vh;
           overflow: hidden;
         }
 
         .hero-image-section {
-          background: url("/Hero.jpg") center/cover no-repeat;
+          background: url("/youth-hero.jpg") center/cover no-repeat;
           height: 50vh;
         }
 
@@ -218,7 +256,7 @@ const Login = () => {
         .form-wrapper {
           background: #ffffff;
           border-radius: 12px;
-          box-shadow: 0 0 25px rgba(30, 144, 255, 0.2);
+          box-shadow: 0 0 25px rgba(30, 144, 255, 0.15);
         }
 
         .form-control:focus {
@@ -236,10 +274,21 @@ const Login = () => {
           font-size: 1.25rem;
           color: #888;
           cursor: pointer;
+          z-index: 2;
         }
 
         .password-toggle-btn:hover {
           color: #1e90ff;
+        }
+
+        .glow-btn {
+          box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
+          transition: all 0.3s ease-in-out;
+        }
+
+        .glow-btn:hover {
+          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+          transform: translateY(-2px);
         }
       `}</style>
     </div>
@@ -247,3 +296,4 @@ const Login = () => {
 };
 
 export default Login;
+
