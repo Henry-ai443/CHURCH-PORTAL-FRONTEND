@@ -3,27 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
-    // Disable body scroll on desktop, allow scroll on phones
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-    };
-
-    handleResize(); // Set on mount
-    window.addEventListener("resize", handleResize);
-
-    // Remove margin and padding always
+    // Enable scrolling on phones (removed overflow hidden)
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 
     return () => {
-      document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
-      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -118,7 +104,6 @@ const Login = () => {
         return;
       }
 
-      // Success
       localStorage.setItem("token", data.token);
       setSuccess("Login successful!");
       setProgressComplete(true);
@@ -140,51 +125,44 @@ const Login = () => {
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow-x: hidden;
         }
-        .container-fluid {
-          height: 100vh;
-          padding: 0 !important;
-          margin: 0 !important;
+        .register-page {
+          min-height: 100vh;
           display: flex;
-          flex-direction: row;
-          overflow: hidden;
+          flex-direction: column;
         }
-        @media (max-width: 767px) {
-          .container-fluid {
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+        @media (min-width: 768px) {
+          .register-page {
+            flex-direction: row;
           }
         }
 
         .hero-image {
           position: relative;
-          background: url("/Hero.jpg") center/cover no-repeat;
-          width: 50%;
-          height: 100vh;
-          min-height: 400px;
-          overflow: visible;
-          flex-shrink: 0;
+          background: url('/Hero.jpg') center/cover no-repeat;
+          width: 100%;
+          height: 50vh;
           display: flex;
           align-items: center;
           justify-content: center;
         }
-        @media (max-width: 767px) {
+        @media (min-width: 768px) {
           .hero-image {
-            width: 100%;
-            height: 50vh;
-            min-height: auto;
+            height: 100vh;
+            width: 50%;
           }
         }
 
         .hero-overlay-text-wrapper {
-          position: relative;
-          background: rgba(0, 0, 0, 0.5);
-          padding: 15px 30px 35px 30px;
-          border-radius: 40px 40px 40px 40px;
-          text-align: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.55);
+          padding: 25px 40px 50px 40px;
+          border-radius: 50px;
           max-width: 90vw;
+          text-align: center;
           user-select: none;
           color: white;
           display: flex;
@@ -196,91 +174,77 @@ const Login = () => {
 
         .semi-circular-text {
           width: 100%;
-          height: 120px;
+          height: 160px;
           overflow: visible;
-          margin-bottom: 8px;
+          margin-bottom: 12px;
         }
 
         .semi-circular-text text {
           fill: white;
           font-weight: 700;
-          font-size: 28px;
+          font-size: 36px;
         }
 
         .slogan-text {
-          font-size: 16px;
+          font-size: 18px;
           font-weight: 600;
           font-style: italic;
           color: white;
           user-select: none;
+          margin-top: 4px;
         }
 
         .form-section {
-          width: 50%;
           background: #f8f9fa;
+          width: 100%;
+          height: 50vh;
+          padding: 1.5rem 1.5rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 2rem 3rem;
-          overflow-y: auto;
         }
-        @media (max-width: 767px) {
+        @media (min-width: 768px) {
           .form-section {
-            width: 100%;
-            height: 50vh;
-            padding: 2rem 1.5rem 3rem;
-            order: 2;
-            overflow-y: auto;
-            min-height: auto;
+            height: 100vh;
+            width: 50%;
           }
         }
 
         .form-container {
           width: 100%;
           max-width: 400px;
-          background: white;
-          padding: 2rem 2.5rem;
+          box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
           border-radius: 8px;
-          box-shadow:
-            0 0 10px rgba(30, 144, 255, 0.3),
-            0 0 30px rgba(135, 206, 250, 0.4);
-          overflow-y: auto;
+          background: white;
+          padding: 2rem;
         }
 
-        h3 {
-          margin-bottom: 1.5rem;
-          color: #1E90FF;
-          font-weight: 700;
-          text-align: center;
-        }
-
-        .btn-primary.glow-btn {
+        .btn-primary {
           box-shadow: 0 0 10px rgba(30, 144, 255, 0.7), 0 0 20px rgba(135, 206, 250, 0.7);
           transition: all 0.3s ease-in-out;
-          font-weight: 700;
         }
-        .btn-primary.glow-btn:hover {
-          box-shadow: 0 0 20px rgba(30, 144, 255,0.9), 0 0 40px rgba(135, 206, 250, 0.8);
+        .btn-primary:hover {
+          box-shadow: 0 0 20px rgba(30, 144, 255, 0.9), 0 0 40px rgba(135, 206, 250, 0.8);
           transform: translateY(-2px);
         }
 
         .login-progress-bar {
-          height: 5px;
-          background: #1E90FF;
-          border-radius: 3px;
-          margin-bottom: 1rem;
-          width: 0;
-          transition: width 1.5s ease-in-out;
+          height: 4px;
+          background: #1e90ff;
+          width: 0%;
+          border-radius: 2px;
+          transition: width 2s ease;
+          margin-bottom: 12px;
         }
         .login-progress-bar.complete {
           width: 100%;
         }
         .login-progress-bar.fade-out {
           opacity: 0;
-          transition: opacity 0.5s ease-in-out;
+          transition: opacity 0.4s ease;
         }
 
-        /* Password toggle button styles */
+        /* Password toggle button */
         .password-toggle-btn {
           position: absolute;
           top: 50%;
@@ -300,27 +264,15 @@ const Login = () => {
           justify-content: center;
         }
 
-        /* Checkbox + label */
         .form-check-label {
           user-select: none;
-          cursor: pointer;
         }
 
-        /* Forgot password link */
-        .forgot-password {
-          font-size: 0.9rem;
-          color: #1E90FF;
-          text-decoration: underline;
-          cursor: pointer;
-        }
-        .forgot-password:hover {
-          color: #104E8B;
-        }
       `}</style>
 
-      <div className="container-fluid" role="main" aria-label="Login page">
+      <div className="container-fluid p-0 register-page">
         {/* Hero Image Section */}
-        <div className="hero-image" aria-hidden="true">
+        <div className="hero-image">
           <div className="hero-overlay-text-wrapper" aria-hidden="true">
             <svg
               viewBox="0 0 500 150"
@@ -346,39 +298,26 @@ const Login = () => {
 
         {/* Form Section */}
         <div className="form-section">
-          <div className="form-container" aria-label="Login form">
-            <h3>Login</h3>
+          <div className="form-container">
+            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
             {generalError && (
-              <div
-                className="alert alert-danger fw-bold"
-                role="alert"
-                tabIndex={-1}
-              >
-                {generalError}
-              </div>
+              <div className="alert alert-danger fw-bold">{generalError}</div>
             )}
             {success && (
-              <div
-                className="alert alert-success fw-bold"
-                role="alert"
-                tabIndex={-1}
-              >
-                {success}
-              </div>
+              <div className="alert alert-success fw-bold">{success}</div>
             )}
 
-            {/* Progress Bar */}
             {progressComplete && (
               <div
                 className={`login-progress-bar ${
                   progressComplete ? "complete" : ""
                 } ${fadeOut ? "fade-out" : ""}`}
                 aria-hidden="true"
-              ></div>
+              />
             )}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label fw-bold">
                   Username:
@@ -394,6 +333,7 @@ const Login = () => {
                   autoComplete="username"
                   aria-invalid={errors.username ? "true" : "false"}
                   disabled={isSubmitting}
+                  required
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
@@ -418,6 +358,7 @@ const Login = () => {
                     aria-invalid={errors.password ? "true" : "false"}
                     disabled={isSubmitting}
                     style={{ paddingRight: "2.5rem" }}
+                    required
                   />
 
                   <button
@@ -436,29 +377,28 @@ const Login = () => {
                 )}
               </div>
 
-              <div className="mb-3 form-check d-flex justify-content-between align-items-center">
-                <div>
-                  <input
-                    type="checkbox"
-                    id="rememberMe"
-                    name="rememberMe"
-                    className="form-check-input"
-                    checked={formData.rememberMe}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="form-check-label ms-2"
-                  >
-                    Remember me
-                  </label>
-                </div>
+              <div className="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="rememberMe"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+                <label
+                  className="form-check-label fw-bold"
+                  htmlFor="rememberMe"
+                >
+                  Remember me
+                </label>
+              </div>
 
+              <div className="d-flex justify-content-between align-items-center mb-3">
                 <Link
                   to="/forgot-password"
-                  className="forgot-password"
-                  tabIndex={isSubmitting ? -1 : 0}
+                  style={{ fontWeight: "600", textDecoration: "none" }}
                 >
                   Forgot password?
                 </Link>
@@ -467,13 +407,26 @@ const Login = () => {
               <div className="d-flex justify-content-center">
                 <button
                   type="submit"
-                  className="btn btn-primary glow-btn"
+                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
                   disabled={isSubmitting}
-                  aria-disabled={isSubmitting}
                 >
+                  {isSubmitting && (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
                   {isSubmitting ? "Logging in..." : "Login"}
                 </button>
               </div>
+
+              <p className="text-center fw-bold mt-3">
+                Don't have an account?{" "}
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  Register
+                </Link>
+              </p>
             </form>
           </div>
         </div>
@@ -483,4 +436,3 @@ const Login = () => {
 };
 
 export default Login;
-
