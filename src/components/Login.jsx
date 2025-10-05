@@ -2,39 +2,80 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState("");
-
-  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
+    // Detect screen size once (and on resize)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Disable scrolling only on mobile
+    if (isMobile) {
+      document.body.style.overflow = "hidden";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+    }
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
     };
-  }, []);
+  }, [isMobile]);
+
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    setErrors({});
+    setGeneralError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
+
+    setErrors({});
+    setGeneralError("");
     setSuccess("");
+    setIsSubmitting(true);
+
+    const { username, password } = formData;
+
+    if (!username || !password) {
+      setGeneralError("Both username and password are required.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -42,174 +83,195 @@ const Login = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({ username, password }),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data?.detail || "Invalid credentials. Please try again.");
+        setGeneralError(data.detail || "Login failed. Please try again.");
         setIsSubmitting(false);
         return;
       }
 
       localStorage.setItem("token", data.token);
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => navigate("/dashboard"), 2000);
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setTimeout(() => {
+        navigate("/home");
+      }, 2500);
+    } catch (error) {
+      console.error("Login error:", error);
+      setGeneralError("Login failed. Please try again.");
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
-      {/* Hero Section */}
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
+      {/* Hero Image Section */}
       <div
-        className="w-100 w-md-50 hero-image position-relative"
+        className="w-100 w-md-50 hero-image position-relative d-flex align-items-center justify-content-center text-center"
         style={{
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          minHeight: "50vh",
         }}
+        aria-label="Hero image with General Conference Church"
       >
         <div
-          className="hero-overlay-text d-flex flex-column justify-content-center align-items-center text-center text-white fw-bold px-3"
+          className="hero-overlay-text"
           style={{
-            position: "absolute",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "80%", // Dark patch covers 80% of hero section
-            background: "rgba(0, 0, 0, 0.6)",
-            fontSize: "1.5rem",
+            background: "rgba(0, 0, 0, 0.65)",
+            padding: isMobile ? "20px 30px" : "40px 60px",
+            borderRadius: "60px",
+            color: "white",
+            maxWidth: "90vw",
+            fontWeight: "700",
+            letterSpacing: "1px",
+            lineHeight: "1.2",
+            fontSize: isMobile ? "1.5rem" : "2rem", // smaller on mobile
           }}
         >
-          <h2 className="fw-bold mb-2">General Conference</h2>
-          <p className="mb-0">Church Youth Hub</p>
+          GENERAL CONFERENCE YOUTH HUB
+          <div
+            style={{
+              marginTop: "10px",
+              fontSize: isMobile ? "1rem" : "1.25rem",
+              fontStyle: "italic",
+              fontWeight: "600",
+            }}
+          >
+            Uniting youths in Christ
+          </div>
         </div>
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light p-4 form-section">
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div
-          className="p-4 shadow rounded bg-white"
+          className="p-4 shadow rounded"
           style={{
             width: "100%",
             maxWidth: "400px",
           }}
         >
-          <h3 className="text-center fw-bold text-primary mb-4">Login</h3>
+          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
 
-          {error && <div className="alert alert-danger fw-bold">{error}</div>}
+          {generalError && (
+            <div className="alert alert-danger fw-bold" aria-live="assertive">
+              {generalError}
+            </div>
+          )}
           {success && (
-            <div className="alert alert-success fw-bold">{success}</div>
+            <div className="alert alert-success fw-bold" aria-live="polite">
+              {success}
+            </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            {/* Email */}
+          <form onSubmit={handleSubmit} noValidate>
             <div className="mb-3">
-              <label className="form-label">Email:</label>
+              <label htmlFor="username" className="form-label fw-bold">
+                Username:
+              </label>
               <input
-                type="email"
+                type="text"
+                id="username"
                 className="form-control"
-                placeholder="Enter your email..."
-                name="email"
-                value={formData.email}
+                placeholder="Enter your username..."
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
+                autoComplete="username"
                 disabled={isSubmitting}
                 required
               />
+              {errors.username && (
+                <div className="text-danger">{errors.username[0]}</div>
+              )}
             </div>
 
-            {/* Password */}
             <div className="mb-3 position-relative">
-              <label className="form-label">Password:</label>
+              <label htmlFor="password" className="form-label fw-bold">
+                Password:
+              </label>
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control pe-5"
+                id="password"
+                className="form-control"
                 placeholder="Enter your password..."
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                autoComplete="current-password"
                 disabled={isSubmitting}
                 required
+                style={{ paddingRight: "2.5rem" }}
               />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                tabIndex={-1}
+                disabled={isSubmitting}
                 style={{
                   position: "absolute",
-                  right: "12px",
-                  top: "72%",
+                  top: "50%",
+                  right: "0.75rem",
                   transform: "translateY(-50%)",
+                  border: "none",
+                  background: "transparent",
                   cursor: "pointer",
                   fontSize: "1.2rem",
+                  color: "#555",
+                  userSelect: "none",
+                  height: "1.5em",
+                  lineHeight: 1,
                 }}
-                role="button"
               >
                 {showPassword ? "🙈" : "👁️"}
-              </span>
-            </div>
-
-            {/* Submit Button */}
-            <div className="d-flex justify-content-center">
-              <button
-                type="submit"
-                className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                {isSubmitting ? "Logging in..." : "Login"}
               </button>
+              {errors.password && (
+                <div className="text-danger">{errors.password[0]}</div>
+              )}
             </div>
 
-            <p className="text-center fw-bold mt-3">
-              Don’t have an account?{" "}
-              <Link to="/register" style={{ textDecoration: "none" }}>
-                Register
-              </Link>
-            </p>
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="rememberMe"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                disabled={isSubmitting}
+              />
+              <label className="form-check-label" htmlFor="rememberMe">
+                Remember Me
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-100 fw-bold"
+              disabled={isSubmitting}
+              aria-disabled={isSubmitting}
+            >
+              {isSubmitting ? "Logging in..." : "Login"}
+            </button>
           </form>
+
+          <p className="text-center fw-bold mt-3">
+            Don't have an account?{" "}
+            <Link to="/register" style={{ textDecoration: "none" }}>
+              Register here
+            </Link>
+            .
+          </p>
         </div>
       </div>
-
-      {/* Inline Styles for Responsive Behavior */}
-      <style>{`
-        body, html {
-          height: 100%;
-          margin: 0;
-          overflow: hidden;
-        }
-        .login-page {
-          height: 100vh;
-          overflow: hidden;
-        }
-        @media (max-width: 767px) {
-          .hero-image {
-            height: 40vh !important;
-          }
-          .form-section {
-            height: 60vh !important;
-          }
-        }
-        @media (min-width: 768px) {
-          .hero-image {
-            height: 100vh;
-            width: 50%;
-          }
-          .form-section {
-            height: 100vh;
-            width: 50%;
-          }
-        }
-      `}</style>
     </div>
   );
 };
