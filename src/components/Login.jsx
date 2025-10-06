@@ -185,7 +185,7 @@ const Login = () => {
                     transform:"translateY(-50%)",
                     cursor:"pointer",
                     fontSize:"1.2rem",
-                    border:"none",``
+                    border:"none",
                     background:"transparent"
                   }}
                 >
