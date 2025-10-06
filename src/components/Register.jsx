@@ -5,6 +5,13 @@ import { getNames } from "country-list";
 const Register = () => {
   const [countries] = useState(getNames());
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return(
+      document.body.style.overflow = "initial"
+    )
+  })
 
   const [formData, setFormData] = useState({
     name: "",
