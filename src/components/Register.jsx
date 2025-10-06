@@ -6,21 +6,14 @@ const Register = () => {
   const [countries] = useState(getNames());
 
   useEffect(() => {
-    // Disable scrolling on both html and body for all screen sizes
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
-    document.documentElement.style.overflow = "hidden";
-    document.documentElement.style.margin = "0";
-    document.documentElement.style.padding = "0";
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
-      document.documentElement.style.overflow = "auto";
-      document.documentElement.style.margin = "initial";
-      document.documentElement.style.padding = "initial";
     };
   }, []);
 
@@ -115,10 +108,7 @@ const Register = () => {
   };
 
   return (
-    <div
-      className="container-fluid d-flex flex-column flex-md-row p-0 register-page"
-      style={{ height: "100vh", overflow: "hidden" }}
-    >
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
       {/* Hero Image Section */}
       <div
         className="w-100 w-md-50 hero-image position-relative"
@@ -126,17 +116,13 @@ const Register = () => {
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          flexShrink: 0,
         }}
       >
         <div className="hero-overlay-text">General Conference Church</div>
       </div>
 
       {/* Form Section */}
-      <div
-        className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4"
-        style={{ overflowY: "auto" }}
-      >
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
         <div
           className="p-4 shadow rounded"
           style={{
@@ -295,3 +281,4 @@ const Register = () => {
 };
 
 export default Register;
+
