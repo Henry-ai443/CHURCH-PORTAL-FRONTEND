@@ -1,83 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
 
-  const toggleShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
+    setSuccess("");
 
-    // Add your login logic here
     try {
-      // Simulate login
-      setTimeout(() => {
+      const response = await fetch(
+        "https://church-portal-backend.onrender.com/api/login/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data?.detail || "Invalid credentials. Please try again.");
         setIsSubmitting(false);
-        navigate("/dashboard");
-      }, 1000);
-    } catch {
-      setError("Login failed.");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      setSuccess("Login successful! Redirecting...");
+      setTimeout(() => navigate("/dashboard"), 2000);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
       setIsSubmitting(false);
     }
   };
 
   return (
-    <>
-      {/* Styles for emoji inside password input */}
-      <style>{`
-        .password-wrapper {
-          position: relative;
-          width: 100%;
-        }
-        .password-input {
-          padding-right: 2.5rem; /* space for emoji */
-        }
-        .toggle-password {
-          position: absolute;
-          top: 50%;
-          right: 0.75rem;
-          transform: translateY(-50%);
-          cursor: pointer;
-          user-select: none;
-          font-size: 1.2rem;
-        }
-      `}</style>
+    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
+      {/* Hero Section */}
+      <div
+        className="w-100 w-md-50 hero-image position-relative"
+        style={{
+          backgroundImage: `url('/Hero.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div
+          className="hero-overlay-text d-flex flex-column justify-content-center align-items-center text-center text-white fw-bold px-3"
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "80%", // Dark patch covers 80% of hero section
+            background: "rgba(0, 0, 0, 0.6)",
+            fontSize: "1.5rem",
+          }}
+        >
+          <h2 className="fw-bold mb-2">General Conference</h2>
+          <p className="mb-0">Church Youth Hub</p>
+        </div>
+      </div>
 
-      <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
-        <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
-          <h3 className="mb-4 text-center">Login</h3>
+      {/* Form Section */}
+      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light p-4 form-section">
+        <div
+          className="p-4 shadow rounded bg-white"
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
+          <h3 className="text-center fw-bold text-primary mb-4">Login</h3>
 
-          {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger fw-bold">{error}</div>}
+          {success && (
+            <div className="alert alert-success fw-bold">{success}</div>
+          )}
 
           <form onSubmit={handleSubmit}>
             {/* Email */}
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email:
-              </label>
+              <label className="form-label">Email:</label>
               <input
                 type="email"
-                id="email"
-                name="email"
                 className="form-control"
+                placeholder="Enter your email..."
+                name="email"
                 value={formData.email}
                 onChange={handleChange}
                 disabled={isSubmitting}
@@ -85,64 +123,94 @@ const Login = () => {
               />
             </div>
 
-            {/* Password with emoji toggle */}
-            <div className="mb-3 password-wrapper">
-              <label htmlFor="password" className="form-label">
-                Password:
-              </label>
+            {/* Password */}
+            <div className="mb-3 position-relative">
+              <label className="form-label">Password:</label>
               <input
                 type={showPassword ? "text" : "password"}
-                id="password"
+                className="form-control pe-5"
+                placeholder="Enter your password..."
                 name="password"
-                className="form-control password-input"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={isSubmitting}
                 required
               />
               <span
-                className="toggle-password"
-                role="button"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                onClick={toggleShowPassword}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") toggleShowPassword();
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "72%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  fontSize: "1.2rem",
                 }}
+                role="button"
               >
                 {showPassword ? "🙈" : "👁️"}
               </span>
             </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-100"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
+            {/* Submit Button */}
+            <div className="d-flex justify-content-center">
+              <button
+                type="submit"
+                className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
                   <span
-                    className="spinner-border spinner-border-sm me-2"
+                    className="spinner-border spinner-border-sm"
                     role="status"
                     aria-hidden="true"
                   ></span>
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </form>
+                )}
+                {isSubmitting ? "Logging in..." : "Login"}
+              </button>
+            </div>
 
-          <p className="mt-3 text-center">
-            Don't have an account?{" "}
-            <Link to="/register" style={{ textDecoration: "none" }}>
-              Register
-            </Link>
-          </p>
+            <p className="text-center fw-bold mt-3">
+              Don’t have an account?{" "}
+              <Link to="/register" style={{ textDecoration: "none" }}>
+                Register
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
-    </>
+
+      {/* Inline Styles for Responsive Behavior */}
+      <style>{`
+        body, html {
+          height: 100%;
+          margin: 0;
+          overflow: hidden;
+        }
+        .login-page {
+          height: 100vh;
+          overflow: hidden;
+        }
+        @media (max-width: 767px) {
+          .hero-image {
+            height: 40vh !important;
+          }
+          .form-section {
+            height: 60vh !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .hero-image {
+            height: 100vh;
+            width: 50%;
+          }
+          .form-section {
+            height: 100vh;
+            width: 50%;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
