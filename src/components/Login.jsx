@@ -184,7 +184,9 @@ const Login = () => {
                     top:"72%",
                     transform:"translateY(-50%)",
                     cursor:"pointer",
-                    fontSize:"1.2rem"
+                    fontSize:"1.2rem",
+                    border:"none",
+                    background:"transparent"
                   }}
                 >
                   {showPassword ? "🙈" : "👁️"}

@@ -6,14 +6,17 @@ const Register = () => {
   const [countries] = useState(getNames());
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-
+      document.body.style.overflow = "hidden";
+      document.body.style.margin = "0";
+      document.body.style.padding = "0";
+      document.documentElement.style.margin = "0";
+      document.documentElement.style.padding = "0";
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.margin = "initial";
       document.body.style.padding = "initial";
+      document.documentElement.style.margin = "initial";
+      document.documentElement.style.padding = "initial";
     };
   }, []);
 
