@@ -1,254 +1,148 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
-    rememberMe: false,
   });
-  const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
-  // Disable scrolling on all screen sizes
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    document.documentElement.style.margin = "0";
-    document.documentElement.style.padding = "0";
-
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-      document.documentElement.style.margin = "initial";
-      document.documentElement.style.padding = "initial";
-    };
-  }, []);
-
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
+  };
 
-    setErrors({});
-    setGeneralError("");
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setErrors({});
-    setGeneralError("");
-    setSuccess("");
     setIsSubmitting(true);
+    setError("");
 
-    const { username, password } = formData;
-
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
-      setIsSubmitting(false);
-      return;
-    }
-
+    // Add your login logic here
     try {
-      const response = await fetch(
-        "https://church-portal-backend.onrender.com/api/login/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.username || data.password) {
-          setErrors(data);
-        } else {
-          setGeneralError(data.detail || "Login failed. Please try again.");
-        }
-        setIsSubmitting(false);
-        return;
-      }
-
-      localStorage.setItem("token", data.token);
-      setSuccess("Login successful! Redirecting...");
+      // Simulate login
       setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-    } catch (error) {
-      console.error("Login error:", error);
-      setGeneralError("Login failed. Please try again.");
+        setIsSubmitting(false);
+        navigate("/dashboard");
+      }, 1000);
+    } catch {
+      setError("Login failed.");
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 login-page">
-      {/* Hero Image Section */}
-      <div
-        className="w-100 w-md-50 hero-image position-relative"
-        style={{
-          backgroundImage: `url('/Hero.jpg')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
-      </div>
+    <>
+      {/* Styles for emoji inside password input */}
+      <style>{`
+        .password-wrapper {
+          position: relative;
+          width: 100%;
+        }
+        .password-input {
+          padding-right: 2.5rem; /* space for emoji */
+        }
+        .toggle-password {
+          position: absolute;
+          top: 50%;
+          right: 0.75rem;
+          transform: translateY(-50%);
+          cursor: pointer;
+          user-select: none;
+          font-size: 1.2rem;
+        }
+      `}</style>
 
-      {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
-        <div
-          className="p-4 shadow rounded"
-          style={{
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        >
-          <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+      <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
+          <h3 className="mb-4 text-center">Login</h3>
 
-          {generalError && (
-            <div className="alert alert-danger fw-bold">{generalError}</div>
-          )}
-          {success && (
-            <div className="alert alert-success fw-bold">{success}</div>
-          )}
+          {error && <div className="alert alert-danger">{error}</div>}
 
-          {success && (
-            <div className="text-center mb-3">
-              <button
-                className="btn btn-success"
-                onClick={() => navigate("/home")}
-              >
-                Go to Dashboard
-              </button>
+          <form onSubmit={handleSubmit}>
+            {/* Email */}
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email:
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="form-control"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+              />
             </div>
-          )}
 
-          {!success && (
-            <form onSubmit={handleSubmit}>
-              {/* Username */}
-              <div className="mb-3">
-                <label className="form-label">Username:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your username..."
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  required
-                  autoComplete="username"
-                />
-                {errors.username && (
-                  <div className="text-danger">{errors.username[0]}</div>
-                )}
-              </div>
+            {/* Password with emoji toggle */}
+            <div className="mb-3 password-wrapper">
+              <label htmlFor="password" className="form-label">
+                Password:
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                className="form-control password-input"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+              />
+              <span
+                className="toggle-password"
+                role="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={toggleShowPassword}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") toggleShowPassword();
+                }}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </span>
+            </div>
 
-              {/* Password */}
-              <div className="mb-3 position-relative">
-                <label className="form-label">Password:</label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="form-control"
-                  placeholder="Enter your password..."
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  required
-                  autoComplete="current-password"
-                  style={{
-                    paddingRight: "3.5rem",
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  disabled={isSubmitting}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "1rem",
-                    transform: "translateY(-50%)",
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    fontSize: "1.25rem",
-                    color: "#555",
-                    userSelect: "none",
-                    padding: 0,
-                    lineHeight: 1,
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {showPassword ? "🙈" : "👁️"}
-                </button>
-                {errors.password && (
-                  <div className="text-danger">{errors.password[0]}</div>
-                )}
-              </div>
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </button>
+          </form>
 
-              {/* Remember Me */}
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="rememberMe"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
-                <label className="form-check-label" htmlFor="rememberMe">
-                  Remember Me
-                </label>
-              </div>
-
-              {/* Submit Button */}
-              <div className="d-flex justify-content-center">
-                <button
-                  type="submit"
-                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting && (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                  {isSubmitting ? "Logging in..." : "Login"}
-                </button>
-              </div>
-
-              <p className="text-center fw-bold mt-3">
-                Don't have an account?{" "}
-                <Link to="/register" style={{ textDecoration: "none" }}>
-                  Register here
-                </Link>
-              </p>
-            </form>
-          )}
+          <p className="mt-3 text-center">
+            Don't have an account?{" "}
+            <Link to="/register" style={{ textDecoration: "none" }}>
+              Register
+            </Link>
+          </p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
