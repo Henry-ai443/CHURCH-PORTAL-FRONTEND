@@ -6,7 +6,7 @@ const Register = () => {
   const [countries] = useState(getNames());
 
   useEffect(() => {
-    // Fix for no space at the top or bottom
+    // Disable scrolling and reset margins/paddings on all screen sizes
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
@@ -77,9 +77,9 @@ const Register = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             username: name,
-            email: email,
-            password: password,
-            country: country,
+            email,
+            password,
+            country,
           }),
         }
       );
@@ -113,7 +113,10 @@ const Register = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column p-0 register-page">
+    <div
+      className="container-fluid d-flex flex-column flex-md-row p-0 register-page"
+      style={{ minHeight: "100vh" }}
+    >
       {/* Hero Image Section */}
       <div
         className="w-100 w-md-50 hero-image position-relative"
@@ -121,14 +124,32 @@ const Register = () => {
           backgroundImage: `url('/Hero.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          flex: "1", // Make sure hero image stretches to fill the space
+          flex: "1 1 auto",
+          minHeight: "0", // important for flex children to not overflow
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <div className="hero-overlay-text">GENERAL CONFERENCE YOUTH HUB</div>
+        <div
+          className="hero-overlay-text text-center"
+          style={{
+            color: "#fff",
+            fontWeight: "700",
+            fontSize: "1.8rem",
+            padding: "0 1rem",
+            userSelect: "none",
+          }}
+        >
+          GENERAL CONFERENCE YOUTH HUB
+        </div>
       </div>
 
       {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4 flex-grow-1">
+      <div
+        className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4 flex-grow-1"
+        style={{ flex: "1 1 auto", minHeight: "0" }}
+      >
         <div
           className="p-4 shadow rounded"
           style={{
@@ -159,7 +180,7 @@ const Register = () => {
           )}
 
           {!success && (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ overflowY: "auto" }}>
               {/* Username */}
               <div className="mb-3">
                 <label className="form-label">Username:</label>
@@ -171,6 +192,8 @@ const Register = () => {
                   name="name"
                   value={formData.name}
                   disabled={isSubmitting}
+                  autoComplete="username"
+                  required
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
@@ -188,6 +211,8 @@ const Register = () => {
                   name="email"
                   value={formData.email}
                   disabled={isSubmitting}
+                  autoComplete="email"
+                  required
                 />
                 {errors.email && (
                   <div className="text-danger fw-bold">{errors.email[0]}</div>
@@ -230,6 +255,8 @@ const Register = () => {
                   name="password"
                   value={formData.password}
                   disabled={isSubmitting}
+                  autoComplete="new-password"
+                  required
                 />
                 {errors.password && (
                   <div className="text-danger fw-bold">{errors.password[0]}</div>
@@ -247,6 +274,8 @@ const Register = () => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   disabled={isSubmitting}
+                  autoComplete="new-password"
+                  required
                 />
                 {errors.confirmPassword && (
                   <div className="text-danger fw-bold">

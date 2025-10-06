@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -15,20 +14,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  // Disable scrolling on all screen sizes
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Remove all margins and paddings to remove space at the top
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
@@ -84,7 +71,11 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setGeneralError(data.detail || "Login failed. Please try again.");
+        if (data.username || data.password) {
+          setErrors(data);
+        } else {
+          setGeneralError(data.detail || "Login failed. Please try again.");
+        }
         setIsSubmitting(false);
         return;
       }
@@ -93,7 +84,7 @@ const Login = () => {
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
         navigate("/home");
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
@@ -158,6 +149,7 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
+                  autoComplete="username"
                 />
                 {errors.username && (
                   <div className="text-danger">{errors.username[0]}</div>
@@ -176,8 +168,9 @@ const Login = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
+                  autoComplete="current-password"
                   style={{
-                    paddingRight: "3.5rem", // Ensure there is enough space for the emoji
+                    paddingRight: "3.5rem",
                   }}
                 />
                 <button
@@ -188,16 +181,20 @@ const Login = () => {
                   style={{
                     position: "absolute",
                     top: "50%",
-                    right: "1rem", // Adjust this to properly place the emoji inside
+                    right: "1rem",
                     transform: "translateY(-50%)",
                     border: "none",
                     background: "transparent",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "1.25rem",
                     color: "#555",
                     userSelect: "none",
-                    height: "1.5em",
+                    padding: 0,
                     lineHeight: 1,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   {showPassword ? "🙈" : "👁️"}
