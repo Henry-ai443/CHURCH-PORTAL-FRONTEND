@@ -7,10 +7,13 @@ const Register = () => {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-
-    return(
-      document.body.style.overflow = "initial"
-    )
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    return () => {
+      document.body.style.overflow="initial"
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+    }
   })
 
   const [formData, setFormData] = useState({
