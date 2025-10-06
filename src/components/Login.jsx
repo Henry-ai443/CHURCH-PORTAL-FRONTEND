@@ -180,21 +180,11 @@ const Login = () => {
                   disabled={isSubmitting}
                   style={{
                     position: "absolute",
-                    top: "50%",
-                    right: "1rem",
-                    transform: "translateY(-50%)",
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    fontSize: "1.25rem",
-                    color: "#555",
-                    userSelect: "none",
-                    padding: 0,
-                    lineHeight: 1,
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    right:"12px",
+                    top:"72%",
+                    transform:"translateY(-50%)",
+                    cursor:"pointer",
+                    fontSize:"1.2rem"
                   }}
                 >
                   {showPassword ? "🙈" : "👁️"}
