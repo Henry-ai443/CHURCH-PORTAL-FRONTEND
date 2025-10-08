@@ -97,14 +97,14 @@ function App() {
 
           <Route
           path="/youth/messages"
-          />
-          element={
+                    element={
             <ProtectedRoute>
               <Navbar/>
               <YouthMessagesList/>
               <Footer/>
             </ProtectedRoute>
           }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
