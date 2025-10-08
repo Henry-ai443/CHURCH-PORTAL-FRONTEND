@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Aos from "aos";
 import "aos/dist/aos.css";
 
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
 import Home from "./pages/Home";
 import AnnouncementPage from "./pages/AnnouncementPage";
 import EventsPage from "./pages/EventsPage";
@@ -11,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import Profile from "./pages/ProfilePage";
 import YouthPage from "./pages/YouthPage";
+import YouthMessagesList from "./components/YouthMessageList";
 
 
 const isAuthenticated = () => {
@@ -90,6 +94,17 @@ function App() {
             </ProtectedRoute>
           }
           />
+
+          <Route
+          path="/youth/messages"
+          />
+          element={
+            <ProtectedRoute>
+              <Navbar/>
+              <YouthMessagesList/>
+              <Footer/>
+            </ProtectedRoute>
+          }
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
