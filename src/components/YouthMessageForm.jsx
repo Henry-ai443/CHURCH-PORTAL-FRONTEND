@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const YouthMessageForm = () => {
   const [formData, setFormData] = useState({
@@ -129,6 +130,12 @@ const YouthMessageForm = () => {
         </button>
       </form>
 
+      <div className="view-messages-link">
+        <Link to="/youth/messages" tabIndex={0}>
+          View answered and unanswered messages
+        </Link>
+      </div>
+
       <style jsx>{`
         .form-container {
           background: #ffffff;
@@ -219,6 +226,25 @@ const YouthMessageForm = () => {
           animation: scaleBounce 0.6s ease forwards;
         }
 
+        .view-messages-link {
+          margin-top: 20px;
+          text-align: center;
+        }
+
+        .view-messages-link a {
+          color: #007bff;
+          text-decoration: underline;
+          font-weight: 600;
+          cursor: pointer;
+          font-size: 16px;
+        }
+
+        .view-messages-link a:hover,
+        .view-messages-link a:focus {
+          color: #0056b3;
+          outline: none;
+        }
+
         @keyframes scaleBounce {
           0% {
             transform: scale(0);
@@ -234,10 +260,12 @@ const YouthMessageForm = () => {
         }
 
         @keyframes fadeInOut {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0;
           }
-          10%, 90% {
+          10%,
+          90% {
             opacity: 1;
           }
         }
