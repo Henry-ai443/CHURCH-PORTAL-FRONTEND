@@ -15,6 +15,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import Profile from "./pages/ProfilePage";
 import YouthPage from "./pages/YouthPage";
 import YouthMessagesList from "./components/YouthMessageList";
+import ChatsPage from "./pages/ChatsPage";
 
 
 const isAuthenticated = () => {
@@ -91,6 +92,15 @@ function App() {
           element = {
             <ProtectedRoute>
               <YouthPage />
+            </ProtectedRoute>
+          }
+          />
+
+                    <Route
+          path = "/chat"
+          element = {
+            <ProtectedRoute>
+              <ChatsPage/>
             </ProtectedRoute>
           }
           />

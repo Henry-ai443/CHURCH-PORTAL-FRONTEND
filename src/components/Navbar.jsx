@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { AiFillHome } from 'react-icons/ai';
-import { FaBullhorn, FaCalendarAlt, FaSignInAlt, FaHandHoldingHeart, FaUserCircle, FaYouth } from 'react-icons/fa'; // Note: FaYouth does not exist; we'll pick an icon below
+import {
+  FaBullhorn,
+  FaCalendarAlt,
+  FaSignInAlt,
+  FaHandHoldingHeart,
+  FaUserCircle,
+  FaComments,
+} from 'react-icons/fa'; // Added FaComments here
 import { GiHolyGrail } from 'react-icons/gi';
 import { MdGroups } from 'react-icons/md'; // Using MdGroups as Youth Section icon
 
@@ -15,7 +22,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className='navbar navbar-expand-lg px-3 fixed-top'
+        className="navbar navbar-expand-lg px-3 fixed-top"
         style={{
           background: 'rgba(0, 51, 102, 0.8)',
           backdropFilter: 'blur(14px)',
@@ -24,19 +31,19 @@ const Navbar = () => {
         }}
       >
         <div
-          className='container-fluid d-flex justify-content-between align-items-center'
+          className="container-fluid d-flex justify-content-between align-items-center"
           style={{ position: 'relative' }}
         >
           {/* Brand */}
           <a
-            className='navbar-brand d-flex align-items-center'
-            href='/home'
+            className="navbar-brand d-flex align-items-center"
+            href="/home"
             style={{ textDecoration: 'none' }}
           >
             <img
-              src='/logo.png'
-              alt='Church Logo'
-              className='logo'
+              src="/logo.png"
+              alt="Church Logo"
+              className="logo"
               style={{
                 height: '40px',
                 width: 'auto',
@@ -47,7 +54,7 @@ const Navbar = () => {
               }}
             />
             <span
-              className='fw-bold brand-text'
+              className="fw-bold brand-text"
               style={{
                 fontSize: '0.9rem',
                 background:
@@ -66,47 +73,54 @@ const Navbar = () => {
           </a>
 
           {/* Large Screen Menu */}
-          <ul className='navbar-nav d-none d-lg-flex flex-row gap-4'>
-            <li className='nav-item'>
-              <a href='/home' className='nav-link text-white fw-bold fs-5'>
-                <AiFillHome className='me-2' />
+          <ul className="navbar-nav d-none d-lg-flex flex-row gap-4">
+            <li className="nav-item">
+              <a href="/home" className="nav-link text-white fw-bold fs-5">
+                <AiFillHome className="me-2" />
                 Home
               </a>
             </li>
-            <li className='nav-item'>
-              <a href='/announcements' className='nav-link text-white fw-bold fs-5'>
-                <FaBullhorn className='me-2' />
+            <li className="nav-item">
+              <a href="/announcements" className="nav-link text-white fw-bold fs-5">
+                <FaBullhorn className="me-2" />
                 Announcements
               </a>
             </li>
-            <li className='nav-item'>
-              <a href='/events' className='nav-link text-white fw-bold fs-5'>
-                <FaCalendarAlt className='me-2' />
+            <li className="nav-item">
+              <a href="/events" className="nav-link text-white fw-bold fs-5">
+                <FaCalendarAlt className="me-2" />
                 Events
               </a>
             </li>
-            <li className='nav-item'>
-              <a href='/youth' className='nav-link text-white fw-bold fs-5'>
-                <MdGroups className='me-2' />
+            <li className="nav-item">
+              <a href="/youth" className="nav-link text-white fw-bold fs-5">
+                <MdGroups className="me-2" />
                 Youth Section
               </a>
             </li>
-            <li className='nav-item'>
-              <a href='/profile' className='nav-link text-white fw-bold fs-5'>
-                <FaUserCircle className='me-2' />
+            {/* Chat Room Link Added */}
+            <li className="nav-item">
+              <a href="/chat" className="nav-link text-white fw-bold fs-5">
+                <FaComments className="me-2" />
+                Chat Room
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="/profile" className="nav-link text-white fw-bold fs-5">
+                <FaUserCircle className="me-2" />
                 Profile
               </a>
             </li>
-            <li className='nav-item'>
+            <li className="nav-item">
               <a
-                href='/logout'
-                className='nav-link text-white fw-bold fs-5'
+                href="/logout"
+                className="nav-link text-white fw-bold fs-5"
                 onClick={(e) => {
                   e.preventDefault();
                   handleLogout();
                 }}
               >
-                <FaSignInAlt className='me-2' />
+                <FaSignInAlt className="me-2" />
                 Logout
               </a>
             </li>
@@ -114,7 +128,7 @@ const Navbar = () => {
 
           {/* Mobile Hamburger */}
           <div
-            className='d-lg-none'
+            className="d-lg-none"
             onClick={() => setIsOpen(!isOpen)}
             style={{ width: '30px', height: '22px', cursor: 'pointer', position: 'relative', zIndex: '1100' }}
           >
@@ -173,67 +187,75 @@ const Navbar = () => {
           overflowY: 'auto',
         }}
       >
-        <ul className='navbar-nav text-center fw-bold fs-5'>
-          <li className='nav-item'>
-            <a href='/home' className='nav-link text-white'>
-              <AiFillHome className='me-2' />
+        <ul className="navbar-nav text-center fw-bold fs-5">
+          <li className="nav-item">
+            <a href="/home" className="nav-link text-white">
+              <AiFillHome className="me-2" />
               Home
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/announcements' className='nav-link text-white'>
-              <FaBullhorn className='me-2' />
+          <li className="nav-item">
+            <a href="/announcements" className="nav-link text-white">
+              <FaBullhorn className="me-2" />
               Announcements
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/events' className='nav-link text-white'>
-              <FaCalendarAlt className='me-2' />
+          <li className="nav-item">
+            <a href="/events" className="nav-link text-white">
+              <FaCalendarAlt className="me-2" />
               Events
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/youth' className='nav-link text-white'>
-              <MdGroups className='me-2' />
+          <li className="nav-item">
+            <a href="/youth" className="nav-link text-white">
+              <MdGroups className="me-2" />
               Youth Section
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/sermons' className='nav-link text-white'>
-              <GiHolyGrail className='me-2' />
+          <li className="nav-item">
+            <a href="/sermons" className="nav-link text-white">
+              <GiHolyGrail className="me-2" />
               Sermons
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/donations' className='nav-link text-white'>
-              <FaHandHoldingHeart className='me-2' />
+          <li className="nav-item">
+            <a href="/donations" className="nav-link text-white">
+              <FaHandHoldingHeart className="me-2" />
               Donations
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
-            <a href='/profile' className='nav-link text-white'>
-              <FaUserCircle className='me-2' />
+          {/* Chat Room Link Added */}
+          <li className="nav-item">
+            <a href="/chat" className="nav-link text-white">
+              <FaComments className="me-2" />
+              Chat Room
+            </a>
+            <hr />
+          </li>
+          <li className="nav-item">
+            <a href="/profile" className="nav-link text-white">
+              <FaUserCircle className="me-2" />
               Profile
             </a>
             <hr />
           </li>
-          <li className='nav-item'>
+          <li className="nav-item">
             <a
-              href='/logout'
-              className='nav-link text-white'
+              href="/logout"
+              className="nav-link text-white"
               onClick={(e) => {
                 e.preventDefault();
                 handleLogout();
                 setIsOpen(false);
               }}
             >
-              <FaSignInAlt className='me-2' />
+              <FaSignInAlt className="me-2" />
               Logout
             </a>
             <hr />
@@ -266,7 +288,7 @@ const Navbar = () => {
           @media (min-width: 992px) {
             .logo { height: 50px !important; }
             .brand-text { font-size: 1.4rem !important; font-style: italic !important; }
-            .nav-link { font-size: 1.2rem; }
+            .nav-link { font-size: 0.9rem; }
           }
 
           @media (max-width: 576px) {
