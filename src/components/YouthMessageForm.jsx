@@ -294,4 +294,11 @@ const YouthMessageForm = () => {
 
         .view-messages-link a:hover,
         .view-messages-link a:focus {
-          color: #0056b3
+          color: #0056b3;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default YouthMessageForm;
