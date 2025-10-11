@@ -296,6 +296,64 @@ const YouthMessageForm = () => {
         .view-messages-link a:focus {
           color: #0056b3;
         }
+
+        /* Car animation styles */
+        .car-animation {
+          position: relative;
+          width: 100%;
+          height: 40px;
+          overflow: hidden;
+          margin-bottom: 15px;
+        }
+
+        .car {
+          position: absolute;
+          top: 0;
+          left: -50px;
+          font-size: 32px;
+          animation: driveAcross 3s linear forwards;
+        }
+
+        @keyframes driveAcross {
+          0% {
+            left: -50px;
+          }
+          100% {
+            left: 100%;
+          }
+        }
+
+        /* Optional: fadeInOut animation for success message */
+        @keyframes fadeInOut {
+          0% {
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+
+        /* Optional: scaleBounce animation for checkmark */
+        @keyframes scaleBounce {
+          0% {
+            transform: scale(0.5);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
       `}</style>
     </div>
   );
