@@ -11,6 +11,7 @@ const YouthMessageForm = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,16 +25,31 @@ const YouthMessageForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Token check
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('You must be logged in to submit a message.');
+      return;
+    }
+
+    // Trimmed field check
+    if (!formData.title.trim() || !formData.message.trim()) {
+      setError('Title and message cannot be empty.');
+      return;
+    }
+
     setLoading(true);
     setError('');
     setSuccess('');
+    setShowAnimation(true);
 
     try {
       const res = await fetch('https://church-portal-backend.onrender.com/api/youth/messages/create/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Token ${localStorage.getItem('token')}`,
+          Authorization: `Token ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -59,6 +75,7 @@ const YouthMessageForm = () => {
       setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
+      setTimeout(() => setShowAnimation(false), 3000); // Hide car after 3s
     }
   };
 
@@ -66,15 +83,24 @@ const YouthMessageForm = () => {
     <div className="form-container">
       <h3 className="form-title">Youth Questions</h3>
 
+      {/* 🚗📧 Car animation */}
+      {showAnimation && (
+        <div className="car-animation" role="status" aria-live="polite">
+          <span className="car">🚗📧</span>
+        </div>
+      )}
+
+      {/* ✅ Success message */}
       {success && (
-        <div className="success-animation">
+        <div className="success-animation" role="alert" aria-live="polite">
           <div className="checkmark">&#10003;</div>
           <div className="alert alert-success">{success}</div>
         </div>
       )}
 
+      {/* ❌ Error message */}
       {error && (
-        <div className="alert alert-danger" style={{ whiteSpace: 'pre-wrap' }}>
+        <div className="alert alert-danger" role="alert" aria-live="assertive" style={{ whiteSpace: 'pre-wrap' }}>
           {error}
         </div>
       )}
@@ -92,6 +118,7 @@ const YouthMessageForm = () => {
             placeholder="Enter your question title"
             required
             disabled={loading}
+            maxLength={100}
           />
         </div>
 
@@ -107,6 +134,7 @@ const YouthMessageForm = () => {
             placeholder="Type your full message here..."
             required
             disabled={loading}
+            maxLength={1000}
           />
         </div>
 
@@ -136,8 +164,10 @@ const YouthMessageForm = () => {
         </Link>
       </div>
 
+      {/* 🔷 STYLES */}
       <style jsx>{`
         .form-container {
+          position: relative;
           background: #ffffff;
           padding: 40px;
           margin: 40px auto;
@@ -146,6 +176,29 @@ const YouthMessageForm = () => {
           max-width: 800px;
           width: 95%;
           font-family: 'Segoe UI', sans-serif;
+          overflow: hidden;
+        }
+
+        .form-container::before,
+        .form-container::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          width: 100%;
+          height: 20px;
+          background-repeat: repeat-x;
+          background-size: 40px 20px;
+          z-index: 1;
+        }
+
+        .form-container::before {
+          top: 0;
+          background-image: url('data:image/svg+xml;utf8,<svg width="40" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 L10,0 L20,20 L30,0 L40,20 Z" fill="%23007bff"/></svg>');
+        }
+
+        .form-container::after {
+          bottom: 0;
+          background-image: url('data:image/svg+xml;utf8,<svg width="40" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,20 L20,0 L30,20 L40,0 Z" fill="%23007bff"/></svg>');
         }
 
         .form-title {
@@ -241,47 +294,4 @@ const YouthMessageForm = () => {
 
         .view-messages-link a:hover,
         .view-messages-link a:focus {
-          color: #0056b3;
-          outline: none;
-        }
-
-        @keyframes scaleBounce {
-          0% {
-            transform: scale(0);
-            opacity: 0;
-          }
-          60% {
-            transform: scale(1.4);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1);
-          }
-        }
-
-        @keyframes fadeInOut {
-          0%,
-          100% {
-            opacity: 0;
-          }
-          10%,
-          90% {
-            opacity: 1;
-          }
-        }
-
-        @media (max-width: 576px) {
-          .form-container {
-            padding: 25px 20px;
-          }
-
-          .form-title {
-            font-size: 20px;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default YouthMessageForm;
+          color: #0056b3
