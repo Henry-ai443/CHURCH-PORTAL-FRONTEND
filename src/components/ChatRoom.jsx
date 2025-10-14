@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-// For emoji picker, we'll use 'emoji-mart' package.
-// Install with: npm install emoji-mart
+// For emoji picker, install with: npm install emoji-mart
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -9,17 +8,17 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
-  const [typingUsers, setTypingUsers] = useState(new Set()); // track who is typing
+  const [typingUsers, setTypingUsers] = useState(new Set());
   const chatSocket = useRef(null);
   const messageEndRef = useRef(null);
 
   const API_URL = 'https://church-portal-backend.onrender.com/api/chat/messages/';
   const WS_URL = 'wss://church-portal-backend.onrender.com/ws/chat/';
 
-  // Simulate current user for styling and status
-  const currentUser = 'me'; // Replace with your auth username
+  // TODO: Replace with actual authenticated username
+  const currentUser = 'me';
 
-  // Handle fetching messages
+  // Fetch chat history
   useEffect(() => {
     fetch(API_URL, {
       credentials: 'include',
@@ -37,35 +36,33 @@ const ChatRoom = () => {
 
     chatSocket.current.onopen = () => {
       console.log('WebSocket connected');
-      // Optionally send a "join" message with username if needed by server
-      chatSocket.current.send(JSON.stringify({ type: 'join', username: currentUser }));
+      // Optional: send join message if backend supports it
+      // chatSocket.current.send(JSON.stringify({ type: 'join', username: currentUser }));
     };
 
     chatSocket.current.onmessage = (e) => {
       const data = JSON.parse(e.data);
 
-      if (data.type === 'message') {
+      if (data.type === 'chat_message') {
         setMessages((prev) => [...prev, data]);
       } else if (data.type === 'typing') {
         setTypingUsers((prev) => {
           const newSet = new Set(prev);
-          if (data.isTyping) {
+          if (data.is_typing) {
             newSet.add(data.username);
           } else {
             newSet.delete(data.username);
           }
           return newSet;
         });
-      } else if (data.type === 'read_receipt') {
-        // Mark message(s) as read - update messages state accordingly
+      } else if (data.type === 'read') {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
-            msg.id === data.messageId ? { ...msg, read: true } : msg
+            msg.id === data.message_id ? { ...msg, read: true } : msg
           )
         );
       } else if (data.type === 'online_status') {
-        // Optional: track who's online — could be used to show online status
-        // For simplicity, ignore or implement later
+        // Optional: implement online status updates
       }
     };
 
@@ -87,41 +84,32 @@ const ChatRoom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Send message
+  // Send chat message
   const sendMessage = () => {
     if (inputMessage.trim() === '') return;
 
     const msgObj = {
-      type: 'message',
-      username: currentUser,
+      type: 'chat_message',
       message: inputMessage,
-      timestamp: new Date().toISOString(),
-      // Generate id or server can assign
-      id: Date.now(),
     };
 
     chatSocket.current.send(JSON.stringify(msgObj));
-    setMessages((prev) => [...prev, { ...msgObj, read: false }]); // optimistic update
     setInputMessage('');
     setIsEmojiPickerOpen(false);
-
-    // Send read receipt of last message
-    // Assuming all sent messages by currentUser are read by default
   };
 
-  // Handle typing indicator logic (debounced)
+  // Typing indicator (debounced)
   useEffect(() => {
     if (!chatSocket.current || chatSocket.current.readyState !== WebSocket.OPEN) return;
 
     if (inputMessage.trim() !== '') {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, isTyping: true }));
+      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: true }));
     } else {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, isTyping: false }));
+      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: false }));
     }
 
-    // Send 'stop typing' after delay
     const timeoutId = setTimeout(() => {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, isTyping: false }));
+      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: false }));
     }, 3000);
 
     return () => clearTimeout(timeoutId);
@@ -134,22 +122,19 @@ const ChatRoom = () => {
     }
   };
 
-  // Format timestamp to hh:mm am/pm
+  // Format timestamp (hh:mm am/pm)
   const formatTime = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Add emoji from picker
+  // Add emoji to input
   const addEmoji = (emoji) => {
     setInputMessage((prev) => prev + emoji.native);
   };
 
-  // Show online status (simple example: current user always online)
-  const isUserOnline = (username) => {
-    // You can implement real online status logic here
-    return username === currentUser ? true : false;
-  };
+  // Simple online status check (current user always online)
+  const isUserOnline = (username) => username === currentUser;
 
   return (
     <div style={styles.container}>
@@ -296,95 +281,82 @@ const styles = {
     scrollBehavior: 'smooth',
   },
   message: {
-    maxWidth: '75%',
-    padding: '8px 12px',
+    maxWidth: '70%',
+    padding: '10px 15px',
     borderRadius: 16,
     boxShadow: '0 1px 1px rgba(0,0,0,0.1)',
-    fontSize: '1rem',
-    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
   },
   username: {
-    fontSize: '0.75rem',
-    fontWeight: '600',
-    marginBottom: 3,
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginBottom: 4,
     color: '#075E54',
-    display: 'flex',
-    alignItems: 'center',
   },
   onlineIndicator: {
     display: 'inline-block',
     width: 8,
     height: 8,
-    borderRadius: '50%',
     backgroundColor: '#25D366',
-    marginLeft: 6,
-    boxShadow: '0 0 6px #25D366',
+    borderRadius: '50%',
+    marginLeft: 4,
+    verticalAlign: 'middle',
   },
   timestamp: {
-    fontSize: '0.65rem',
+    fontSize: 10,
     color: '#999',
     textAlign: 'right',
-    marginTop: 4,
-    userSelect: 'none',
+    marginTop: 6,
   },
   typingIndicator: {
     fontStyle: 'italic',
-    color: '#555',
-    paddingLeft: 12,
-    marginBottom: 4,
+    color: '#666',
+    fontSize: 12,
+    marginTop: 4,
   },
   footer: {
+    padding: 10,
     display: 'flex',
     alignItems: 'center',
-    padding: '10px',
-    backgroundColor: '#f0f0f0',
-    borderTop: '1px solid #ddd',
+    backgroundColor: '#f5f5f5',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     position: 'relative',
   },
-  input: {
-    flex: 1,
-    resize: 'none',
-    borderRadius: 20,
-    border: '1px solid #ddd',
-    padding: '10px 15px',
-    fontSize: '1rem',
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    outline: 'none',
-    minHeight: 38,
-    maxHeight: 100,
-    overflowY: 'auto',
-  },
-  button: {
-    marginLeft: 10,
-    backgroundColor: '#25D366', // WhatsApp green
-    border: 'none',
-    borderRadius: '50%',
-    width: 42,
-    height: 42,
-    color: 'white',
-    fontSize: '1.3rem',
-    cursor: 'pointer',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-    transition: 'background-color 0.3s ease',
-  },
   emojiButton: {
-    backgroundColor: 'transparent',
     border: 'none',
+    background: 'transparent',
     fontSize: 24,
     cursor: 'pointer',
     marginRight: 8,
-    outline: 'none',
+    userSelect: 'none',
   },
   emojiPicker: {
     position: 'absolute',
-    bottom: 60,
-    left: 10,
+    bottom: '50px',
+    left: '10px',
     zIndex: 1000,
+  },
+  input: {
+    flex: 1,
+    resize: 'none',
+    padding: '8px 12px',
+    borderRadius: 20,
+    border: '1px solid #ccc',
+    fontSize: 16,
+    outline: 'none',
+    maxHeight: '100px',
+  },
+  button: {
+    marginLeft: 8,
+    padding: '8px 16px',
+    borderRadius: 20,
+    border: 'none',
+    backgroundColor: '#075E54',
+    color: 'white',
+    cursor: 'pointer',
+    fontSize: 18,
+    userSelect: 'none',
   },
 };
 
