@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Picker } from 'emoji-mart'; // emoji-mart v5+
 
-// For emoji picker, install with: npm install emoji-mart
-import { Picker } from 'emoji-mart';
-import 'emoji-mart/dist-modern/css/emoji-mart.css';
-
+// ❌ Removed invalid CSS import
+// import 'emoji-mart/dist-modern/css/emoji-mart.css'; // Not needed for emoji-mart@5+
 
 const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
@@ -16,10 +15,8 @@ const ChatRoom = () => {
   const API_URL = 'https://church-portal-backend.onrender.com/api/chat/messages/';
   const WS_URL = 'wss://church-portal-backend.onrender.com/ws/chat/';
 
-  // TODO: Replace with actual authenticated username
-  const currentUser = 'me';
+  const currentUser = 'me'; // Replace with actual username
 
-  // Fetch chat history
   useEffect(() => {
     fetch(API_URL, {
       credentials: 'include',
@@ -31,14 +28,11 @@ const ChatRoom = () => {
       .catch((err) => console.error('Error fetching messages:', err));
   }, []);
 
-  // Setup WebSocket connection
   useEffect(() => {
     chatSocket.current = new WebSocket(WS_URL);
 
     chatSocket.current.onopen = () => {
       console.log('WebSocket connected');
-      // Optional: send join message if backend supports it
-      // chatSocket.current.send(JSON.stringify({ type: 'join', username: currentUser }));
     };
 
     chatSocket.current.onmessage = (e) => {
@@ -62,8 +56,6 @@ const ChatRoom = () => {
             msg.id === data.message_id ? { ...msg, read: true } : msg
           )
         );
-      } else if (data.type === 'online_status') {
-        // Optional: implement online status updates
       }
     };
 
@@ -80,12 +72,10 @@ const ChatRoom = () => {
     };
   }, [currentUser]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Send chat message
   const sendMessage = () => {
     if (inputMessage.trim() === '') return;
 
@@ -99,7 +89,6 @@ const ChatRoom = () => {
     setIsEmojiPickerOpen(false);
   };
 
-  // Typing indicator (debounced)
   useEffect(() => {
     if (!chatSocket.current || chatSocket.current.readyState !== WebSocket.OPEN) return;
 
@@ -123,18 +112,15 @@ const ChatRoom = () => {
     }
   };
 
-  // Format timestamp (hh:mm am/pm)
   const formatTime = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Add emoji to input
   const addEmoji = (emoji) => {
     setInputMessage((prev) => prev + emoji.native);
   };
 
-  // Simple online status check (current user always online)
   const isUserOnline = (username) => username === currentUser;
 
   return (
@@ -158,7 +144,6 @@ const ChatRoom = () => {
                 backgroundColor: isCurrentUser ? '#DCF8C6' : '#FFFFFF',
                 borderTopRightRadius: isCurrentUser ? 0 : 16,
                 borderTopLeftRadius: isCurrentUser ? 16 : 0,
-                position: 'relative',
               }}
               aria-label={`${msg.username} message`}
             >
