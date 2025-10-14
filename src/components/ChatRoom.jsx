@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 
 // For emoji picker, install with: npm install emoji-mart
 import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
+import 'emoji-mart/dist-modern/css/emoji-mart.css';
+
 
 const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
