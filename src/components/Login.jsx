@@ -121,7 +121,8 @@ const Login = () => {
           color: "#000",
         }}
       >
-        <h2
+
+                <h2
           style={{
             textAlign: "center",
             marginBottom: "30px",
@@ -132,6 +133,30 @@ const Login = () => {
         >
           Login
         </h2>
+
+                <h3
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "700",
+            color: "white",
+            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
+          }}
+        >
+          Genereal Conference
+        </h3>
+
+                <h4
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "700",
+            color: "white",
+            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
+          }}
+        >
+          Youth Hub
+        </h4>
 
         {generalError && (
           <div
@@ -244,7 +269,7 @@ const Login = () => {
                 style={{
                   position: "absolute",
                   right: "12px",
-                  top: "100%",
+                  top: "70%",
                   transform: "translateY(-50%)",
                   cursor: "pointer",
                   background: "transparent",
@@ -279,7 +304,7 @@ const Login = () => {
                 checked={formData.rememberMe}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                style={{ cursor: "pointer", width: "18px", height: "18px" }}
+                style={{ cursor: "pointer", width: "18px", height: "18px", borderRadius:"50%" }}
               />
               <label
                 htmlFor="rememberMe"
@@ -346,7 +371,7 @@ const Login = () => {
               Don't have an account?{" "}
               <Link
                 to="/register"
-                style={{ textDecoration: "none", color: "#283593" }}
+                style={{ textDecoration: "none", color: "white", fontWeight:"bold" }}
               >
                 Register here
               </Link>
