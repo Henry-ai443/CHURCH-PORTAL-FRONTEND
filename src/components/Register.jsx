@@ -427,13 +427,17 @@ const Register = () => {
              style={{
               color:"black",
               fontWeight:"Bold",
-              fontSize:"0.9rem",
+              fontSize:"1.5rem",
+              display:"flex",
+              justifyContent:"center",
+              alignItems:"center",
+              marginTop:"20px"
               }}
             >
               Already have an account ? <a href="/" 
               style={{
                 textDecoration:"none",
-                color:"blue",
+                color:"white",
                 fontWeight:"bold"
               }}
               >Login Here</a>
