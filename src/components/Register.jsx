@@ -187,7 +187,7 @@ const Register = () => {
         <h2
           style={{
             textAlign: "center",
-            marginBottom: "30px",
+            marginBottom: "10px",
             fontWeight: "700",
             color: "white",
             textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
@@ -199,7 +199,7 @@ const Register = () => {
         <h3
           style={{
             textAlign: "center",
-            marginBottom: "15px",
+            marginBottom: "10px",
             fontWeight: "bold",
             color: "blue",
             textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
@@ -211,7 +211,7 @@ const Register = () => {
         <h4
           style={{
             textAlign: "center",
-            marginBottom: "30px",
+            marginBottom: "10px",
             fontWeight: "bold",
             color: "rgb(38, 220, 226)",
             textShadow: "0 0 5px rgba(147, 148, 150, 0.99)",
@@ -427,7 +427,7 @@ const Register = () => {
              style={{
               color:"black",
               fontWeight:"Bold",
-              fontSize:"1.5rem",
+              fontSize:"1.2rem",
               display:"flex",
               justifyContent:"center",
               alignItems:"center",
