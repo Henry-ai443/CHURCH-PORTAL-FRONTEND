@@ -21,6 +21,16 @@ const Register = () => {
     };
   }, []);
 
+  // Track window width for responsiveness
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 768; // breakpoint for mobile
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,7 +46,6 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  // Validation: name must have at least one special char and one digit
   const validateName = (name) => {
     const specialCharRegex = /[^A-Za-z0-9]/;
     const digitRegex = /\d/;
@@ -128,6 +137,22 @@ const Register = () => {
     }
   };
 
+  // Common input styles
+  const inputStyle = {
+    padding: "12px 15px",
+    borderRadius: "12px",
+    border: "none",
+    outline: "none",
+    background: "rgba(255, 255, 255, 0.4)",
+    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+    fontSize: "1rem",
+    color: "#000",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+    width: "100%",
+    boxSizing: "border-box",
+  };
+
   return (
     <div
       style={{
@@ -139,8 +164,8 @@ const Register = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "20px",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        padding: isMobile ? "20px 10px" : "20px",
+        overflowY: isMobile ? "auto" : "hidden",
       }}
     >
       <div
@@ -151,28 +176,30 @@ const Register = () => {
           borderRadius: "20px",
           boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           border: "1px solid rgba(255, 255, 255, 0.3)",
-          padding: "40px",
+          padding: "40px 30px",
           maxWidth: "650px",
           width: "100%",
           color: "#000",
+          maxHeight: isMobile ? "90vh" : "auto",
+          overflowY: isMobile ? "auto" : "visible",
         }}
       >
         <h2
           style={{
             textAlign: "center",
-            marginBottom: "10px",
+            marginBottom: "30px",
             fontWeight: "700",
             color: "white",
             textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
           }}
         >
-          Register To Join:
+          Register To:
         </h2>
 
         <h3
           style={{
             textAlign: "center",
-            marginBottom: "10px",
+            marginBottom: "15px",
             fontWeight: "bold",
             color: "blue",
             textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
@@ -184,7 +211,7 @@ const Register = () => {
         <h4
           style={{
             textAlign: "center",
-            marginBottom: "10px",
+            marginBottom: "30px",
             fontWeight: "bold",
             color: "rgb(38, 220, 226)",
             textShadow: "0 0 5px rgba(147, 148, 150, 0.99)",
@@ -229,7 +256,7 @@ const Register = () => {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                 gap: "20px",
                 marginBottom: "20px",
               }}
@@ -252,18 +279,7 @@ const Register = () => {
                   required
                   placeholder="Your name"
                   autoComplete="username"
-                  style={{
-                    padding: "12px 15px",
-                    borderRadius: "12px",
-                    border: "none",
-                    outline: "none",
-                    background: "rgba(255, 255, 255, 0.4)",
-                    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
-                    fontSize: "1rem",
-                    color: "#000",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
-                  }}
+                  style={inputStyle}
                 />
                 {errors.name && (
                   <div style={{ color: "red", marginTop: "5px" }}>
@@ -290,18 +306,7 @@ const Register = () => {
                   required
                   placeholder="Your email"
                   autoComplete="email"
-                  style={{
-                    padding: "12px 15px",
-                    borderRadius: "12px",
-                    border: "none",
-                    outline: "none",
-                    background: "rgba(255, 255, 255, 0.4)",
-                    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
-                    fontSize: "1rem",
-                    color: "#000",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
-                  }}
+                  style={inputStyle}
                 />
                 {errors.email && (
                   <div style={{ color: "red", marginTop: "5px" }}>
@@ -325,25 +330,14 @@ const Register = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
-                  style={{
-                    padding: "12px 15px",
-                    borderRadius: "12px",
-                    border: "none",
-                    outline: "none",
-                    background: "rgba(255, 255, 255, 0.4)",
-                    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
-                    fontSize: "1rem",
-                    color: formData.country ? "#000" : "#999",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
-                  }}
+                  style={{ ...inputStyle, paddingRight: "10px" }}
                 >
                   <option value="" disabled>
                     Select your country
                   </option>
-                  {countries.map((country) => (
-                    <option key={country} value={country}>
-                      {country}
+                  {countries.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
                     </option>
                   ))}
                 </select>
@@ -370,20 +364,9 @@ const Register = () => {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   required
-                  placeholder="Enter password"
+                  placeholder="Password"
                   autoComplete="new-password"
-                  style={{
-                    padding: "12px 15px",
-                    borderRadius: "12px",
-                    border: "none",
-                    outline: "none",
-                    background: "rgba(255, 255, 255, 0.4)",
-                    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
-                    fontSize: "1rem",
-                    color: "#000",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
-                  }}
+                  style={inputStyle}
                 />
                 {errors.password && (
                   <div style={{ color: "red", marginTop: "5px" }}>
@@ -410,18 +393,7 @@ const Register = () => {
                   required
                   placeholder="Confirm password"
                   autoComplete="new-password"
-                  style={{
-                    padding: "12px 15px",
-                    borderRadius: "12px",
-                    border: "none",
-                    outline: "none",
-                    background: "rgba(255, 255, 255, 0.4)",
-                    boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
-                    fontSize: "1rem",
-                    color: "#000",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
-                  }}
+                  style={inputStyle}
                 />
                 {errors.confirmPassword && (
                   <div style={{ color: "red", marginTop: "5px" }}>
@@ -453,23 +425,33 @@ const Register = () => {
           </form>
         )}
 
-        <p
-          style={{
-            marginTop: "20px",
-            textAlign: "center",
-            color: "white",
-            fontWeight: "600",
-            textShadow: "0 0 5px rgba(27, 28, 30, 0.99)",
-          }}
-        >
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            style={{ color: "#1762e8", textDecoration: "underline" }}
+        {success && (
+          <div
+            style={{
+              marginTop: "20px",
+              textAlign: "center",
+              color: "white",
+              fontWeight: "600",
+              textShadow: "0 0 5px rgba(27, 28, 30, 0.99)",
+            }}
           >
-            Login here
-          </Link>
-        </p>
+            <button
+              onClick={() => navigate("/home")}
+              style={{
+                padding: "12px 25px",
+                borderRadius: "12px",
+                border: "none",
+                backgroundColor: "#28a745",
+                color: "white",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 4px 15px rgba(40, 167, 69, 0.5)",
+              }}
+            >
+              Go to Home
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
