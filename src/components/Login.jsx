@@ -143,7 +143,7 @@ const Login = () => {
             textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
           }}
         >
-          Genereal Conference
+          General Conference
         </h3>
 
                 <h4
