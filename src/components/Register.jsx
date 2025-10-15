@@ -5,17 +5,6 @@ import { getNames } from "country-list";
 const Register = () => {
   const [countries] = useState(getNames());
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-    return () => {
-      document.body.style.overflow="initial"
-      document.body.style.margin = "initial";
-      document.body.style.padding = "initial";
-    }
-  })
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,12 +17,36 @@ const Register = () => {
   const [generalError, setGeneralError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Same body style to prevent scroll and margin/padding
+    document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.documentElement.style.margin = "0";
+    document.documentElement.style.padding = "0";
+
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.margin = "initial";
+      document.body.style.padding = "initial";
+      document.documentElement.style.margin = "initial";
+      document.documentElement.style.padding = "initial";
+    };
+  }, []);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors({});
     setGeneralError("");
   };
 
@@ -45,13 +58,9 @@ const Register = () => {
     setSuccess("");
     setIsSubmitting(true);
 
-    const name = formData.name.trim();
-    const email = formData.email.trim();
-    const password = formData.password;
-    const confirmPassword = formData.confirmPassword;
-    const country = formData.country.trim();
+    const { name, email, password, confirmPassword, country } = formData;
 
-    if (!name || !email || !password || !confirmPassword || !country) {
+    if (!name.trim() || !email.trim() || !password || !confirmPassword || !country.trim()) {
       setGeneralError("All fields are required.");
       setIsSubmitting(false);
       return;
@@ -107,173 +116,425 @@ const Register = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column flex-md-row p-0 register-page">
-      {/* Hero Image Section */}
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
       <div
-        className="w-100 w-md-50 hero-image position-relative"
         style={{
-          backgroundImage: `url('/Hero.jpg')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(15px)",
+          WebkitBackdropFilter: "blur(15px)",
+          borderRadius: "20px",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
+          padding: "40px",
+          maxWidth: "400px",
+          width: "100%",
+          color: "#000",
         }}
       >
-        <div className="hero-overlay-text">General Conference Church</div>
-      </div>
-
-      {/* Form Section */}
-      <div className="w-100 w-md-50 d-flex align-items-center justify-content-center bg-light form-section p-4">
-        <div
-          className="p-4 shadow rounded"
+        <h2
           style={{
-            width: "100%",
-            maxWidth: "400px",
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "700",
+            color: "white",
+            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
           }}
         >
-          <h3 className="mb-4 text-center fw-bold text-primary">
-            Create an Account
-          </h3>
+          Register To:
+        </h2>
 
-          {generalError && (
-            <div className="alert alert-danger fw-bold">{generalError}</div>
-          )}
-          {success && (
-            <div className="alert alert-success fw-bold">{success}</div>
-          )}
+        <h3
+          style={{
+            textAlign: "center",
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "blue",
+            textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
+          }}
+        >
+          General Conference
+        </h3>
 
-          {success && (
-            <div className="text-center mb-3">
-              <button
-                className="btn btn-success"
-                onClick={() => navigate("/")}
+        <h4
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "bold",
+            color: "rgb(38, 220, 226)",
+            textShadow: "0 0 5px rgba(147, 148, 150, 0.99)",
+          }}
+        >
+          Youth Hub
+        </h4>
+
+        {generalError && (
+          <div
+            style={{
+              backgroundColor: "rgba(255, 0, 0, 0.1)",
+              color: "darkred",
+              padding: "10px",
+              marginBottom: "15px",
+              borderRadius: "8px",
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            {generalError}
+          </div>
+        )}
+
+        {success && (
+          <div
+            style={{
+              backgroundColor: "rgb(19, 255, 19)",
+              color: "green",
+              padding: "10px",
+              marginBottom: "15px",
+              borderRadius: "8px",
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            {success}
+          </div>
+        )}
+
+        {!success && (
+          <form onSubmit={handleSubmit}>
+            {/* Username */}
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="name"
+                style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
               >
-                Go to Dashboard
-              </button>
+                Username:
+              </label>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+                autoComplete="username"
+                placeholder="Enter your name..."
+                style={{
+                  width: "100%",
+                  padding: "12px 15px",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+                  fontSize: "1rem",
+                  color: "#000",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              />
+              {errors.username && (
+                <div style={{ color: "red", marginTop: "5px" }}>
+                  {errors.username[0]}
+                </div>
+              )}
             </div>
-          )}
 
-          {!success && (
-            <form onSubmit={handleSubmit}>
-              {/* Username */}
-              <div className="mb-3">
-                <label className="form-label">Username:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your name..."
-                  onChange={handleChange}
-                  name="name"
-                  value={formData.name}
-                  disabled={isSubmitting}
-                />
-                {errors.username && (
-                  <div className="text-danger">{errors.username[0]}</div>
-                )}
-              </div>
+            {/* Email */}
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="email"
+                style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
+              >
+                Email:
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+                autoComplete="email"
+                placeholder="Enter your email..."
+                style={{
+                  width: "100%",
+                  padding: "12px 15px",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+                  fontSize: "1rem",
+                  color: "#000",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              />
+              {errors.email && (
+                <div style={{ color: "red", marginTop: "5px" }}>
+                  {errors.email[0]}
+                </div>
+              )}
+            </div>
 
-              {/* Email */}
-              <div className="mb-3">
-                <label className="form-label">Email:</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  placeholder="Enter your email..."
-                  onChange={handleChange}
-                  name="email"
-                  value={formData.email}
-                  disabled={isSubmitting}
-                />
-                {errors.email && (
-                  <div className="text-danger fw-bold">{errors.email[0]}</div>
-                )}
-              </div>
-
-              {/* Country Dropdown */}
-              <div className="mb-3">
-                <label className="form-label">Country:</label>
-                <select
-                  name="country"
-                  className="form-select"
-                  value={formData.country}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  required
-                >
-                  <option value="" disabled>
-                    Select your country
+            {/* Country Dropdown */}
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="country"
+                style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
+              >
+                Country:
+              </label>
+              <select
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+                style={{
+                  width: "100%",
+                  padding: "12px 15px",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+                  fontSize: "1rem",
+                  color: formData.country ? "#000" : "#666",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              >
+                <option value="" disabled>
+                  Select your country
+                </option>
+                {countries.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
                   </option>
-                  {countries.map((country) => (
-                    <option key={country} value={country}>
-                      {country}
-                    </option>
-                  ))}
-                </select>
-                {errors.country && (
-                  <div className="text-danger fw-bold">{errors.country[0]}</div>
-                )}
-              </div>
+                ))}
+              </select>
+              {errors.country && (
+                <div style={{ color: "red", marginTop: "5px" }}>
+                  {errors.country[0]}
+                </div>
+              )}
+            </div>
 
-              {/* Password */}
-              <div className="mb-3">
-                <label className="form-label">Password:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Enter your password..."
-                  onChange={handleChange}
-                  name="password"
-                  value={formData.password}
-                  disabled={isSubmitting}
-                />
-                {errors.password && (
-                  <div className="text-danger fw-bold">{errors.password[0]}</div>
-                )}
-              </div>
+            {/* Password */}
+            <div style={{ marginBottom: "20px", position: "relative" }}>
+              <label
+                htmlFor="password"
+                style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
+              >
+                Password:
+              </label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+                autoComplete="new-password"
+                placeholder="Enter your password..."
+                style={{
+                  width: "100%",
+                  padding: "12px 45px 12px 15px",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+                  fontSize: "1rem",
+                  color: "#000",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                disabled={isSubmitting}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "70%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  background: "transparent",
+                  border: "none",
+                  fontSize: "1.2rem",
+                  color: "#1a237e",
+                  userSelect: "none",
+                }}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+              {errors.password && (
+                <div style={{ color: "red", marginTop: "5px" }}>
+                  {errors.password[0]}
+                </div>
+              )}
+            </div>
 
-              {/* Confirm Password */}
-              <div className="mb-3">
-                <label className="form-label">Confirm Password:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Confirm password..."
-                  onChange={handleChange}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  disabled={isSubmitting}
-                />
-                {errors.confirmPassword && (
-                  <div className="text-danger fw-bold">
-                    {errors.confirmPassword[0]}
-                  </div>
-                )}
-              </div>
+            {/* Confirm Password */}
+            <div style={{ marginBottom: "30px", position: "relative" }}>
+              <label
+                htmlFor="confirmPassword"
+                style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
+              >
+                Confirm Password:
+              </label>
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+                placeholder="Confirm password..."
+                style={{
+                  width: "100%",
+                  padding: "12px 45px 12px 15px",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.6)",
+                  fontSize: "1rem",
+                  color: "#000",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                disabled={isSubmitting}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "70%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  background: "transparent",
+                  border: "none",
+                  fontSize: "1.2rem",
+                  color: "#1a237e",
+                  userSelect: "none",
+                }}
+              >
+                {showConfirmPassword ? "🙈" : "👁️"}
+              </button>
+              {errors.confirmPassword && (
+                <div style={{ color: "red", marginTop: "5px" }}>
+                  {errors.confirmPassword[0]}
+                </div>
+              )}
+            </div>
 
-              <div className="d-flex justify-content-center">
-                <button
-                  type="submit"
-                  className="btn btn-primary px-5 fw-bold d-flex align-items-center justify-content-center gap-2"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting && (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                  {isSubmitting ? "Registering..." : "Register"}
-                </button>
-              </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                width: "100%",
+                padding: "14px 0",
+                borderRadius: "15px",
+                backgroundColor: "#1a237e",
+                border: "none",
+                color: "white",
+                fontWeight: "600",
+                fontSize: "1.1rem",
+                cursor: isSubmitting ? "default" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                transition: "background-color 0.3s ease",
+                boxShadow: "0 4px 8px rgb(25 25 112 / 0.5)",
+              }}
+              onMouseEnter={(e) => {
+                if (!isSubmitting) e.currentTarget.style.backgroundColor = "#141a55";
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting) e.currentTarget.style.backgroundColor = "#1a237e";
+              }}
+            >
+              {isSubmitting && (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  style={{ marginRight: "8px" }}
+                ></span>
+              )}
+              {isSubmitting ? "Registering..." : "Register"}
+            </button>
+          </form>
+        )}
 
-              <p className="text-center fw-bold mt-3">
-                Already have an account?{" "}
-                <Link to="/" style={{ textDecoration: "none" }}>
-                  Login
-                </Link>
-              </p>
-            </form>
-          )}
-        </div>
+        {success && (
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "15px",
+                border: "none",
+                backgroundColor: "green",
+                color: "white",
+                fontWeight: "600",
+                cursor: "pointer",
+                boxShadow: "0 4px 8px rgb(0 128 0 / 0.6)",
+              }}
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        )}
+
+        <p
+          style={{
+            marginTop: "25px",
+            textAlign: "center",
+            fontWeight: "600",
+            color: "white",
+            textShadow: "0 0 4px rgba(0,0,0,0.7)",
+          }}
+        >
+          Already have an account?{" "}
+          <Link
+            to="/"
+            style={{
+              color: "#e6e6e6",
+              textDecoration: "underline",
+              fontWeight: "700",
+            }}
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
