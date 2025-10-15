@@ -131,16 +131,16 @@ const Login = () => {
             textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
           }}
         >
-          Login
+          Login To:
         </h2>
 
                 <h3
           style={{
             textAlign: "center",
-            marginBottom: "30px",
-            fontWeight: "700",
-            color: "white",
-            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "blue",
+            textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
           }}
         >
           Genereal Conference
@@ -149,10 +149,10 @@ const Login = () => {
                 <h4
           style={{
             textAlign: "center",
-            marginBottom: "30px",
-            fontWeight: "700",
-            color: "white",
-            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "rgb(38, 220, 226)",
+            textShadow: "0 0 5px rgba(147, 148, 150, 0.99)",
           }}
         >
           Youth Hub
