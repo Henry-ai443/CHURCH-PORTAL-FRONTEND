@@ -84,7 +84,7 @@ const Login = () => {
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
         navigate("/home");
-      }, 2000);
+      }, 3000);
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
@@ -177,7 +177,7 @@ const Login = () => {
         {success && (
           <div
             style={{
-              backgroundColor: "rgba(0, 128, 0, 0.1)",
+              backgroundColor: "rgb(19, 255, 19)",
               color: "green",
               padding: "10px",
               marginBottom: "15px",
@@ -395,7 +395,7 @@ const Login = () => {
                 boxShadow: "0 4px 15px rgba(26,35,126,0.6)",
               }}
             >
-              Go to Dashboard
+              Go to Home
             </button>
           </div>
         )}
