@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Picker } from 'emoji-mart'; // emoji-mart v5+
 
-// ❌ Removed invalid CSS import
-// import 'emoji-mart/dist-modern/css/emoji-mart.css'; // Not needed for emoji-mart@5+
-
 const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -16,20 +13,42 @@ const ChatRoom = () => {
   const WS_URL = 'wss://church-portal-backend.onrender.com/ws/chat/';
 
   const currentUser = 'me'; // Replace with actual username
+  const token = localStorage.getItem('token'); // Get token from localStorage
 
+  // Fetch messages with Authorization header
   useEffect(() => {
+    if (!token) {
+      console.error('No auth token found');
+      return;
+    }
+
     fetch(API_URL, {
-      credentials: 'include',
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+      credentials: 'include', // Optional, depending on your setup
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setMessages(data.reverse());
       })
       .catch((err) => console.error('Error fetching messages:', err));
-  }, []);
+  }, [token]);
 
+  // Setup WebSocket connection with token as query param
   useEffect(() => {
-    chatSocket.current = new WebSocket(WS_URL);
+    if (!token) {
+      console.error('No auth token for WebSocket');
+      return;
+    }
+
+    const wsUrlWithToken = `${WS_URL}?token=${token}`;
+    chatSocket.current = new WebSocket(wsUrlWithToken);
 
     chatSocket.current.onopen = () => {
       console.log('WebSocket connected');
@@ -70,7 +89,7 @@ const ChatRoom = () => {
     return () => {
       chatSocket.current.close();
     };
-  }, [currentUser]);
+  }, [token, currentUser]);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -84,22 +103,32 @@ const ChatRoom = () => {
       message: inputMessage,
     };
 
-    chatSocket.current.send(JSON.stringify(msgObj));
-    setInputMessage('');
-    setIsEmojiPickerOpen(false);
+    if (chatSocket.current && chatSocket.current.readyState === WebSocket.OPEN) {
+      chatSocket.current.send(JSON.stringify(msgObj));
+      setInputMessage('');
+      setIsEmojiPickerOpen(false);
+    } else {
+      console.error('WebSocket is not open');
+    }
   };
 
   useEffect(() => {
     if (!chatSocket.current || chatSocket.current.readyState !== WebSocket.OPEN) return;
 
     if (inputMessage.trim() !== '') {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: true }));
+      chatSocket.current.send(
+        JSON.stringify({ type: 'typing', username: currentUser, is_typing: true })
+      );
     } else {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: false }));
+      chatSocket.current.send(
+        JSON.stringify({ type: 'typing', username: currentUser, is_typing: false })
+      );
     }
 
     const timeoutId = setTimeout(() => {
-      chatSocket.current.send(JSON.stringify({ type: 'typing', username: currentUser, is_typing: false }));
+      chatSocket.current.send(
+        JSON.stringify({ type: 'typing', username: currentUser, is_typing: false })
+      );
     }, 3000);
 
     return () => clearTimeout(timeoutId);
@@ -296,53 +325,54 @@ const styles = {
   },
   typingIndicator: {
     fontStyle: 'italic',
-    color: '#666',
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 14,
+    color: '#555',
+    padding: '0 10px',
   },
   footer: {
-    padding: 10,
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    padding: '10px 15px',
+    backgroundColor: '#f9f9f9',
+    borderTop: '1px solid #ddd',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     position: 'relative',
   },
   emojiButton: {
+    backgroundColor: 'transparent',
     border: 'none',
-    background: 'transparent',
     fontSize: 24,
     cursor: 'pointer',
-    marginRight: 8,
-    userSelect: 'none',
+    marginRight: 10,
   },
   emojiPicker: {
     position: 'absolute',
-    bottom: '50px',
-    left: '10px',
+    bottom: '55px',
+    left: '15px',
     zIndex: 1000,
   },
   input: {
     flex: 1,
-    resize: 'none',
-    padding: '8px 12px',
     borderRadius: 20,
-    border: '1px solid #ccc',
+    border: '1px solid #ddd',
+    padding: '8px 15px',
     fontSize: 16,
+    resize: 'none',
     outline: 'none',
-    maxHeight: '100px',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: 'white',
   },
   button: {
-    marginLeft: 8,
-    padding: '8px 16px',
-    borderRadius: 20,
-    border: 'none',
     backgroundColor: '#075E54',
     color: 'white',
+    border: 'none',
+    borderRadius: 20,
+    padding: '8px 16px',
+    marginLeft: 10,
     cursor: 'pointer',
     fontSize: 18,
-    userSelect: 'none',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
   },
 };
 

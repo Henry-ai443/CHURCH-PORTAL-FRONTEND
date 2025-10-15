@@ -193,7 +193,7 @@ const Register = () => {
             textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
           }}
         >
-          Register To:
+          Register To Join:
         </h2>
 
         <h3
@@ -202,7 +202,7 @@ const Register = () => {
             marginBottom: "10px",
             fontWeight: "bold",
             color: "blue",
-            textShadow: "0 0 5px rgba(81, 145, 134, 0.99)",
+            textShadow: "0 0 5px rgba(132, 223, 208, 0.99)",
           }}
         >
           General Conference
@@ -213,7 +213,7 @@ const Register = () => {
             textAlign: "center",
             marginBottom: "10px",
             fontWeight: "bold",
-            color: "rgb(38, 220, 226)",
+            color: "rgb(24, 247, 255)",
             textShadow: "0 0 5px rgba(147, 148, 150, 0.99)",
           }}
         >
