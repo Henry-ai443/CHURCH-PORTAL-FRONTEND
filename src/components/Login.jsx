@@ -126,8 +126,8 @@ const Login = () => {
             textAlign: "center",
             marginBottom: "30px",
             fontWeight: "700",
-            color: "#1a237e",
-            textShadow: "0 0 5px rgba(26,35,126,0.7)",
+            color: "white",
+            textShadow: "0 0 5px rgba(145, 146, 148, 0.99)",
           }}
         >
           Login
@@ -173,7 +173,7 @@ const Login = () => {
                 htmlFor="username"
                 style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}
               >
-                Username
+                Username:
               </label>
               <input
                 id="username"
@@ -244,7 +244,7 @@ const Login = () => {
                 style={{
                   position: "absolute",
                   right: "12px",
-                  top: "40%",
+                  top: "100%",
                   transform: "translateY(-50%)",
                   cursor: "pointer",
                   background: "transparent",
@@ -286,7 +286,7 @@ const Login = () => {
                 style={{
                   cursor: "pointer",
                   fontWeight: "600",
-                  color: "#1a237e",
+                  color: "black",
                   userSelect: "none",
                 }}
               >
