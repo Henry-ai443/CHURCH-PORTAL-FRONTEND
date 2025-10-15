@@ -422,6 +422,22 @@ const Register = () => {
             >
               {isSubmitting ? "Registering..." : "Register"}
             </button>
+
+            <p
+             style={{
+              color:"black",
+              fontWeight:"Bold",
+              fontSize:"0.9rem",
+              }}
+            >
+              Already have an account ? <a href="/" 
+              style={{
+                textDecoration:"none",
+                color:"blue",
+                fontWeight:"bold"
+              }}
+              >Login Here</a>
+            </p>
           </form>
         )}
 
