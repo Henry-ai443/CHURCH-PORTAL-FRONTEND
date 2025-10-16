@@ -37,7 +37,7 @@ const AboutSection = () => {
             {/* MOBILE IMAGE */}
             <div className="d-md-none">
               <img
-                src="https://source.unsplash.com/800x600/?youth,people,group"
+                src="https://images.unsplash.com/photo-1610269373215-0b733db966f9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1471"
                 alt="Youth Ministry"
                 className="img-fluid rounded-4 shadow"
               />
