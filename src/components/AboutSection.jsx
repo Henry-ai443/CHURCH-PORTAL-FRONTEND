@@ -26,7 +26,7 @@ const AboutSection = () => {
                 playsInline
               >
                 <source
-                  src="https://videos.pexels.com/video-files/3182832/3182382-uhd_2560_1440_30fps.mp4"
+                  src="https://your-server.com/path-to-church-video.mp4"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
@@ -36,7 +36,7 @@ const AboutSection = () => {
             {/* MOBILE IMAGE */}
             <div className="d-md-none">
               <img
-                src="https://source.unsplash.com/800x600/?youth,church"
+                src="https://source.unsplash.com/800x600/?youth,people,group"
                 alt="Youth Ministry"
                 className="img-fluid rounded-4 shadow"
               />
