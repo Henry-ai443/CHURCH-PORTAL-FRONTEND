@@ -8,7 +8,11 @@ const AboutSection = () => {
           {/* TEXT CONTENT */}
           <div className="col-md-6 text-center text-md-start mt-4 mt-md-0">
             <h2 className="fw-bold text-primary mb-3">About General Conference Youth Hub</h2>
-            <p>
+            <p className="text-muted " 
+            style={{
+                fontStyle:"italic"
+            }}
+            >
               At <strong>General Conference</strong>, we empower young people to grow in faith, leadership, and purpose. Our goal is to provide a safe, creative, and spiritual space for youths to express themselves, connect with others, and serve God through their unique talents.
             </p>
             <small>Welcome All</small>
