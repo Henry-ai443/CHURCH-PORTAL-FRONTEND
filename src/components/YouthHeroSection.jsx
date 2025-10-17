@@ -15,8 +15,7 @@ const YouthHeroSection = () => {
   style={{ objectFit: "cover", filter: "brightness(0.7)" }}
 >
   <source 
-    src="https://cdn.videvo.net/videvo_files/video/free/2017-04/small_watermarked/170325_04_D_Church_2_360p_preview.webm
-" 
+  src="/youths.mp4"
     type="video/mp4" 
   />
   Your browser does not support the video tag.
