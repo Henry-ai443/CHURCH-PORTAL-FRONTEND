@@ -5,11 +5,13 @@ import Hero from "../components/Hero";
 import Announcements from "../components/Announcements";
 import EventsSection from "../components/EventsSection";
 import AboutSection from "../components/AboutSection";
+import MissionVisionSection from "../components/MissionVisonSection";
 const Home = () => {
     return(
         <>
         <Navbar/>
         <Hero/>
+        <MissionVisionSection/>
         <Announcements/>
         <EventsSection/>
         <AboutSection/>
