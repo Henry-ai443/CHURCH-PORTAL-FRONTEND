@@ -1,6 +1,28 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Picker } from 'emoji-mart'; // emoji-mart v5+
 
+// Utility: assign consistent color per username
+const usernameColors = {};
+const colorsPalette = [
+  '#e6194b', '#3cb44b', '#ffe119', '#4363d8',
+  '#f58231', '#911eb4', '#46f0f0', '#f032e6',
+  '#bcf60c', '#fabebe', '#008080', '#e6beff',
+  '#9a6324', '#fffac8', '#800000', '#aaffc3',
+  '#808000', '#ffd8b1', '#000075', '#808080',
+];
+function getUsernameColor(username) {
+  if (!usernameColors[username]) {
+    // Assign a color by hashing the username string
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colorsPalette.length;
+    usernameColors[username] = colorsPalette[index];
+  }
+  return usernameColors[username];
+}
+
 const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -8,12 +30,29 @@ const ChatRoom = () => {
   const [typingUsers, setTypingUsers] = useState(new Set());
   const chatSocket = useRef(null);
   const messageEndRef = useRef(null);
+  const chatBoxRef = useRef(null);
 
   const API_URL = 'https://church-portal-backend.onrender.com/api/chat/messages/';
   const WS_URL = 'wss://church-portal-backend.onrender.com/ws/chat/';
 
   const currentUser = 'me'; // Replace with actual username
   const token = localStorage.getItem('token'); // Get token from localStorage
+
+  // Helper: check if user is near bottom of chat box
+  const isUserNearBottom = () => {
+    const container = chatBoxRef.current;
+    if (!container) return true;
+
+    const threshold = 50; // px threshold to consider near bottom
+    const position = container.scrollTop + container.clientHeight;
+    const height = container.scrollHeight;
+    return height - position < threshold;
+  };
+
+  // Scroll to bottom helper
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Fetch messages with Authorization header
   useEffect(() => {
@@ -58,7 +97,17 @@ const ChatRoom = () => {
       const data = JSON.parse(e.data);
 
       if (data.type === 'chat_message') {
-        setMessages((prev) => [...prev, data]);
+        setMessages((prev) => {
+          const nearBottom = isUserNearBottom();
+          const newMessages = [...prev, data];
+
+          // Scroll only if user is near bottom
+          setTimeout(() => {
+            if (nearBottom) scrollToBottom();
+          }, 100);
+
+          return newMessages;
+        });
       } else if (data.type === 'typing') {
         setTypingUsers((prev) => {
           const newSet = new Set(prev);
@@ -91,9 +140,11 @@ const ChatRoom = () => {
     };
   }, [token, currentUser]);
 
+  // Scroll to bottom on initial load of messages only
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Only scroll down when messages first load
+    scrollToBottom();
+  }, []);
 
   const sendMessage = () => {
     if (inputMessage.trim() === '') return;
@@ -161,7 +212,7 @@ const ChatRoom = () => {
         </div>
       </header>
 
-      <main style={styles.chatBox}>
+      <main ref={chatBoxRef} style={styles.chatBox}>
         {messages.map((msg, index) => {
           const isCurrentUser = msg.username === currentUser;
           return (
@@ -177,7 +228,12 @@ const ChatRoom = () => {
               aria-label={`${msg.username} message`}
             >
               {!isCurrentUser && (
-                <div style={styles.username}>
+                <div
+                  style={{
+                    ...styles.username,
+                    color: getUsernameColor(msg.username),
+                  }}
+                >
                   {msg.username}{' '}
                   {isUserOnline(msg.username) && (
                     <span style={styles.onlineIndicator} title="Online"></span>
@@ -306,7 +362,7 @@ const styles = {
     fontWeight: 'bold',
     fontSize: 12,
     marginBottom: 4,
-    color: '#075E54',
+    // color is dynamically assigned
   },
   onlineIndicator: {
     display: 'inline-block',
