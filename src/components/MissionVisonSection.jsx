@@ -14,8 +14,7 @@ const MissionVisionSection = () => {
                         transition={{ duration: 0.8 }}
                     >
                         <img
-                            src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
-                            alt="Youth community"
+                           src='https://images.unsplash.com/photo-1576269077433-e6814f9c4ec0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2V5Ym9hcmQlMjBwaWFub3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500'
                             className="img-fluid rounded shadow"
                             style={{ height: '350px', objectFit: 'cover', width: '100%' }}
                         />
