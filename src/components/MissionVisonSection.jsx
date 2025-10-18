@@ -3,8 +3,14 @@ import { Heart, Compass } from 'lucide-react';
 
 const MissionVisionSection = () => {
     return (
-        <section style={{ backgroundColor: '#f8f9fa', padding: '4rem 0' }}>
-            <div className="container">
+        <section
+            style={{
+                backgroundColor: '#f8f9fa',
+                padding: '4rem 0',
+                overflowX: 'hidden', // ✅ Prevent horizontal scroll
+            }}
+        >
+            <div className="container" style={{ maxWidth: '100%' }}>
                 <div className="row align-items-center gy-5">
                     {/* IMAGE SECTION */}
                     <motion.div
@@ -12,11 +18,20 @@ const MissionVisionSection = () => {
                         initial={{ opacity: 0, x: -40 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
+                        viewport={{ once: true, amount: 0.5 }} // ✅ Optional: prevent retriggering scroll
+                        style={{ overflowX: 'hidden' }} // ✅ Just to be extra safe
                     >
                         <img
-                           src='https://images.unsplash.com/photo-1576269077433-e6814f9c4ec0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2V5Ym9hcmQlMjBwaWFub3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500'
+                            src="https://images.unsplash.com/photo-1576269077433-e6814f9c4ec0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2V5Ym9hcmQlMjBwaWFub3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500"
+                            alt="Person playing piano"
                             className="img-fluid rounded shadow"
-                            style={{ height: '350px', objectFit: 'cover', width: '100%' }}
+                            style={{
+                                height: '350px',
+                                objectFit: 'cover',
+                                width: '100%',
+                                maxWidth: '100%',
+                                display: 'block',
+                            }}
                         />
                     </motion.div>
 
@@ -26,6 +41,8 @@ const MissionVisionSection = () => {
                         initial={{ opacity: 0, x: 40 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
+                        viewport={{ once: true, amount: 0.5 }}
+                        style={{ overflowX: 'hidden' }}
                     >
                         <h2 className="h3 fw-bold text-dark mb-4">
                             Our Mission & Vision
@@ -38,22 +55,22 @@ const MissionVisionSection = () => {
                         <div className="d-flex flex-column gap-4">
                             {/* Mission */}
                             <div className="d-flex gap-3">
-                                <Heart color="red" />
+                                <Heart color="red" size={24} className="mt-1" />
                                 <div>
                                     <h3 className="h5 fw-semibold text-dark">Our Mission</h3>
                                     <p>
-                                        To Inspire and equip young people to discover their identity in Christ and actively engage in transforming their world.
+                                        To inspire and equip young people to discover their identity in Christ and actively engage in transforming their world.
                                     </p>
                                 </div>
                             </div>
 
                             {/* Vision */}
                             <div className="d-flex gap-3">
-                                <Compass color="red" />
+                                <Compass color="red" size={24} className="mt-1" />
                                 <div>
                                     <h3 className="h5 fw-semibold text-dark">Our Vision</h3>
                                     <p>
-                                        To build a dynamic generation of youth who lead with faith, love and integrity - impacting their schools, families and communities.
+                                        To build a dynamic generation of youth who lead with faith, love and integrity — impacting their schools, families and communities.
                                     </p>
                                 </div>
                             </div>
