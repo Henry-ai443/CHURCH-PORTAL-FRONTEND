@@ -4,179 +4,145 @@ import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 const Footer = () => {
   return (
     <>
-      <footer
-        style={{
-          background: "rgba(0, 51, 102, 0.6)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-          padding: "40px 20px 10px",
-          color: "white",
-        }}
-      >
+      <footer className="footer">
         <div className="container d-flex flex-column flex-lg-row justify-content-between align-items-center">
-          <div className="mb-3 mb-lg-0 text-center text-lg-start slogan">
-            <h4
-              className="sloganHeader"
-              style={{
-                background:
-                  "linear-gradient(90deg, #1E90FF, #87CEFA, #ffffff)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "0 0 10px rgba(30, 144, 255, 0.8), 0 0 20px rgba(135, 206, 250, 0.6)",
-                fontWeight: "bold",
-                animation: "shimmer 6s ease-in-out infinite",
-              }}
-            >
-              Church Of God 7th Day
-            </h4>
-            <p className="mb-0 fw-bold">Connecting faith, community & hope.</p>
+          {/* Left - Slogan */}
+          <div className="slogan text-center text-lg-start">
+            <h4 className="slogan-header">Church Of God 7th Day</h4>
+            <p className="slogan-subtitle">Connecting faith, community & hope.</p>
           </div>
 
           {/* Center - Quick Links */}
-          <div className="col-lg-4 mb-4 quickLinks">
-            <h6 className="fw-bold text-uppercase text-decoration-underline">
-              Quick Links
-            </h6>
-            <ul className="list-unstyled mt-3">
-              <li>
-                <a href="/home" className="footer-link">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="/announcements" className="footer-link">
-                  Announcements
-                </a>
-              </li>
-              <li>
-                <a href="/events" className="footer-link">
-                  Events
-                </a>
-              </li>
-              <li>
-                <a href="/sermons" className="footer-link">
-                  Sermons
-                </a>
-              </li>
-              <li>
-                <a href="/donations" className="footer-link">
-                  Donations
-                </a>
-              </li>
-              <li>
-                <a href="/" className="footer-link">
-                  Contact
-                </a>
-              </li>
+          <nav className="quick-links" aria-label="Footer navigation">
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/announcements">Announcements</a></li>
+              <li><a href="/events">Events</a></li>
+              <li><a href="/sermons">Sermons</a></li>
+              <li><a href="/donations">Donations</a></li>
+              <li><a href="/contact">Contact</a></li>
             </ul>
-          </div>
+          </nav>
 
           {/* Right - Social Media */}
-          <div className="col-lg-4 mb-4">
-            <h6 className="fw-bold text-uppercase">Follow Us:</h6>
-            <div className="d-flex justify-content-center justify-content-lg-start gap-3 mt-3 socials">
-              <a href="#" className="social-icon" aria-label="Facebook">
-                <FaFacebook />
-              </a>
-              <a href="#" className="social-icon" aria-label="Twitter">
-                <FaTwitter />
-              </a>
-              <a href="#" className="social-icon" aria-label="Instagram">
-                <FaInstagram />
-              </a>
-              <a href="#" className="social-icon" aria-label="YouTube">
-                <FaYoutube />
-              </a>
+          <div className="socials">
+            <h6>Follow Us</h6>
+            <div className="social-icons">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebook /></a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><FaTwitter /></a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a>
             </div>
-          </div>
-
-          {/* Bottom Strip */}
-          <div
-            className="text-center mt-3 fw-bold py-2 px-1 copy"
-            style={{
-              background: "rgba(0, 51, 102, 0.35)",
-              borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-              fontSize: "0.85rem",
-              borderRadius: "4px",
-            }}
-          >
-            &copy;{new Date().getFullYear()} NOVA WORKS SOFTWARES. All rights
-            reserved.
           </div>
         </div>
 
-        <style>
-          {`
-            .footer-link {
-              color: rgba(255, 255, 255, 0.85);
-              text-decoration: none;
-              transition: color 0.3s ease;
-              display: block;
-              margin-bottom: 6px;
-              font-weight: bold;
+        <div className="bottom-strip">
+          &copy;{new Date().getFullYear()} NOVA WORKS SOFTWARES. All rights reserved.
+        </div>
+
+        <style>{`
+          .footer {
+            background-color: #0b1421; /* Deep navy */
+            color: #d4cfc9; /* Light muted beige */
+            padding: 3rem 2rem 2rem;
+            font-family: 'Georgia', serif;
+          }
+          .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+          }
+          .slogan {
+            margin-bottom: 2rem;
+          }
+          .slogan-header {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #c9b37e; /* Muted gold */
+            letter-spacing: 2px;
+            margin-bottom: 0.4rem;
+          }
+          .slogan-subtitle {
+            font-style: italic;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #aaa196;
+            margin: 0;
+          }
+          .quick-links h6,
+          .socials h6 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #c9b37e;
+          }
+          nav.quick-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+          nav.quick-links ul li {
+            margin-bottom: 0.7rem;
+          }
+          nav.quick-links ul li a {
+            color: #d4cfc9;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 1rem;
+          }
+          nav.quick-links ul li a:hover {
+            color: #c9b37e;
+            text-decoration: underline;
+          }
+          .social-icons {
+            display: flex;
+            gap: 1.2rem;
+            font-size: 1.4rem;
+          }
+          .social-icons a {
+            color: #d4cfc9;
+            transition: color 0.3s ease;
+            border: 1.5px solid transparent;
+            padding: 8px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .social-icons a:hover {
+            color: #c9b37e;
+            border-color: #c9b37e;
+            background-color: rgba(201, 179, 126, 0.15);
+          }
+          .bottom-strip {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #7a7466;
+            text-align: center;
+            border-top: 1px solid #2f2c24;
+            padding-top: 1rem;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 0.5px;
+          }
+          /* Responsive */
+          @media (max-width: 767px) {
+            .container {
+              flex-direction: column;
+              text-align: center;
             }
-            .footer-link:hover {
-              color: #1E90FF;
+            .slogan {
+              margin-bottom: 2rem;
             }
-            .social-icon {
-              font-size: 1.1rem;
-              color: white;
-              background: rgba(30, 144, 255, 0.2);
-              padding: 8px;
-              border-radius: 50%;
-              transition: all 0.3s ease;
+            .social-icons {
+              justify-content: center;
+              margin-top: 0.5rem;
             }
-            .social-icon:hover {
-              background: #1E90FF;
-              color: white;
-              transform: scale(1.1);
-              box-shadow: 0 0 12px rgba(30, 144, 255, 0.6);
-            }
-            @media (max-width: 778px) {
-              .quickLinks {
-                margin-left: 40px;
-                margin-top: 20px;
-              }
-              .sloganHeader {
-                font-size: 1.1rem;
-              }
-              .slogan p {
-                font-size: 0.8rem;
-              }
-              .quickLinks {
-                font-size: 0.9rem;
-              }
-              .socials {
-                font-size: 2px;
-              }
-            }
-            @media (min-width: 992px) {
-              .quickLinks {
-                margin-left: 100px;
-                font-size: 0.7rem;
-                margin-right: 0;
-              }
-              .slogan {
-                margin-left: 0;
-              }
-              .sloganHeader {
-                font-size: 1.1rem;
-              }
-              .socials {
-                font-size: 2rem;
-                margin-left: 0;
-              }
-              .social-icon {
-                font-size: 1.2rem;
-              }
-            }
-            .copy {
-              border-radius: 4px;
-            }
-          `}
-        </style>
+          }
+        `}</style>
       </footer>
     </>
   );
