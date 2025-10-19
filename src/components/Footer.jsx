@@ -43,19 +43,14 @@ const Footer = () => {
 
         <style>{`
           .footer {
-            background: rgba(10, 35, 75, 0.3); /* translucent navy-blue */
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            color: #e0e7ff; /* light bluish text */
+            background-color: #0b1421; /* Deep navy */
+            color: #d4cfc9; /* Light muted beige */
             padding: 3rem 2rem 2rem;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px 0 rgba(16, 52, 166, 0.25);
-            max-width: 1200px;
-            margin: 2rem auto;
+            font-family: 'Georgia', serif;
           }
           .container {
+            max-width: 1200px;
+            margin: 0 auto;
             width: 100%;
           }
           .slogan {
@@ -64,16 +59,15 @@ const Footer = () => {
           .slogan-header {
             font-weight: 700;
             font-size: 1.8rem;
-            color: #a3c4f3; /* soft blue */
+            color: #c9b37e; /* Muted gold */
             letter-spacing: 2px;
             margin-bottom: 0.4rem;
-            text-shadow: 0 0 6px rgba(163, 196, 243, 0.6);
           }
           .slogan-subtitle {
             font-style: italic;
             font-weight: 500;
             font-size: 1.1rem;
-            color: #b8c7f0;
+            color: #aaa196;
             margin: 0;
           }
           .quick-links h6,
@@ -83,7 +77,7 @@ const Footer = () => {
             margin-bottom: 1rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #a3c4f3;
+            color: #c9b37e;
           }
           nav.quick-links ul {
             list-style: none;
@@ -94,15 +88,14 @@ const Footer = () => {
             margin-bottom: 0.7rem;
           }
           nav.quick-links ul li a {
-            color: #dbe4ff;
+            color: #d4cfc9;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
+            transition: color 0.3s ease;
             font-size: 1rem;
           }
           nav.quick-links ul li a:hover {
-            color: #82aaff;
-            text-shadow: 0 0 8px #82aaff;
+            color: #c9b37e;
             text-decoration: underline;
           }
           .social-icons {
@@ -111,40 +104,29 @@ const Footer = () => {
             font-size: 1.4rem;
           }
           .social-icons a {
-            color: #dbe4ff;
-            border: 1.5px solid rgba(219, 228, 255, 0.4);
+            color: #d4cfc9;
+            transition: color 0.3s ease;
+            border: 1.5px solid transparent;
             padding: 8px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: 
-              color 0.3s ease, 
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.15);
           }
           .social-icons a:hover {
-            color: #82aaff;
-            border-color: #82aaff;
-            box-shadow:
-              0 0 12px #82aaff,
-              inset 0 0 8px rgba(130, 170, 255, 0.5);
-            background: rgba(130, 170, 255, 0.15);
+            color: #c9b37e;
+            border-color: #c9b37e;
+            background-color: rgba(201, 179, 126, 0.15);
           }
           .bottom-strip {
             margin-top: 3rem;
             font-size: 0.9rem;
-            color: #99aaffcc;
+            color: #7a7466;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #2f2c24;
             padding-top: 1rem;
             font-family: 'Arial', sans-serif;
             letter-spacing: 0.5px;
-            user-select: none;
           }
           /* Responsive */
           @media (max-width: 767px) {
@@ -160,6 +142,25 @@ const Footer = () => {
               margin-top: 0.5rem;
             }
           }
+
+          .footer {
+              background-color: rgba(11, 20, 33, 0.75); /* semi-transparent deep navy */
+             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+              color: #d4cfc9;
+            padding: 3rem 2rem 2rem;
+            font-family: 'Georgia', serif;
+              border-radius: 12px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+}
+
+nav.quick-links ul li a:hover,
+.social-icons a:hover {
+  text-shadow: 0 0 10px #c9b37e;
+  box-shadow: 0 0 12px #c9b37e;
+}
+
         `}</style>
       </footer>
     </>
