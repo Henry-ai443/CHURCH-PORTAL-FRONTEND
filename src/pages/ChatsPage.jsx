@@ -7,9 +7,7 @@ const ChatsPage = () => {
 
 return(
     <>
-    <Navbar/>
     <ChatRoom/>
-    <Footer/>
     </>
 )
 

@@ -45,7 +45,6 @@ const EventDetailPage = () => {
 
   return (
     <>
-      <Navbar />
       <section className="py-5 container">
         <Link to="/events" className="btn btn-link mb-3">
           &larr; Back to Events
@@ -87,7 +86,6 @@ const EventDetailPage = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

@@ -42,55 +42,60 @@ const Login = () => {
     setGeneralError("");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setErrors({});
-    setGeneralError("");
-    setSuccess("");
-    setIsSubmitting(true);
+  setErrors({});
+  setGeneralError("");
+  setSuccess("");
+  setIsSubmitting(true);
 
-    const { username, password } = formData;
+  const { username, password } = formData;
 
-    if (!username || !password) {
-      setGeneralError("Both username and password are required.");
+  if (!username || !password) {
+    setGeneralError("Both username and password are required.");
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://church-portal-backend.onrender.com/api/login/",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data.username || data.password) {
+        setErrors(data);
+      } else {
+        setGeneralError(data.detail || "Login failed. Please try again.");
+      }
       setIsSubmitting(false);
       return;
     }
 
-    try {
-      const response = await fetch(
-        "https://church-portal-backend.onrender.com/api/login/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+    // Save token and staff status in localStorage
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("is_staff", data.is_staff ? "true" : "false");
 
-      const data = await response.json();
+    setSuccess("Login successful! Redirecting...");
+    setTimeout(() => {
+      window.location.href = "/home";
+    }, 1000);
 
-      if (!response.ok) {
-        if (data.username || data.password) {
-          setErrors(data);
-        } else {
-          setGeneralError(data.detail || "Login failed. Please try again.");
-        }
-        setIsSubmitting(false);
-        return;
-      }
-      localStorage.setItem("token", data.token);
-setSuccess("Login successful! Redirecting...");
-setTimeout(() => {
-  window.location.href = "/home";
-}, 1000);
+  } catch (error) {
+    console.error("Login error:", error);
+    setGeneralError("Login failed. Please try again.");
+    setIsSubmitting(false);
+  }
+};
 
-    } catch (error) {
-      console.error("Login error:", error);
-      setGeneralError("Login failed. Please try again.");
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div

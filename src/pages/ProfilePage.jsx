@@ -5,9 +5,7 @@ import Profile from "../components/Profile";
 const ProfilePage = () => {
     return(
         <>
-        <Navbar/>
         <Profile/>
-        <Footer/>
         </>
     )
 }

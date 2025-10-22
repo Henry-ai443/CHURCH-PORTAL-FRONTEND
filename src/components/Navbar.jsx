@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import {
   FaBullhorn,
@@ -7,16 +7,24 @@ import {
   FaHandHoldingHeart,
   FaUserCircle,
   FaComments,
-  FaTools,          // Added this icon for admin dashboard
+  FaTools,
 } from 'react-icons/fa';
 import { GiHolyGrail } from 'react-icons/gi';
 import { MdGroups } from 'react-icons/md';
 
-const Navbar = ({ user }) => {  // <-- accept user prop here
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
+
+  useEffect(() => {
+    // Read is_staff from localStorage (stored as string 'true'/'false')
+    const storedIsStaff = localStorage.getItem('is_staff');
+    setIsStaff(storedIsStaff === 'true');
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('is_staff');
     window.location.href = '/';
   };
 
@@ -99,14 +107,13 @@ const Navbar = ({ user }) => {  // <-- accept user prop here
                 Youth Section
               </a>
             </li>
-            {/* Chat Room Link */}
             <li className="nav-item">
               <a href="/chat" className="nav-link text-white fw-bold fs-5">
                 <FaComments className="me-2" />
                 Chat Room
               </a>
             </li>
-            {user?.is_staff && (
+            {isStaff && (
               <li className="nav-item">
                 <a href="/admin" className="nav-link text-white fw-bold fs-5">
                   <FaTools className="me-2" />
@@ -239,7 +246,6 @@ const Navbar = ({ user }) => {  // <-- accept user prop here
             </a>
             <hr />
           </li>
-          {/* Chat Room Link */}
           <li className="nav-item">
             <a href="/chat" className="nav-link text-white">
               <FaComments className="me-2" />
@@ -247,16 +253,14 @@ const Navbar = ({ user }) => {  // <-- accept user prop here
             </a>
             <hr />
           </li>
-          {user?.is_staff && (
-            <>
-              <li className="nav-item">
-                <a href="/admin" className="nav-link text-white">
-                  <FaTools className="me-2" />
-                  Admin Dashboard
-                </a>
-                <hr />
-              </li>
-            </>
+          {isStaff && (
+            <li className="nav-item">
+              <a href="/admin" className="nav-link text-white">
+                <FaTools className="me-2" />
+                Admin Dashboard
+              </a>
+              <hr />
+            </li>
           )}
           <li className="nav-item">
             <a href="/profile" className="nav-link text-white">

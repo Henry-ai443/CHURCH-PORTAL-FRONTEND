@@ -6,10 +6,8 @@ import YouthHeroSection from "../components/YouthHeroSection";
 const YouthPage = () => {
     return (
         <>
-        <Navbar/>
         <YouthHeroSection/>
         <YouthMessageForm/>
-        <Footer/>
         </>
     );
 }

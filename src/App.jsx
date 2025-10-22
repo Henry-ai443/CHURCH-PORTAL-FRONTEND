@@ -18,8 +18,6 @@ import YouthMessagesList from "./components/YouthMessageList";
 import ChatsPage from "./pages/ChatsPage";
 import AdminDashboard from "./components/AdminDashboard";
 
-// Your auth hooks and ProtectedRoute, StaffRoute same as before
-
 const useCurrentUser = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -71,12 +69,9 @@ const StaffRoute = ({ user, children }) => {
 };
 
 function Layout({ user }) {
-  // We can get current location to conditionally show Navbar/Footer
   const location = useLocation();
 
-  // Paths without Navbar/Footer:
   const noNavFooterPaths = ['/', '/register'];
-
   const hideNavFooter = noNavFooterPaths.includes(location.pathname);
 
   return (
@@ -158,6 +153,8 @@ function Layout({ user }) {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin Dashboard protected route */}
         <Route
           path="/admin"
           element={

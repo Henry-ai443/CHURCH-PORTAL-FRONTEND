@@ -53,7 +53,6 @@ const EventsPage = () => {
 
   return (
     <>
-      <Navbar />
 
       <section
         className="py-5"
@@ -146,8 +145,6 @@ const EventsPage = () => {
           )}
         </div>
       </section>
-
-      <Footer />
     </>
   );
 };
