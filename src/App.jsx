@@ -34,7 +34,7 @@ const useCurrentUser = () => {
       }
 
       try {
-        const response = await fetch('https://church-portal-backend.onrender.com/api/current-user/', {
+        const response = await fetch('https://church-portal-backend.onrender.com/api/current_user/', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
