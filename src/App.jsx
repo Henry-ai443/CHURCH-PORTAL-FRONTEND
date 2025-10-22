@@ -58,16 +58,14 @@ const useCurrentUser = () => {
   return { user, loading };
 };
 
-// Your existing ProtectedRoute (checks if user is logged in)
 const ProtectedRoute = ({ user, children }) => {
   if (!user) return <Navigate to="/" replace />;
   return children;
 };
 
-// New StaffRoute - checks if user is logged in and is staff
 const StaffRoute = ({ user, children }) => {
   if (!user) return <Navigate to="/" replace />;
-  if (!user.is_staff) return <Navigate to="/home" replace />; // redirect non-staff
+  if (!user.is_staff) return <Navigate to="/home" replace />;
   return children;
 };
 
@@ -87,93 +85,103 @@ function App() {
 
   return (
     <Router>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-
-      <Navbar user={user} /> {/* Pass user to Navbar */}
       <Routes>
-        {/* Protected routes */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute user={user}>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/announcements"
-          element={
-            <ProtectedRoute user={user}>
-              <AnnouncementPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events"
-          element={
-            <ProtectedRoute user={user}>
-              <EventsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events/:id"
-          element={
-            <ProtectedRoute user={user}>
-              <EventDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute user={user}>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/youth"
-          element={
-            <ProtectedRoute user={user}>
-              <YouthPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            <ProtectedRoute user={user}>
-              <ChatsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/youth/messages"
-          element={
-            <ProtectedRoute user={user}>
-              <Navbar />
-              <YouthMessagesList />
-              <Footer />
-            </ProtectedRoute>
-          }
-        />
+        {/* Public Routes: No Navbar/Footer */}
+        <Route path="/" element={user ? <Navigate to="/home" replace /> : <LoginPage />} />
+        <Route path="/register" element={user ? <Navigate to="/home" replace /> : <RegisterPage />} />
 
-        {/* Admin-only route */}
-        <Route
-          path="/admin"
-          element={
-            <StaffRoute user={user}>
-              <AdminDashboard />
-            </StaffRoute>
-          }
-        />
-
-        {/* Catch all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Protected Routes: Show Navbar/Footer */}
+        {user && (
+          <>
+            <Route
+              path="*"
+              element={
+                <>
+                  <Navbar user={user} />
+                  <Routes>
+                    <Route
+                      path="/home"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <Home />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/announcements"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <AnnouncementPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/events"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <EventsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/events/:id"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <EventDetailPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/youth"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <YouthPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/chat"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <ChatsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/youth/messages"
+                      element={
+                        <ProtectedRoute user={user}>
+                          <YouthMessagesList />
+                        </ProtectedRoute>
+                      }
+                    />
+                    {/* Admin-only route */}
+                    <Route
+                      path="/admin"
+                      element={
+                        <StaffRoute user={user}>
+                          <AdminDashboard />
+                        </StaffRoute>
+                      }
+                    />
+                    {/* Catch all */}
+                    <Route path="*" element={<Navigate to="/home" replace />} />
+                  </Routes>
+                  <Footer />
+                </>
+              }
+            />
+          </>
+        )}
       </Routes>
-      <Footer />
     </Router>
   );
 }
