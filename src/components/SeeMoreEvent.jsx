@@ -83,6 +83,7 @@ const EventDetailPage = () => {
             <p>{event.description}</p>
 
             {/* Add more fields if your event data has them, e.g. organizer, contact info */}
+            <h6>{event.entry}</h6>
           </div>
         </div>
       </section>
