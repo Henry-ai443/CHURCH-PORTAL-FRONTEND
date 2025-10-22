@@ -9,13 +9,11 @@ import MissionVisionSection from "../components/MissionVisonSection";
 const Home = () => {
     return(
         <>
-        <Navbar/>
         <Hero/>
         <MissionVisionSection/>
         <Announcements/>
         <EventsSection/>
         <AboutSection/>
-        <Footer/>
         </>
     )
 }
