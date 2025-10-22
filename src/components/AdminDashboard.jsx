@@ -1,9 +1,17 @@
 
 import React from "react";
+import AllAnnouncements from "./AllAnnouncements";
+
 
 const AdminDashboard = () => {
     return(
-        <div>HELLO ADMIN</div>
+
+        <>
+        <h1>THIS IS THE ADMIN DASHBOARD</h1>
+
+        <AllAnnouncements/>
+        </>
+
     )
 }
 
