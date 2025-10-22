@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
+// Layout Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+// Pages
 import Home from "./pages/Home";
 import AnnouncementPage from "./pages/AnnouncementPage";
 import EventsPage from "./pages/EventsPage";
@@ -18,67 +26,43 @@ import YouthMessagesList from "./components/YouthMessageList";
 import ChatsPage from "./pages/ChatsPage";
 import AdminDashboard from "./components/AdminDashboard";
 
-const useCurrentUser = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+// ✅ Get user from localStorage
+const getUserFromLocalStorage = () => {
+  const token = localStorage.getItem("token");
+  const is_staff = localStorage.getItem("is_staff") === "true";
+  const username = localStorage.getItem("username");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
+  if (!token) return null;
 
-      try {
-        const response = await fetch('https://church-portal-backend.onrender.com/api/current_user/', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch user");
-
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error(error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  return { user, loading };
+  return {
+    token,
+    is_staff,
+    username,
+  };
 };
 
+// ✅ Protected Routes
 const ProtectedRoute = ({ user, children }) => {
   if (!user) return <Navigate to="/" replace />;
   return children;
 };
 
 const StaffRoute = ({ user, children }) => {
-  if (!user) return <Navigate to="/" replace />;
-  if (!user.is_staff) return <Navigate to="/home" replace />;
+  if (!user || !user.is_staff) return <Navigate to="/home" replace />;
   return children;
 };
 
+// ✅ Layout with navbar/footer visibility logic
 function Layout({ user }) {
   const location = useLocation();
-
-  const noNavFooterPaths = ['/', '/register'];
+  const noNavFooterPaths = ["/", "/register"];
   const hideNavFooter = noNavFooterPaths.includes(location.pathname);
 
   return (
     <>
       {!hideNavFooter && <Navbar user={user} />}
       <Routes>
-        {/* Public routes */}
+        {/* Public */}
         <Route
           path="/"
           element={user ? <Navigate to="/home" replace /> : <LoginPage />}
@@ -88,7 +72,7 @@ function Layout({ user }) {
           element={user ? <Navigate to="/home" replace /> : <RegisterPage />}
         />
 
-        {/* Protected routes */}
+        {/* Protected */}
         <Route
           path="/home"
           element={
@@ -154,7 +138,7 @@ function Layout({ user }) {
           }
         />
 
-        {/* Admin Dashboard protected route */}
+        {/* Admin only */}
         <Route
           path="/admin"
           element={
@@ -165,15 +149,19 @@ function Layout({ user }) {
         />
 
         {/* Catch-all */}
-        <Route path="*" element={<Navigate to={user ? "/home" : "/"} replace />} />
+        <Route
+          path="*"
+          element={<Navigate to={user ? "/home" : "/"} replace />}
+        />
       </Routes>
       {!hideNavFooter && <Footer />}
     </>
   );
 }
 
+// ✅ App entry point
 function App() {
-  const { user, loading } = useCurrentUser();
+  const user = getUserFromLocalStorage();
 
   useEffect(() => {
     Aos.init({
@@ -181,8 +169,6 @@ function App() {
       once: true,
     });
   }, []);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <Router>
