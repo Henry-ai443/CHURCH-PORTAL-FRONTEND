@@ -79,12 +79,12 @@ const Login = () => {
         setIsSubmitting(false);
         return;
       }
-
       localStorage.setItem("token", data.token);
-      setSuccess("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
+setSuccess("Login successful! Redirecting...");
+setTimeout(() => {
+  window.location.href = "/home";
+}, 1000);
+
     } catch (error) {
       console.error("Login error:", error);
       setGeneralError("Login failed. Please try again.");
