@@ -7,9 +7,15 @@ const AdminDashboard = () => {
     return(
 
         <>
-        <h1>THIS IS THE ADMIN DASHBOARD</h1>
 
+        <main 
+        style={{
+            marginTop:"40px"
+        }}
+        >
+        <h1>THIS IS THE ADMIN DASHBOARD</h1>
         <AllAnnouncements/>
+        </main>
         </>
 
     )
