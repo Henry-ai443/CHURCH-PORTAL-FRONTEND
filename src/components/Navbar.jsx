@@ -7,11 +7,12 @@ import {
   FaHandHoldingHeart,
   FaUserCircle,
   FaComments,
-} from 'react-icons/fa'; // Added FaComments here
+  FaTools,          // Added this icon for admin dashboard
+} from 'react-icons/fa';
 import { GiHolyGrail } from 'react-icons/gi';
-import { MdGroups } from 'react-icons/md'; // Using MdGroups as Youth Section icon
+import { MdGroups } from 'react-icons/md';
 
-const Navbar = () => {
+const Navbar = ({ user }) => {  // <-- accept user prop here
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -98,13 +99,21 @@ const Navbar = () => {
                 Youth Section
               </a>
             </li>
-            {/* Chat Room Link Added */}
+            {/* Chat Room Link */}
             <li className="nav-item">
               <a href="/chat" className="nav-link text-white fw-bold fs-5">
                 <FaComments className="me-2" />
                 Chat Room
               </a>
             </li>
+            {user?.is_staff && (
+              <li className="nav-item">
+                <a href="/admin" className="nav-link text-white fw-bold fs-5">
+                  <FaTools className="me-2" />
+                  Admin Dashboard
+                </a>
+              </li>
+            )}
             <li className="nav-item">
               <a href="/profile" className="nav-link text-white fw-bold fs-5">
                 <FaUserCircle className="me-2" />
@@ -230,7 +239,7 @@ const Navbar = () => {
             </a>
             <hr />
           </li>
-          {/* Chat Room Link Added */}
+          {/* Chat Room Link */}
           <li className="nav-item">
             <a href="/chat" className="nav-link text-white">
               <FaComments className="me-2" />
@@ -238,6 +247,17 @@ const Navbar = () => {
             </a>
             <hr />
           </li>
+          {user?.is_staff && (
+            <>
+              <li className="nav-item">
+                <a href="/admin" className="nav-link text-white">
+                  <FaTools className="me-2" />
+                  Admin Dashboard
+                </a>
+                <hr />
+              </li>
+            </>
+          )}
           <li className="nav-item">
             <a href="/profile" className="nav-link text-white">
               <FaUserCircle className="me-2" />
