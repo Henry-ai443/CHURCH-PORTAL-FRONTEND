@@ -87,12 +87,11 @@ function App() {
 
   return (
     <Router>
-      <Navbar user={user} /> {/* Pass user to Navbar */}
-      <Routes>
-        {/* Public routes */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
+      <Navbar user={user} /> {/* Pass user to Navbar */}
+      <Routes>
         {/* Protected routes */}
         <Route
           path="/home"
