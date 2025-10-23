@@ -70,10 +70,15 @@ const QuickStats = () => {
     <div className="col-sm-6 col-lg-3">
       <div
         className={`stat-card ${colorClass} text-white shadow-sm`}
-        style={{ overflow: "hidden", boxSizing: "border-box" }}
+        style={{
+          overflow: "hidden",
+          boxSizing: "border-box",
+          padding: "1rem", // Added padding around the entire card
+          borderRadius: "0.5rem",
+        }}
       >
         <div
-          className="card-body d-flex flex-column justify-content-between py-3 px-3"
+          className="card-body d-flex flex-column justify-content-between py-0 px-0"
           style={{ minHeight: "150px" }}
         >
           <div
@@ -83,9 +88,10 @@ const QuickStats = () => {
             <div
               style={{
                 flex: "1 1 auto",
-                minWidth: 0, // important for text truncation inside flex
+                minWidth: 0, // important for truncation inside flex
                 overflowWrap: "break-word",
                 wordWrap: "break-word",
+                paddingRight: "0.5rem", // prevent text getting close to icon
               }}
             >
               <h6
@@ -127,7 +133,7 @@ const QuickStats = () => {
           <div>
             <Link
               to={manageLink}
-              className="text-white text-decoration-underline"
+              className="text-decoration-underline"
               style={{
                 cursor: "pointer",
                 fontSize: "0.75rem",
@@ -136,7 +142,9 @@ const QuickStats = () => {
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 maxWidth: "100%",
-                paddingTop: "4px",
+                paddingTop: "6px",
+                fontWeight: "700", // bold text
+                color: "#FFEB3B", // bright yellow for visibility
               }}
               aria-label={`Manage ${title}`}
               title={`Manage ${title}`}
