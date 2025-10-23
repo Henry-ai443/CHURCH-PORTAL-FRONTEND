@@ -1,65 +1,69 @@
 import React, { useEffect, useState } from "react";
+import { FaCalendarAlt, FaBullhorn } from "react-icons/fa";
+import './admin.css'
 
 const QuickStats = () => {
-    const [stats, setStats] = useState({
-        events: 0,
-        youth:0,
-        announcements: 0,
-    })
+  const [stats, setStats] = useState({
+    events: 0,
+    announcements: 0,
+  });
 
-    useEffect(() => {
-        const fetchStats = async () => {
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [resEvents, resAnnouncements] = await Promise.all([
+          fetch("https://church-portal-backend.onrender.com/api/events"),
+          fetch("https://church-portal-backend.onrender.com/api/announcements/all/"),
+        ]);
 
-            {/**EVENTS */}
-            const resEvents = await fetch("https://church-portal-backend.onrender.com/api/events");
-            const eventData = await resEvents.json();
+        const [eventData, announcementsData] = await Promise.all([
+          resEvents.json(),
+          resAnnouncements.json(),
+        ]);
 
-            {/**REGISTERED MEMBERS */}
-            
+        setStats({
+          events: eventData.length,
+          announcements: announcementsData.length,
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    };
 
-            {/* ANNOUNCEMENTS */}
-            const resAnnouncements = await fetch("https://church-portal-backend.onrender.com/api/announcements/all/");
-            const announcementsData = await resAnnouncements.json();
+    fetchStats();
+  }, []);
 
-            setStats({
-                events: eventData.length,
-                announcements: announcementsData.length
-            })
-
-        }
-
-        fetchStats();
-    }, []);
-
-    return(
-        <div className="row g-3 mb-4">
-            {/**EVENTS */}
-            <div className="col-sm-6 col-lg-3">
-                <div className="card text-white bg-primary h-100 shadow-sm">
-                    <div className="card-body">
-                        <h5 className="card-title">
-                            Events
-                        </h5>
-                        <h2 className="fw-bold">{stats.events}</h2>
-                        <small>Total Events Created</small>
-                    </div>
-                </div>
+  return (
+    <div className="row g-3 mb-4 quick-stats">
+      {/* EVENTS */}
+      <div className="col-sm-6 col-lg-3">
+        <div className="stat-card bg-gradient-blue text-white shadow-sm">
+          <div className="card-body d-flex justify-content-between align-items-center py-3 px-3">
+            <div>
+              <h6 className="card-title mb-1">Events</h6>
+              <h4 className="fw-bold mb-0">{stats.events}</h4>
+              <small>Total Created</small>
             </div>
-
-            {/**Announcements */}
-            <div className="col-sm-6 col-lg-3">
-                <div className="card text-white bg-primary h-100 shadow-sm">
-                    <div className="card-body">
-                        <h5 className="card-title">
-                            Announcements
-                        </h5>
-                        <h2 className="fw-bold">{stats.announcements}</h2>
-                        <small>Total Announcements Created</small>
-                    </div>
-                </div>
-            </div>
-            
+            <FaCalendarAlt className="fs-3 opacity-75" />
+          </div>
         </div>
-    )
-}
-export default QuickStats
+      </div>
+
+      {/* ANNOUNCEMENTS */}
+      <div className="col-sm-6 col-lg-3">
+        <div className="stat-card bg-gradient-purple text-white shadow-sm">
+          <div className="card-body d-flex justify-content-between align-items-center py-3 px-3">
+            <div>
+              <h6 className="card-title mb-1">Announcements</h6>
+              <h4 className="fw-bold mb-0">{stats.announcements}</h4>
+              <small>Total Created</small>
+            </div>
+            <FaBullhorn className="fs-3 opacity-75" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default QuickStats;
