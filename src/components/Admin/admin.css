@@ -1,0 +1,44 @@
+.admin-header {
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(13, 110, 253, 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.username {
+  color: #0d6efd;
+}
+
+.badge.bg-gradient {
+  background: linear-gradient(90deg, #0d6efd, #6f42c1);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.card-body small strong {
+  color: #212529;
+}
+
+.admin-header:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
