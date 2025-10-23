@@ -23,7 +23,7 @@ const QuickStats = () => {
 
       try {
         const headers = {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
           "Content-Type": "application/json",
         };
 
