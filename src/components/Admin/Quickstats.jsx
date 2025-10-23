@@ -68,23 +68,66 @@ const QuickStats = () => {
 
   const StatCard = ({ title, value, label, icon: Icon, colorClass, manageLink, manageText }) => (
     <div className="col-sm-6 col-lg-3">
-      <div className={`stat-card ${colorClass} text-white shadow-sm`}>
+      <div
+        className={`stat-card ${colorClass} text-white shadow-sm`}
+        style={{ overflow: "hidden", boxSizing: "border-box" }}
+      >
         <div
           className="card-body d-flex flex-column justify-content-between py-3 px-3"
           style={{ minHeight: "150px" }}
         >
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h6 className="card-title mb-1">{title}</h6>
-              <h4 className="fw-bold mb-0">{value}</h4>
-              <small>{label}</small>
+          <div
+            className="d-flex justify-content-between align-items-center mb-3"
+            style={{ gap: "0.5rem", flexWrap: "nowrap" }}
+          >
+            <div
+              style={{
+                flex: "1 1 auto",
+                minWidth: 0, // important for text truncation inside flex
+                overflowWrap: "break-word",
+                wordWrap: "break-word",
+              }}
+            >
+              <h6
+                className="card-title mb-1"
+                style={{
+                  whiteSpace: "normal",
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
+                  marginBottom: "0.25rem",
+                }}
+              >
+                {title}
+              </h6>
+              <h4
+                className="fw-bold mb-0"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "100%",
+                }}
+              >
+                {value}
+              </h4>
+              <small
+                style={{
+                  whiteSpace: "normal",
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
+                }}
+              >
+                {label}
+              </small>
             </div>
-            <Icon className="fs-3 opacity-75" />
+            <div style={{ flexShrink: 0 }}>
+              <Icon className="fs-3 opacity-75" />
+            </div>
           </div>
           <div>
             <Link
               to={manageLink}
-              className="text-white text-decoration-underline fw-bold text-dark"
+              className="text-white text-decoration-underline"
               style={{
                 cursor: "pointer",
                 fontSize: "0.75rem",
