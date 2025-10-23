@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
 
 const QuickStats = () => {
@@ -65,16 +66,31 @@ const QuickStats = () => {
     fetchStats();
   }, []);
 
-  const StatCard = ({ title, value, label, icon: Icon, colorClass }) => (
+  const StatCard = ({ title, value, label, icon: Icon, colorClass, manageLink, manageText }) => (
     <div className="col-sm-6 col-lg-3">
       <div className={`stat-card ${colorClass} text-white shadow-sm`}>
-        <div className="card-body d-flex justify-content-between align-items-center py-3 px-3">
-          <div>
-            <h6 className="card-title mb-1">{title}</h6>
-            <h4 className="fw-bold mb-0">{value}</h4>
-            <small>{label}</small>
+        <div
+          className="card-body d-flex flex-column justify-content-between py-3 px-3"
+          style={{ minHeight: "140px" }}
+        >
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h6 className="card-title mb-1">{title}</h6>
+              <h4 className="fw-bold mb-0">{value}</h4>
+              <small>{label}</small>
+            </div>
+            <Icon className="fs-3 opacity-75" />
           </div>
-          <Icon className="fs-3 opacity-75" />
+          <div>
+            <Link
+              to={manageLink}
+              className="text-white text-decoration-underline small"
+              style={{ cursor: "pointer" }}
+              aria-label={`Manage ${title}`}
+            >
+              {manageText || `Manage ${title}`}
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -116,6 +132,8 @@ const QuickStats = () => {
             label="Total Created"
             icon={FaCalendarAlt}
             colorClass="bg-gradient-blue"
+            manageLink="/admin/manage-events"
+            manageText="Manage Events"
           />
           <StatCard
             title="Announcements"
@@ -123,6 +141,8 @@ const QuickStats = () => {
             label="Total Created"
             icon={FaBullhorn}
             colorClass="bg-gradient-purple"
+            manageLink="/admin/manage-announcements"
+            manageText="Manage Announcements"
           />
           <StatCard
             title="Users"
@@ -130,6 +150,8 @@ const QuickStats = () => {
             label="Registered Members"
             icon={FaUsers}
             colorClass="bg-gradient-green"
+            manageLink="/admin/manage-users"
+            manageText="Manage Users"
           />
         </>
       )}
