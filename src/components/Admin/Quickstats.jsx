@@ -71,7 +71,7 @@ const QuickStats = () => {
       <div className={`stat-card ${colorClass} text-white shadow-sm`}>
         <div
           className="card-body d-flex flex-column justify-content-between py-3 px-3"
-          style={{ minHeight: "140px" }}
+          style={{ minHeight: "150px" }}
         >
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div>
@@ -84,9 +84,19 @@ const QuickStats = () => {
           <div>
             <Link
               to={manageLink}
-              className="text-white text-decoration-underline small"
-              style={{ cursor: "pointer" }}
+              className="text-white text-decoration-underline fw-bold text-dark"
+              style={{
+                cursor: "pointer",
+                fontSize: "0.75rem",
+                display: "inline-block",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "100%",
+                paddingTop: "4px",
+              }}
               aria-label={`Manage ${title}`}
+              title={`Manage ${title}`}
             >
               {manageText || `Manage ${title}`}
             </Link>
