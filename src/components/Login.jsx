@@ -83,6 +83,7 @@ const Login = () => {
     // Save token and staff status in localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("is_staff", data.is_staff ? "true" : "false");
+    localStorage.setItem("username", data.username)
 
     setSuccess("Login successful! Redirecting...");
     setTimeout(() => {

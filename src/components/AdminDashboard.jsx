@@ -1,7 +1,6 @@
 
 import React from "react";
-import AllAnnouncements from "./AllAnnouncements";
-
+import AdminWelcomeHeader from "./Admin/AdminWelcomeHeader";
 
 const AdminDashboard = () => {
     return(
@@ -13,8 +12,7 @@ const AdminDashboard = () => {
             marginTop:"40px"
         }}
         >
-        <h1>THIS IS THE ADMIN DASHBOARD</h1>
-        <AllAnnouncements/>
+            <AdminWelcomeHeader/>
         </main>
         </>
 
