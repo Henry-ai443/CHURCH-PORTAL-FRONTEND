@@ -38,19 +38,19 @@
   color: #212529;
 }
 
-.admin-header:hover {
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
-}
+/* Quick Stats Cards */
 
 .quick-stats .stat-card {
   border: none;
   border-radius: 0.75rem;
   transition: all 0.25s ease;
   cursor: pointer;
-  height: 110px; /* Smaller height */
+  height: auto; /* Removed fixed height */
   display: flex;
-  align-items: center;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: space-between;
+  padding: 1rem;
+  color: white;
 }
 
 .quick-stats .stat-card:hover {
@@ -71,21 +71,67 @@
   background: linear-gradient(135deg, #198754, #20c997);
 }
 
-/* Text Adjustments */
-.quick-stats .card-title {
+/* Card body layout */
+.quick-stats .stat-card .card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.quick-stats .stat-card .text-content {
+  flex: 1;
+  padding-right: 1rem;
+  min-width: 0; /* Fix text overflow */
+}
+
+.quick-stats .stat-card .card-title {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.4px;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.quick-stats h4 {
+.quick-stats .stat-card h4 {
   font-size: 1.5rem;
   line-height: 1.2;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.quick-stats small {
+.quick-stats .stat-card small {
   font-size: 0.75rem;
   opacity: 0.9;
+  display: block;
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Manage Link */
+.quick-stats .stat-card a.manage-link {
+  font-weight: 700;
+  color: #FFEB3B; /* Bright yellow for visibility */
+  text-decoration: underline;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Icon */
+.quick-stats .stat-card .icon {
+  font-size: 1.8rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+  margin-top: 4px;
 }
 
 /* Skeleton Loading Effect */
@@ -142,8 +188,8 @@
 @media (max-width: 576px) {
   .quick-stats .stat-card,
   .skeleton-card {
-    height: 95px;
-    padding: 0.75rem;
+    height: auto;
+    padding: 1rem;
   }
 
   .quick-stats h4 {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
 
 const QuickStats = () => {
@@ -68,90 +67,19 @@ const QuickStats = () => {
 
   const StatCard = ({ title, value, label, icon: Icon, colorClass, manageLink, manageText }) => (
     <div className="col-sm-6 col-lg-3">
-      <div
-        className={`stat-card ${colorClass} text-white shadow-sm`}
-        style={{
-          overflow: "hidden",
-          boxSizing: "border-box",
-          padding: "1rem", // Added padding around the entire card
-          borderRadius: "0.5rem",
-        }}
-      >
-        <div
-          className="card-body d-flex flex-column justify-content-between py-0 px-0"
-          style={{ minHeight: "150px" }}
-        >
-          <div
-            className="d-flex justify-content-between align-items-center mb-3"
-            style={{ gap: "0.5rem", flexWrap: "nowrap" }}
-          >
-            <div
-              style={{
-                flex: "1 1 auto",
-                minWidth: 0, // important for truncation inside flex
-                overflowWrap: "break-word",
-                wordWrap: "break-word",
-                paddingRight: "0.5rem", // prevent text getting close to icon
-              }}
-            >
-              <h6
-                className="card-title mb-1"
-                style={{
-                  whiteSpace: "normal",
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                {title}
-              </h6>
-              <h4
-                className="fw-bold mb-0"
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  maxWidth: "100%",
-                }}
-              >
-                {value}
-              </h4>
-              <small
-                style={{
-                  whiteSpace: "normal",
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                }}
-              >
-                {label}
-              </small>
-            </div>
-            <div style={{ flexShrink: 0 }}>
-              <Icon className="fs-3 opacity-75" />
-            </div>
+      <div className={`stat-card ${colorClass} text-white shadow-sm`}>
+        <div className="card-body d-flex justify-content-between align-items-start">
+          <div className="text-content">
+            <h6 className="card-title">{title}</h6>
+            <h4 className="fw-bold">{value}</h4>
+            <small>{label}</small>
+            {manageLink && (
+              <a href={manageLink} className="manage-link">
+                {manageText}
+              </a>
+            )}
           </div>
-          <div>
-            <Link
-              to={manageLink}
-              className="text-decoration-underline"
-              style={{
-                cursor: "pointer",
-                fontSize: "0.75rem",
-                display: "inline-block",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "100%",
-                paddingTop: "6px",
-                fontWeight: "700", // bold text
-                color: "#FFEB3B", // bright yellow for visibility
-              }}
-              aria-label={`Manage ${title}`}
-              title={`Manage ${title}`}
-            >
-              {manageText || `Manage ${title}`}
-            </Link>
-          </div>
+          <Icon className="fs-3 opacity-75 icon" />
         </div>
       </div>
     </div>
@@ -193,7 +121,7 @@ const QuickStats = () => {
             label="Total Created"
             icon={FaCalendarAlt}
             colorClass="bg-gradient-blue"
-            manageLink="/admin/manage-events"
+            manageLink="/manage-events"
             manageText="Manage Events"
           />
           <StatCard
@@ -202,7 +130,7 @@ const QuickStats = () => {
             label="Total Created"
             icon={FaBullhorn}
             colorClass="bg-gradient-purple"
-            manageLink="/admin/manage-announcements"
+            manageLink="/manage-announcements"
             manageText="Manage Announcements"
           />
           <StatCard
@@ -211,7 +139,7 @@ const QuickStats = () => {
             label="Registered Members"
             icon={FaUsers}
             colorClass="bg-gradient-green"
-            manageLink="/admin/manage-users"
+            manageLink="/manage-users"
             manageText="Manage Users"
           />
         </>
