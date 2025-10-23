@@ -1,6 +1,7 @@
 
 import React from "react";
 import AdminWelcomeHeader from "./Admin/AdminWelcomeHeader";
+import QuickStats from "./Admin/Quickstats";
 
 const AdminDashboard = () => {
     return(
@@ -13,6 +14,7 @@ const AdminDashboard = () => {
         }}
         >
             <AdminWelcomeHeader/>
+            <QuickStats/>
         </main>
         </>
 
