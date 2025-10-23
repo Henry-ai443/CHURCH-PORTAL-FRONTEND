@@ -4,7 +4,7 @@ import { FaDeaf } from "react-icons/fa";
 
 const AdminWelcomeHeader = () => {
     const username = localStorage.getItem("username");
-    const today = new Date.toLocaleDateString('en-US', {
+    const today = new Date().toLocaleDateString('en-US', {
         weekday: "long",
         month:"long",
         day:"numeric",
