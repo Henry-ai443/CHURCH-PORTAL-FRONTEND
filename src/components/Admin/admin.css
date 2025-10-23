@@ -42,6 +42,7 @@
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
+
 .quick-stats .stat-card {
   border: none;
   border-radius: 0.75rem;
@@ -66,6 +67,10 @@
   background: linear-gradient(135deg, #6f42c1, #b5179e);
 }
 
+.bg-gradient-green {
+  background: linear-gradient(135deg, #198754, #20c997);
+}
+
 /* Text Adjustments */
 .quick-stats .card-title {
   font-size: 0.9rem;
@@ -83,9 +88,60 @@
   opacity: 0.9;
 }
 
+/* Skeleton Loading Effect */
+.skeleton-card {
+  background: #e9ecef;
+  border-radius: 0.75rem;
+  height: 110px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-title,
+.skeleton-number,
+.skeleton-label {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+
+.skeleton-title {
+  width: 50%;
+  height: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-number {
+  width: 40%;
+  height: 18px;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-label {
+  width: 60%;
+  height: 8px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 576px) {
-  .quick-stats .stat-card {
+  .quick-stats .stat-card,
+  .skeleton-card {
     height: 95px;
     padding: 0.75rem;
   }
