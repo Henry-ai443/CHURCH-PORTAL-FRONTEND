@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
-import './admin.css'
 
 const QuickStats = () => {
   const [stats, setStats] = useState({
