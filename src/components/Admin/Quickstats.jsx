@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
 
 const QuickStats = () => {
@@ -74,9 +75,11 @@ const QuickStats = () => {
             <h4 className="fw-bold">{value}</h4>
             <small>{label}</small>
             {manageLink && (
-              <a href={manageLink} className="manage-link">
-                {manageText}
-              </a>
+              <div className="mt-2">
+                <Link to={manageLink} className="text-white text-decoration-underline small">
+                  {manageText}
+                </Link>
+              </div>
             )}
           </div>
           <Icon className="fs-3 opacity-75 icon" />
@@ -120,7 +123,7 @@ const QuickStats = () => {
             value={stats.events}
             label="Total Created"
             icon={FaCalendarAlt}
-            colorClass="bg-gradient-blue"
+            colorClass="bg-primary"
             manageLink="/manage-events"
             manageText="Manage Events"
           />
@@ -129,7 +132,7 @@ const QuickStats = () => {
             value={stats.announcements}
             label="Total Created"
             icon={FaBullhorn}
-            colorClass="bg-gradient-purple"
+            colorClass="bg-info"
             manageLink="/manage-announcements"
             manageText="Manage Announcements"
           />
@@ -138,8 +141,8 @@ const QuickStats = () => {
             value={stats.users}
             label="Registered Members"
             icon={FaUsers}
-            colorClass="bg-gradient-green"
-            manageLink="/manage-users"
+            colorClass="bg-success"
+            manageLink="/users_management"
             manageText="Manage Users"
           />
         </>

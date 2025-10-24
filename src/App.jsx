@@ -9,6 +9,9 @@ import {
 import Aos from "aos";
 import "aos/dist/aos.css";
 
+//Admin Components
+import UsersManagement from "./components/Admin/UsersMangement";
+
 // Layout Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -134,6 +137,15 @@ function Layout({ user }) {
           element={
             <ProtectedRoute user={user}>
               <YouthMessagesList />
+            </ProtectedRoute>
+          }
+        />
+
+                <Route
+          path="users_management"
+          element={
+            <ProtectedRoute user={user}>
+              <UsersManagement />
             </ProtectedRoute>
           }
         />
