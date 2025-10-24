@@ -54,27 +54,31 @@
 /* Text section */
 .stat-text h6 {
   margin: 0;
-  font-size: 0.9rem;
-  color: #fff;
+  font-size: 1.3rem;
+  color: #000000;
+  font-weight: bold;
 }
 
 .stat-text h3 {
   margin: 0.2rem 0;
   font-size: 1.8rem;
   color: #fff;
+  font-weight: bold;
 }
 
 .stat-text small {
   display: block;
   color: #f0f0f0;
+
 }
 
 .stat-link {
   display: inline-block;
   margin-top: 0.5rem;
-  color: #fff;
+  color: gold;
   text-decoration: underline;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 /* Icon styling */
