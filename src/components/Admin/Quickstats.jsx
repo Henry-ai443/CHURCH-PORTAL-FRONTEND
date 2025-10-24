@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
+import "./QuickStats.css";
 
 const QuickStats = () => {
   const [stats, setStats] = useState({
@@ -55,9 +56,9 @@ const QuickStats = () => {
           announcements: announcementsData.length,
           users: usersData.length,
         });
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-        setError(error.message);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -76,7 +77,7 @@ const QuickStats = () => {
             <small>{label}</small>
             {manageLink && (
               <div className="mt-2">
-                <Link to={manageLink} className="text-white text-decoration-underline small text-bold">
+                <Link to={manageLink} className="text-white text-decoration-underline small fw-bold">
                   {manageText}
                 </Link>
               </div>
