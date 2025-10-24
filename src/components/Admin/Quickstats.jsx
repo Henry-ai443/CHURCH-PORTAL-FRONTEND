@@ -67,36 +67,32 @@ const QuickStats = () => {
     fetchStats();
   }, []);
 
-  // Single card component
   const StatCard = ({ title, value, label, icon: Icon, colorClass, manageLink, manageText }) => (
-    <div className="col-sm-6 col-lg-3">
-      <div className={`stat-card ${colorClass} shadow-sm`}>
-        <div className="card-body d-flex justify-content-between align-items-start">
-          <div className="text-content">
-            <h6 className="card-title">{title}</h6>
-            <h4 className="fw-bold">{value}</h4>
+    <div className="stat-card-wrapper">
+      <div className={`stat-card ${colorClass}`}>
+        <div className="stat-content">
+          <div className="stat-text">
+            <h6>{title}</h6>
+            <h3>{value}</h3>
             <small>{label}</small>
             {manageLink && (
-              <div className="mt-2">
-                <Link to={manageLink} className="text-white text-decoration-underline small fw-bold">
-                  {manageText}
-                </Link>
-              </div>
+              <Link to={manageLink} className="stat-link">
+                {manageText}
+              </Link>
             )}
           </div>
-          <Icon className="fs-3 opacity-75 icon" />
+          <Icon className="stat-icon" />
         </div>
       </div>
     </div>
   );
 
-  // Skeleton card while loading
   const LoadingCard = () => (
-    <div className="col-sm-6 col-lg-3">
-      <div className="stat-card skeleton-card shadow-sm">
-        <div className="card-body py-3 px-3">
-          <div className="skeleton-title mb-2"></div>
-          <div className="skeleton-number mb-2"></div>
+    <div className="stat-card-wrapper">
+      <div className="stat-card skeleton-card">
+        <div className="skeleton-content">
+          <div className="skeleton-title"></div>
+          <div className="skeleton-number"></div>
           <div className="skeleton-label"></div>
         </div>
       </div>
@@ -104,52 +100,48 @@ const QuickStats = () => {
   );
 
   return (
-    <div className="row g-3 mb-4 quick-stats">
-      {error && (
-        <div className="col-12">
-          <div className="alert alert-danger py-2 mb-3" role="alert">
-            {error}
-          </div>
-        </div>
-      )}
+    <div className="quick-stats-container">
+      {error && <div className="error-message">{error}</div>}
 
-      {loading ? (
-        <>
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-        </>
-      ) : (
-        <>
-          <StatCard
-            title="Events"
-            value={stats.events}
-            label="Total Created"
-            icon={FaCalendarAlt}
-            colorClass="stat-card-primary"
-            manageLink="/manage-events"
-            manageText="Manage Events"
-          />
-          <StatCard
-            title="Announcements"
-            value={stats.announcements}
-            label="Total Created"
-            icon={FaBullhorn}
-            colorClass="stat-card-info"
-            manageLink="/manage-announcements"
-            manageText="Manage Announcements"
-          />
-          <StatCard
-            title="Users"
-            value={stats.users}
-            label="Registered Members"
-            icon={FaUsers}
-            colorClass="stat-card-success"
-            manageLink="/users_management"
-            manageText="Manage Users"
-          />
-        </>
-      )}
+      <div className="stats-grid">
+        {loading ? (
+          <>
+            <LoadingCard />
+            <LoadingCard />
+            <LoadingCard />
+          </>
+        ) : (
+          <>
+            <StatCard
+              title="Events"
+              value={stats.events}
+              label="Total Created"
+              icon={FaCalendarAlt}
+              colorClass="stat-primary"
+              manageLink="/manage-events"
+              manageText="Manage Events"
+            />
+            <StatCard
+              title="Announcements"
+              value={stats.announcements}
+              label="Total Created"
+              icon={FaBullhorn}
+              colorClass="stat-info"
+              manageLink="/manage-announcements"
+              manageText="Manage Announcements"
+            />
+            <StatCard
+              title="Users"
+              value={stats.users}
+              label="Registered Members"
+              icon={FaUsers}
+              colorClass="stat-success"
+              manageLink="/users_management"
+              manageText="Manage Users"
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 };
