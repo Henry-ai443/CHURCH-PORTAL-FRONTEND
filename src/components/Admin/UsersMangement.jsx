@@ -113,7 +113,7 @@ const UsersManagement = () => {
       <div className="card shadow-sm">
         <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover mb-0">
+            <table className="table table-hover mb-4">
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
