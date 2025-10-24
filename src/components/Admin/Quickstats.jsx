@@ -67,9 +67,10 @@ const QuickStats = () => {
     fetchStats();
   }, []);
 
+  // Single card component
   const StatCard = ({ title, value, label, icon: Icon, colorClass, manageLink, manageText }) => (
     <div className="col-sm-6 col-lg-3">
-      <div className={`stat-card ${colorClass} text-white shadow-sm`}>
+      <div className={`stat-card ${colorClass} shadow-sm`}>
         <div className="card-body d-flex justify-content-between align-items-start">
           <div className="text-content">
             <h6 className="card-title">{title}</h6>
@@ -89,6 +90,7 @@ const QuickStats = () => {
     </div>
   );
 
+  // Skeleton card while loading
   const LoadingCard = () => (
     <div className="col-sm-6 col-lg-3">
       <div className="stat-card skeleton-card shadow-sm">
@@ -124,7 +126,7 @@ const QuickStats = () => {
             value={stats.events}
             label="Total Created"
             icon={FaCalendarAlt}
-            colorClass="bg-primary"
+            colorClass="stat-card-primary"
             manageLink="/manage-events"
             manageText="Manage Events"
           />
@@ -133,7 +135,7 @@ const QuickStats = () => {
             value={stats.announcements}
             label="Total Created"
             icon={FaBullhorn}
-            colorClass="bg-info"
+            colorClass="stat-card-info"
             manageLink="/manage-announcements"
             manageText="Manage Announcements"
           />
@@ -142,7 +144,7 @@ const QuickStats = () => {
             value={stats.users}
             label="Registered Members"
             icon={FaUsers}
-            colorClass="bg-success"
+            colorClass="stat-card-success"
             manageLink="/users_management"
             manageText="Manage Users"
           />
