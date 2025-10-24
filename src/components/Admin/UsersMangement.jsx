@@ -1,105 +1,174 @@
-import { useEffect, useState } from "react";
-import React from "react";
-import "./UsersManagement.css"; // <-- import custom styles
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import "./UsersManagement.css"; // Optional additional custom styles
+import debounce from "lodash.debounce";
 
 const UsersManagement = () => {
-    const [users, setUsers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(""); // <-- search state
-    const token = localStorage.getItem("token");
+  const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!token) return;
+  const token = localStorage.getItem("token");
 
-        const fetchUsers = async () => {
-            try {
-                const response = await fetch("https://church-portal-backend.onrender.com/api/registered_users", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Token ${token}`,
-                    },
-                });
+  const observer = useRef();
 
-                const data = await response.json();
-                setUsers(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+  // Fetch users function
+  const fetchUsers = async (pageNum = 1, searchTerm = "") => {
+    if (!token) {
+      setError("Authorization token not found. Please log in.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://church-portal-backend.onrender.com/api/registered_users/?page=${pageNum}&limit=20&search=${searchTerm}`,
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
 
-        fetchUsers();
-    }, [token]);
+      if (!response.ok) throw new Error("Failed to fetch users.");
 
-    // Filter users based on search term (username or email)
-    const filteredUsers = users.filter(
-        (user) =>
-            user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      const data = await response.json();
 
-    return (
-        <div className="users-container container mt-5">
-            <h2 className="text-center mb-4 title">Users Management</h2>
+      if (pageNum === 1) {
+        setUsers(data.users);
+      } else {
+        setUsers((prev) => [...prev, ...data.users]);
+      }
 
-            <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
-                <div className="card-body p-4">
-                    {/* Search input */}
-                    <div className="search-container mb-3">
-                        <input
-                            type="text"
-                            placeholder="Search by username or email..."
-                            className="search-input"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+      setHasNext(data.has_next);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    <div className="table-responsive">
-                        <table className="table align-middle table-hover users-table">
-                            <thead className="table-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Staff</th>
-                                    <th>Status</th>
-                                    <th>Date Joined</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredUsers.map((user, index) => (
-                                    <tr key={user.id}>
-                                        <td>{index + 1}</td>
-                                        <td className="fw-semibold text-primary">{user.username}</td>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            {user.isStaff ? (
-                                                <span className="badge bg-gradient bg-success px-3 py-2">Admin</span>
-                                            ) : (
-                                                <span className="badge bg-gradient bg-secondary px-3 py-2">User</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {user.is_active ? (
-                                                <span className="badge bg-gradient bg-success px-3 py-2">Active</span>
-                                            ) : (
-                                                <span className="badge bg-gradient bg-danger px-3 py-2">Inactive</span>
-                                            )}
-                                        </td>
-                                        <td>{new Date(user.date_joined).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+  // Debounced search
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setPage(1);
+      fetchUsers(1, value);
+    }, 500),
+    []
+  );
 
-                    {filteredUsers.length === 0 && (
-                        <p className="text-center text-muted mt-3">No users found...</p>
-                    )}
-                </div>
-            </div>
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+
+  // Load more when scrolling
+  const lastUserRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNext) {
+          setPage((prev) => prev + 1);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasNext]
+  );
+
+  // Fetch users on page change
+  useEffect(() => {
+    if (page === 1) return; // Already fetched on search or initial load
+    fetchUsers(page, search);
+  }, [page]);
+
+  // Initial load
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="container mt-5">
+      <h2 className="text-center mb-4">Users Management</h2>
+
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by username or email..."
+          value={search}
+          onChange={handleSearchChange}
+        />
+      </div>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
         </div>
-    );
+      )}
+
+      <div className="card shadow-sm">
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-hover mb-0">
+              <thead className="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Staff</th>
+                  <th>Status</th>
+                  <th>Date Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user, index) => {
+                  const isLast = index === users.length - 1;
+                  return (
+                    <tr key={user.id} ref={isLast ? lastUserRef : null}>
+                      <td>{index + 1}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        {user.is_staff ? (
+                          <span className="badge bg-success">Admin</span>
+                        ) : (
+                          <span className="badge bg-secondary">User</span>
+                        )}
+                      </td>
+                      <td>
+                        {user.is_active ? (
+                          <span className="badge bg-success">Active</span>
+                        ) : (
+                          <span className="badge bg-danger">Inactive</span>
+                        )}
+                      </td>
+                      <td>{new Date(user.date_joined).toLocaleDateString()}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {loading && (
+            <div className="text-center p-3">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )}
+
+          {!loading && users.length === 0 && (
+            <p className="text-center my-3 text-muted">No users found...</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default UsersManagement;
