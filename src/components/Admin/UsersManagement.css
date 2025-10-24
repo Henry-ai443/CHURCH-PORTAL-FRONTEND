@@ -1,0 +1,64 @@
+.users-container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.title {
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+
+.users-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.users-table thead {
+  background: linear-gradient(90deg, #2c3e50, #4b6cb7);
+  color: #fff;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.users-table tbody tr {
+  transition: all 0.2s ease-in-out;
+}
+
+.users-table tbody tr:hover {
+  background-color: #f4f7fc;
+  transform: scale(1.01);
+}
+
+.users-table td {
+  vertical-align: middle;
+  padding: 12px;
+}
+
+.badge {
+  font-size: 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.bg-gradient {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+.card {
+  border-radius: 16px;
+  background-color: #ffffff;
+}
+
+.card-body {
+  background-color: #fafafa;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
