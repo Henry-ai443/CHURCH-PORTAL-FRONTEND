@@ -6,7 +6,6 @@ const UsersManagement = () => {
     const [users, setUsers] = useState([]);
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
-    const isStaff = localStorage.getItem("isStaff");
 
     useEffect(() => {
         if(!token) return
@@ -30,16 +29,6 @@ const UsersManagement = () => {
 
         fetchUsers();
     }, [token])
-
-    if(isStaff !== "true"){
-        return (
-            <div className="container mt-5">
-                <div className="alert alert-danger text-center">
-                    You are not authorized to view this page
-                </div>
-            </div>
-        );
-    }
 
     return(
         <div className="container mt-4">

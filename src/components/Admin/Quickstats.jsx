@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaBullhorn, FaUsers } from "react-icons/fa";
+import './admin.css'
 
 const QuickStats = () => {
   const [stats, setStats] = useState({
@@ -76,7 +77,7 @@ const QuickStats = () => {
             <small>{label}</small>
             {manageLink && (
               <div className="mt-2">
-                <Link to={manageLink} className="text-white text-decoration-underline small">
+                <Link to={manageLink} className="text-white text-decoration-underline small text-bold">
                   {manageText}
                 </Link>
               </div>
