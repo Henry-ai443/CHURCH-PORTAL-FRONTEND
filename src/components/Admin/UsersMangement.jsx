@@ -4,6 +4,7 @@ import "./UsersManagement.css"; // <-- import custom styles
 
 const UsersManagement = () => {
     const [users, setUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // <-- search state
     const token = localStorage.getItem("token");
 
     useEffect(() => {
@@ -20,7 +21,6 @@ const UsersManagement = () => {
                 });
 
                 const data = await response.json();
-                console.log(data)
                 setUsers(data);
             } catch (error) {
                 console.error(error);
@@ -30,12 +30,30 @@ const UsersManagement = () => {
         fetchUsers();
     }, [token]);
 
+    // Filter users based on search term (username or email)
+    const filteredUsers = users.filter(
+        (user) =>
+            user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="users-container container mt-5">
             <h2 className="text-center mb-4 title">Users Management</h2>
 
             <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
                 <div className="card-body p-4">
+                    {/* Search input */}
+                    <div className="search-container mb-3">
+                        <input
+                            type="text"
+                            placeholder="Search by username or email..."
+                            className="search-input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
                     <div className="table-responsive">
                         <table className="table align-middle table-hover users-table">
                             <thead className="table-dark">
@@ -49,7 +67,7 @@ const UsersManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user, index) => (
+                                {filteredUsers.map((user, index) => (
                                     <tr key={user.id}>
                                         <td>{index + 1}</td>
                                         <td className="fw-semibold text-primary">{user.username}</td>
@@ -75,7 +93,7 @@ const UsersManagement = () => {
                         </table>
                     </div>
 
-                    {users.length === 0 && (
+                    {filteredUsers.length === 0 && (
                         <p className="text-center text-muted mt-3">No users found...</p>
                     )}
                 </div>
