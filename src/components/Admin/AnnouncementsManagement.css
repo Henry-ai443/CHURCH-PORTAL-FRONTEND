@@ -1,9 +1,9 @@
 /* =======================================================
-   Announcements Management Styles
-   Clean, responsive, and dashboard-friendly design
+   Announcements Management Styles (Responsive Version)
+   Desktop → Table view | Mobile → Card view
 ========================================================== */
 
-/* ===== Page Layout ===== */
+/* ===== Layout ===== */
 .announcements-page {
   max-width: 1100px;
   margin: auto;
@@ -36,7 +36,7 @@ h5 {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* ===== Form Styles ===== */
+/* ===== Form ===== */
 form .form-label {
   font-weight: 600;
   color: #444;
@@ -91,11 +91,7 @@ textarea:focus {
   color: #fff;
 }
 
-.btn-success:hover {
-  background-color: #198754;
-}
-
-/* ===== Table ===== */
+/* ===== Table (Desktop Only) ===== */
 .table {
   border-radius: 10px;
   overflow: hidden;
@@ -119,7 +115,6 @@ textarea:focus {
   transition: background-color 0.2s ease;
 }
 
-/* ===== Message Truncation ===== */
 .table .truncate {
   max-width: 250px;
   white-space: nowrap;
@@ -134,34 +129,69 @@ textarea:focus {
   color: #007bff;
 }
 
-/* ===== Responsive ===== */
+/* ===== Mobile Card Layout ===== */
 @media (max-width: 768px) {
-  .announcements-page {
-    padding: 0 10px;
+  /* Hide table headers */
+  .table thead {
+    display: none;
   }
 
-  .table .truncate {
-    max-width: 150px;
-  }
-
-  .table th,
+  .table,
+  .table tbody,
+  .table tr,
   .table td {
-    font-size: 0.9rem;
+    display: block;
+    width: 100%;
   }
 
-  h2 {
-    font-size: 1.5rem;
+  .table tr {
+    background-color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 12px 16px;
   }
-}
 
-@media (max-width: 576px) {
+  .table td {
+    padding: 8px 0;
+    border: none;
+    font-size: 0.95rem;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 600;
+    color: #007bff;
+    margin-bottom: 3px;
+    font-size: 0.85rem;
+  }
+
+  /* Truncated message */
   .table .truncate {
-    max-width: 100px;
+    max-width: 100%;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #444;
+  }
+
+  /* Buttons inside cards */
+  .table td:last-child {
+    margin-top: 0.5rem;
   }
 
   .btn {
-    font-size: 0.8rem;
-    padding: 5px 8px;
+    width: 48%;
+    font-size: 0.85rem;
+  }
+
+  .btn + .btn {
+    margin-left: 4%;
+  }
+
+  h2 {
+    font-size: 1.4rem;
   }
 }
 
@@ -183,7 +213,7 @@ textarea:focus {
   border-bottom-right-radius: 12px;
 }
 
-/* Smooth entrance animation */
+/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -203,16 +233,7 @@ textarea:focus {
   font-size: 1rem;
 }
 
-/* ===== Shadows & Details ===== */
-.shadow-sm {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
-}
-
-.shadow-lg {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* ===== Utility ===== */
+/* ===== Misc ===== */
 .text-secondary {
   color: #6c757d !important;
 }
