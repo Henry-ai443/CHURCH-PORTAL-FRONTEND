@@ -127,7 +127,7 @@ const QuickStats = () => {
               label="Total Created"
               icon={FaBullhorn}
               colorClass="stat-info"
-              manageLink="/manage-announcements"
+              manageLink="/announcements_management"
               manageText="Manage Announcements"
             />
             <StatCard

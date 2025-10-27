@@ -11,6 +11,7 @@ import "aos/dist/aos.css";
 
 //Admin Components
 import UsersManagement from "./components/Admin/UsersMangement";
+import AnnouncementsManagement from "./components/Admin/AnnouncementsManagement";
 
 // Layout Components
 import Navbar from "./components/Navbar";
@@ -146,6 +147,15 @@ function Layout({ user }) {
           element={
             <ProtectedRoute user={user}>
               <UsersManagement />
+            </ProtectedRoute>
+          }
+        />
+
+                <Route
+          path="announcements_management"
+          element={
+            <ProtectedRoute user={user}>
+              <AnnouncementsManagement />
             </ProtectedRoute>
           }
         />
