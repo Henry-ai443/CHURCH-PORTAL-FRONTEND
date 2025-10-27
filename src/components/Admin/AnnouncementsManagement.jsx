@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./AnnouncementsManagement.css"; // 👈 optional custom CSS
+import "./AnnouncementsManagement.css"; // 👈 custom styles
 
 const AnnouncementsManagement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -8,14 +8,18 @@ const AnnouncementsManagement = () => {
   const [time, setTime] = useState("");
   const [success, setSuccess] = useState("");
   const [editAnnouncement, setEditAnnouncement] = useState(null);
+  const [viewMessage, setViewMessage] = useState(null); // 👈 for viewing full message
 
   const token = localStorage.getItem("token");
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await fetch("https://church-portal-backend.onrender.com/api/admin/announcements/", {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const res = await fetch(
+        "https://church-portal-backend.onrender.com/api/admin/announcements/",
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
       const data = await res.json();
       setAnnouncements(data);
     } catch (error) {
@@ -31,14 +35,17 @@ const AnnouncementsManagement = () => {
   const handleCreateAnnouncement = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://church-portal-backend.onrender.com/api/admin/announcements/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify({ title, message, time }),
-      });
+      const res = await fetch(
+        "https://church-portal-backend.onrender.com/api/admin/announcements/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify({ title, message, time }),
+        }
+      );
 
       if (res.ok) {
         setTitle("");
@@ -56,10 +63,13 @@ const AnnouncementsManagement = () => {
   // DELETE
   const handleDelete = async (id) => {
     if (window.confirm("Delete this announcement?")) {
-      await fetch(`https://church-portal-backend.onrender.com/api/admin/announcements/${id}/`, {
-        method: "DELETE",
-        headers: { Authorization: `Token ${token}` },
-      });
+      await fetch(
+        `https://church-portal-backend.onrender.com/api/admin/announcements/${id}/`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
       fetchAnnouncements();
     }
   };
@@ -67,18 +77,21 @@ const AnnouncementsManagement = () => {
   // UPDATE
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetch(`https://church-portal-backend.onrender.com/api/admin/announcements/${editAnnouncement.id}/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify({
-        title: editAnnouncement.title,
-        message: editAnnouncement.message,
-        time: editAnnouncement.time,
-      }),
-    });
+    await fetch(
+      `https://church-portal-backend.onrender.com/api/admin/announcements/${editAnnouncement.id}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          title: editAnnouncement.title,
+          message: editAnnouncement.message,
+          time: editAnnouncement.time,
+        }),
+      }
+    );
 
     setEditAnnouncement(null);
     fetchAnnouncements();
@@ -147,7 +160,9 @@ const AnnouncementsManagement = () => {
 
         {/* LIST TABLE */}
         <div className="card border-0 shadow-sm p-4">
-          <h5 className="fw-bold text-secondary mb-3">📋 Existing Announcements</h5>
+          <h5 className="fw-bold text-secondary mb-3">
+            📋 Existing Announcements
+          </h5>
 
           <div className="table-responsive">
             <table className="table table-hover align-middle">
@@ -165,7 +180,16 @@ const AnnouncementsManagement = () => {
                   <tr key={a.id}>
                     <td>{index + 1}</td>
                     <td>{a.title}</td>
-                    <td>{a.message}</td>
+                    <td
+                      title={a.message}
+                      className="truncate"
+                      onClick={() => setViewMessage(a.message)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {a.message.length > 100
+                        ? a.message.slice(0, 100) + "..."
+                        : a.message}
+                    </td>
                     <td>{new Date(a.time).toLocaleString()}</td>
                     <td>
                       <button
@@ -197,7 +221,10 @@ const AnnouncementsManagement = () => {
 
         {/* EDIT MODAL */}
         {editAnnouncement && (
-          <div className="modal show fade d-block bg-dark bg-opacity-50" tabIndex="-1">
+          <div
+            className="modal show fade d-block bg-dark bg-opacity-50"
+            tabIndex="-1"
+          >
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content border-0 shadow-lg rounded-3">
                 <div className="modal-header bg-primary text-white">
@@ -267,6 +294,29 @@ const AnnouncementsManagement = () => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* VIEW FULL MESSAGE MODAL */}
+        {viewMessage && (
+          <div
+            className="modal show fade d-block bg-dark bg-opacity-50"
+            tabIndex="-1"
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content border-0 shadow-lg rounded-3">
+                <div className="modal-header bg-secondary text-white">
+                  <h5 className="modal-title">Full Message</h5>
+                  <button
+                    className="btn-close btn-close-white"
+                    onClick={() => setViewMessage(null)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <p className="text-muted">{viewMessage}</p>
+                </div>
               </div>
             </div>
           </div>
