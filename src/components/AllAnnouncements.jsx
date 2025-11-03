@@ -33,7 +33,7 @@ const AllAnnouncements = () => {
       <h2 className="text-center fw-bold mb-4">ALL Announcements</h2>
 
       {loading ? (
-        <p className="text-center">Loading announcements...</p> // <-- Show while loading
+        <p className="text-center">Loading announcements...</p>
       ) : announcements.length > 0 ? (
         <div className="row">
           {announcements.map((item, index) => (
@@ -49,14 +49,14 @@ const AllAnnouncements = () => {
                 className="card h-100 shadow-lg border-1"
                 style={{
                   background: "rgba(0, 51, 102, 0.35)",
-                  backdropFilter: "blur(10px)", // corrected from backgroundFilter
+                  backdropFilter: "blur(10px)", 
                   borderRadius: "15px",
                   color: "white",
                 }}
               >
                 <div className="card-body">
-                  <h5 className="card-title fw-bold">{item.title}</h5>
-                  <p className="card-text">{item.message}</p>
+                  <h5 className="card-title fw-bold text-primary">{item.title}</h5>
+                  <p className="card-text text-black">{item.message}</p>
                 </div>
                 <div className="card-footer text-muted small">
                   {new Date(item.time).toLocaleString()}

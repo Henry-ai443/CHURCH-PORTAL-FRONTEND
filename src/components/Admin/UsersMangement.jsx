@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import "./UsersManagement.css"; // Optional additional custom styles
+import "./UsersManagement.css"; 
 import debounce from "lodash.debounce";
 
 const UsersManagement = () => {
