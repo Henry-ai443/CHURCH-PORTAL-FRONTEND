@@ -19,7 +19,7 @@ const Footer = () => {
               <li><a href="/home">Home</a></li>
               <li><a href="/announcements">Announcements</a></li>
               <li><a href="/events">Events</a></li>
-              <li><a href="/sermons">Sermons</a></li>
+              <li><a href="/https://www.youtube.com/@GccogThika">Sermons</a></li>
               <li><a href="/donations">Donations</a></li>
               <li><a href="/contact">Contact</a></li>
             </ul>
@@ -32,7 +32,7 @@ const Footer = () => {
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebook /></a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><FaTwitter /></a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a>
+              <a href="https://www.youtube.com/@GccogThika" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a>
             </div>
           </div>
         </div>

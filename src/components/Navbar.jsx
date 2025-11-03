@@ -233,13 +233,6 @@ const Navbar = () => {
             <hr />
           </li>
           <li className="nav-item">
-            <a href="/sermons" className="nav-link text-white">
-              <GiHolyGrail className="me-2" />
-              Sermons
-            </a>
-            <hr />
-          </li>
-          <li className="nav-item">
             <a href="/donations" className="nav-link text-white">
               <FaHandHoldingHeart className="me-2" />
               Donations

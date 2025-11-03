@@ -40,7 +40,7 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="mt-4 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 fade-in-up">
-            <a href="/sermons" className="btn btn-primary btn-lg me-md-3 glow-btn">
+            <a href="https://www.youtube.com/@GccogThika" className="btn btn-primary btn-lg me-md-3 glow-btn">
               🎧 Watch Sermons
             </a>
             <a href="/events" className="btn btn-outline-light btn-lg glow-btn-outline">
