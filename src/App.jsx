@@ -12,6 +12,7 @@ import "aos/dist/aos.css";
 //Admin Components
 import UsersManagement from "./components/Admin/UsersMangement";
 import AnnouncementsManagement from "./components/Admin/AnnouncementsManagement";
+import EventsManagement from "./components/Admin/EventsManagement";
 
 // Layout Components
 import Navbar from "./components/Navbar";
@@ -147,6 +148,15 @@ function Layout({ user }) {
           element={
             <ProtectedRoute user={user}>
               <UsersManagement />
+            </ProtectedRoute>
+          }
+        />
+
+                <Route
+          path="manage-events"
+          element={
+            <ProtectedRoute user={user}>
+              <EventsManagement />
             </ProtectedRoute>
           }
         />
