@@ -2,21 +2,17 @@ import React, { useEffect, useState } from "react";
 
 const EventsManagement = () => {
   const [events, setEvents] = useState([]);
-
-  // Form fields
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [zoomLink, setZoomLink] = useState("");
   const [entry, setEntry] = useState("");
-  const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
-  // Editing state
   const [editEvent, setEditEvent] = useState(null);
-
   const token = localStorage.getItem("token");
 
-  // Fetch all events
+  // Fetch events
   const fetchEvents = async () => {
     try {
       const res = await fetch("https://church-portal-backend.onrender.com/api/admin/events/", {
@@ -33,29 +29,40 @@ const EventsManagement = () => {
     fetchEvents();
   }, []);
 
-  // Create Event
+  // Create Event (with image upload)
   const handleCreate = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
 
-    const newEvent = { title, date, location, zoom_link: zoomLink, entry, image };
+    formData.append("title", title);
+    formData.append("date", date);
+    formData.append("location", location);
+    formData.append("zoom_link", zoomLink);
+    formData.append("entry", entry);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
-    const res = await fetch("https://church-portal-backend.onrender.com/api/admin/events/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify(newEvent),
-    });
+    try {
+      const res = await fetch("https://church-portal-backend.onrender.com/api/admin/events/", {
+        method: "POST",
+        headers: { Authorization: `Token ${token}` },
+        body: formData,
+      });
 
-    if (res.ok) {
-      setTitle("");
-      setDate("");
-      setLocation("");
-      setZoomLink("");
-      setEntry("");
-      setImage("");
-      fetchEvents();
+      if (res.ok) {
+        setTitle("");
+        setDate("");
+        setLocation("");
+        setZoomLink("");
+        setEntry("");
+        setImageFile(null);
+        fetchEvents();
+      } else {
+        console.error("Error creating event");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -70,23 +77,6 @@ const EventsManagement = () => {
     }
   };
 
-  // Update Event
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-
-    await fetch(`https://church-portal-backend.onrender.com/api/admin/events/${editEvent.id}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify(editEvent),
-    });
-
-    setEditEvent(null);
-    fetchEvents();
-  };
-
   return (
     <div className="container mt-5">
       <h2 className="fw-bold text-center mb-4">Events Management</h2>
@@ -95,7 +85,7 @@ const EventsManagement = () => {
       <div className="card p-4 shadow mb-4">
         <h5 className="fw-bold mb-3">Add New Event</h5>
 
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleCreate} encType="multipart/form-data">
           <div className="row g-3">
             <div className="col-md-6">
               <label className="form-label">Title</label>
@@ -144,14 +134,12 @@ const EventsManagement = () => {
             </div>
 
             <div className="col-md-6">
-              <label className="form-label">Image URL (Cloudinary)</label>
+              <label className="form-label">Image File</label>
               <input
-                type="url"
+                type="file"
                 className="form-control"
-                required
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="https://res.cloudinary.com/..."
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files[0])}
               />
             </div>
 
@@ -204,12 +192,6 @@ const EventsManagement = () => {
                 </td>
                 <td>
                   <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => setEditEvent(e)}
-                  >
-                    Edit
-                  </button>
-                  <button
                     className="btn btn-danger btn-sm"
                     onClick={() => handleDelete(e.id)}
                   >
@@ -228,110 +210,6 @@ const EventsManagement = () => {
           </tbody>
         </table>
       </div>
-
-      {/* EDIT MODAL */}
-      {editEvent && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Event</h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setEditEvent(null)}
-                />
-              </div>
-              <form onSubmit={handleUpdate}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Title</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={editEvent.title}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, title: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Date</label>
-                    <input
-                      type="datetime-local"
-                      className="form-control"
-                      value={editEvent.date?.slice(0, 16)}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, date: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Location</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={editEvent.location}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, location: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Zoom Link</label>
-                    <input
-                      type="url"
-                      className="form-control"
-                      value={editEvent.zoom_link || ""}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, zoom_link: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Image URL</label>
-                    <input
-                      type="url"
-                      className="form-control"
-                      value={editEvent.image}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, image: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Entry Description</label>
-                    <textarea
-                      className="form-control"
-                      rows="3"
-                      value={editEvent.entry}
-                      onChange={(e) =>
-                        setEditEvent({ ...editEvent, entry: e.target.value })
-                      }
-                    ></textarea>
-                  </div>
-                </div>
-
-                <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setEditEvent(null)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-success">
-                    Update Event
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

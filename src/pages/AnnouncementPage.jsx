@@ -5,11 +5,9 @@ import Footer from "../components/Footer";
 const AnnouncementPage = () => {
 return(
     <>
-        <Navbar/>
         <main>
         <AllAnnouncements/>
         </main>
-        <Footer/>
     </>
 )
 }
