@@ -19,7 +19,7 @@ const EventsManagement = () => {
   // Fetch all events
   const fetchEvents = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/admin-events/", {
+      const res = await fetch("https://church-portal-backend.onrender.com/api/admin/events/", {
         headers: { Authorization: `Token ${token}` },
       });
       const data = await res.json();
@@ -39,7 +39,7 @@ const EventsManagement = () => {
 
     const newEvent = { title, date, location, zoom_link: zoomLink, entry, image };
 
-    const res = await fetch("http://127.0.0.1:8000/api/admin-events/", {
+    const res = await fetch("https://church-portal-backend.onrender.com/api/admin/events/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const EventsManagement = () => {
   // Delete Event
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
-      await fetch(`http://127.0.0.1:8000/api/admin-events/${id}/`, {
+      await fetch(`https://church-portal-backend.onrender.com/api/admin/events/${id}/`, {
         method: "DELETE",
         headers: { Authorization: `Token ${token}` },
       });
@@ -74,7 +74,7 @@ const EventsManagement = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    await fetch(`http://127.0.0.1:8000/api/admin-events/${editEvent.id}/`, {
+    await fetch(`https://church-portal-backend.onrender.com/api/admin/events/${editEvent.id}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
