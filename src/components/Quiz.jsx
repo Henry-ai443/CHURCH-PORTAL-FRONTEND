@@ -8,13 +8,11 @@ const Quiz = () => {
   const [showStatus, setShowStatus] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
-  // Shuffle helper
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
-  // Fetch questions from backend
   const fetchQuestions = async () => {
     try {
-      const response = await fetch("https://church-portal-backend.onrender.com/api/quizes/fetch/"); // Adjust URL
+      const response = await fetch("http://localhost:8000/api/fetch-quiz/"); // your DRF URL
       if (!response.ok) throw new Error("Failed to fetch questions");
       const data = await response.json();
 
@@ -24,6 +22,7 @@ const Quiz = () => {
           question: q.question,
           options,
           correct_answer: q.correct_answer,
+          category: q.category
         };
       });
 
@@ -44,11 +43,9 @@ const Quiz = () => {
       setScore(score + 1);
       goToNextQuestion();
     } else {
-      // Show correct answer status
-      setStatusMessage(`Incorrect! Correct answer: ${questions[currentIndex].correct_answer}`);
+      setStatusMessage(`❌ Incorrect! Correct answer: ${questions[currentIndex].correct_answer}`);
       setShowStatus(true);
 
-      // Wait 2 seconds then go to next question
       setTimeout(() => {
         setShowStatus(false);
         goToNextQuestion();
@@ -62,33 +59,71 @@ const Quiz = () => {
       setCurrentIndex(nextIndex);
       setSelectedOption("");
     } else {
-      // All questions answered
       setShowStatus(true);
-      setStatusMessage(`Quiz Finished! Your final score is ${score} / ${questions.length}`);
+      setStatusMessage(`🏆 Quiz Finished! Your final score is ${score} / ${questions.length}`);
     }
   };
 
-  if (!questions.length) return <p>Loading questions...</p>;
+  if (!questions.length) return <p style={{ textAlign: "center" }}>Loading questions...</p>;
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", textAlign: "center" }}>
-      {showStatus ? (
-        <div style={{ margin: "20px 0", color: "red", fontWeight: "bold" }}>
+    <div style={{
+      maxWidth: "700px",
+      margin: "50px auto",
+      padding: "20px",
+      borderRadius: "12px",
+      backgroundColor: "#f5f5f5",
+      boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+      fontFamily: "Arial, sans-serif",
+    }}>
+      {/* Welcome */}
+      <h2 style={{ textAlign: "center", color: "#333", marginBottom: "30px" }}>
+        Are you ready to test your knowledge? 🤔
+      </h2>
+
+      {/* Status */}
+      {showStatus && (
+        <div style={{
+          marginBottom: "20px",
+          padding: "10px",
+          borderRadius: "8px",
+          backgroundColor: "#ffe6e6",
+          color: "#d8000c",
+          fontWeight: "bold",
+          textAlign: "center"
+        }}>
           {statusMessage}
         </div>
-      ) : null}
+      )}
 
+      {/* Question */}
       {currentIndex < questions.length && !showStatus && (
         <div>
-          <h3>Question {currentIndex + 1}:</h3>
-          <p dangerouslySetInnerHTML={{ __html: questions[currentIndex].question }}></p>
+          <h4 style={{ color: "#666", marginBottom: "5px" }}>Category: {questions[currentIndex].category}</h4>
+          <h3 style={{ color: "#444" }}>Question {currentIndex + 1}:</h3>
+          <p style={{ fontSize: "18px", marginBottom: "20px" }}
+             dangerouslySetInnerHTML={{ __html: questions[currentIndex].question }}>
+          </p>
+
+          {/* Options */}
           <ul style={{ listStyle: "none", padding: 0 }}>
             {questions[currentIndex].options.map((option, idx) => (
-              <li key={idx} style={{ marginBottom: "10px" }}>
+              <li key={idx} style={{ marginBottom: "12px" }}>
                 <button
                   onClick={() => handleOptionClick(option)}
                   dangerouslySetInnerHTML={{ __html: option }}
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
+                  style={{
+                    width: "100%",
+                    padding: "12px 20px",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                    backgroundColor: "#fff",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = "#e0e0e0"}
+                  onMouseOut={(e) => e.target.style.backgroundColor = "#fff"}
                 ></button>
               </li>
             ))}
@@ -96,7 +131,8 @@ const Quiz = () => {
         </div>
       )}
 
-      <div style={{ marginTop: "20px" }}>
+      {/* Score */}
+      <div style={{ marginTop: "30px", fontSize: "18px", textAlign: "center", color: "#333" }}>
         Score: {score} / {questions.length}
       </div>
     </div>
