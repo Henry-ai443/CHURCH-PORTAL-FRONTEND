@@ -12,7 +12,7 @@ const Quiz = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/fetch-quiz/"); // your DRF URL
+      const response = await fetch("https://church-portal-backend.onrender.com/api/quizes/fetch/"); // your DRF URL
       if (!response.ok) throw new Error("Failed to fetch questions");
       const data = await response.json();
 
